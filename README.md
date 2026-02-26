@@ -17,9 +17,9 @@ If you are developing a production application, we recommend updating the config
 
 ```js
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(["dist"]),
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: [
       // Other configs...
 
@@ -34,40 +34,167 @@ export default defineConfig([
     ],
     languageOptions: {
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
       },
       // other options...
     },
   },
-])
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from "eslint-plugin-react-x";
+import reactDom from "eslint-plugin-react-dom";
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(["dist"]),
   {
-    files: ['**/*.{ts,tsx}'],
+    files: ["**/*.{ts,tsx}"],
     extends: [
       // Other configs...
       // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
+      reactX.configs["recommended-typescript"],
       // Enable lint rules for React DOM
       reactDom.configs.recommended,
     ],
     languageOptions: {
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: ["./tsconfig.node.json", "./tsconfig.app.json"],
         tsconfigRootDir: import.meta.dirname,
       },
       // other options...
     },
   },
-])
+]);
+```
+
+```
+timefy-frontend
+├─ .prettierrc
+├─ eslint.config.js
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ public
+│  └─ vite.svg
+├─ README.md
+├─ src
+│  ├─ app
+│  │  ├─ providers
+│  │  └─ router
+│  ├─ App.css
+│  ├─ App.tsx
+│  ├─ assets
+│  │  └─ react.svg
+│  ├─ entities
+│  │  ├─ booking
+│  │  ├─ organization
+│  │  ├─ service
+│  │  └─ user
+│  ├─ features
+│  │  ├─ auth
+│  │  ├─ booking
+│  │  ├─ organizations
+│  │  ├─ servises
+│  │  ├─ shedule
+│  │  └─ staff
+│  ├─ index.css
+│  ├─ layouts
+│  │  ├─ DashboardLayout
+│  │  └─ PublicLayout
+│  │     ├─ Footer.tsx
+│  │     ├─ Header.tsx
+│  │     ├─ MobileMenu.tsx
+│  │     └─ PublicLayout.tsx
+│  ├─ main.tsx
+│  ├─ pages
+│  │  └─ Home
+│  │     ├─ componets
+│  │     │  └─ Hero.tsx
+│  │     └─ HomePage.tsx
+│  └─ shared
+│     ├─ api
+│     ├─ hooks
+│     ├─ lib
+│     └─ ui
+├─ tsconfig.app.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+└─ vite.config.ts
+
+```
+
+```
+timefy-frontend
+├─ .prettierrc
+├─ eslint.config.js
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ public
+│  └─ vite.svg
+├─ README.md
+├─ src
+│  ├─ app
+│  │  ├─ providers
+│  │  └─ router
+│  ├─ App.css
+│  ├─ App.tsx
+│  ├─ assets
+│  │  └─ react.svg
+│  ├─ entities
+│  │  ├─ booking
+│  │  ├─ organization
+│  │  ├─ service
+│  │  └─ user
+│  ├─ features
+│  │  ├─ auth
+│  │  ├─ booking
+│  │  ├─ organizations
+│  │  ├─ schedule
+│  │  ├─ services
+│  │  └─ staff
+│  ├─ index.css
+│  ├─ layouts
+│  │  ├─ DashboardLayout
+│  │  └─ PublicLayout
+│  │     └─ PublicLayout.tsx
+│  ├─ main.tsx
+│  ├─ pages
+│  │  └─ Home
+│  │     ├─ models
+│  │     └─ ui
+│  │        ├─ Hero.tsx
+│  │        └─ HomePage.tsx
+│  ├─ shared
+│  │  ├─ api
+│  │  ├─ hooks
+│  │  ├─ lib
+│  │  └─ ui
+│  │     ├─ icons
+│  │     │  ├─ BurgerIcon.tsx
+│  │     │  └─ XIcon.tsx
+│  │     └─ index.ts
+│  └─ widgets
+│     ├─ Footer.tsx
+│     └─ Header
+│        ├─ index.ts
+│        ├─ model
+│        │  ├─ constans.ts
+│        │  └─ types.ts
+│        └─ ui
+│           ├─ Header.tsx
+│           ├─ MobileNav.tsx
+│           └─ NavItem.tsx
+├─ tsconfig.app.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+└─ vite.config.ts
+
 ```
