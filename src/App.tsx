@@ -1,5 +1,8 @@
 import "./App.css";
+import PublicLayout from "./layouts/PublicLayout/PublicLayout";
 
-function App() {}
+function App() {
+  return <PublicLayout />;
+}
 
 export default App;
