@@ -1,10 +1,11 @@
 import { Hero } from "./ui/Hero";
 
-type Props = {};
-export const HomePage = (props: Props) => {
+export const HomePage = () => {
   return (
     <>
       <Hero />
     </>
   );
 };
+
+export default HomePage;
