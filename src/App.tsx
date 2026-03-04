@@ -1,8 +1,13 @@
+import { BrowserRouter } from "react-router-dom";
 import "./App.css";
-import PublicLayout from "./layouts/PublicLayout/PublicLayout";
+import LazyRoutes from "./app/router/LazyRoutes";
 
 function App() {
-  return <PublicLayout />;
+  return (
+    <BrowserRouter>
+      <LazyRoutes />
+    </BrowserRouter>
+  );
 }
 
 export default App;

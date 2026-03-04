@@ -71,3 +71,76 @@ export default defineConfig([
   },
 ]);
 ```
+
+```
+timefy-frontend
+├─ .prettierrc
+├─ eslint.config.js
+├─ index.html
+├─ package-lock.json
+├─ package.json
+├─ postcss.config.mjs
+├─ public
+│  └─ vite.svg
+├─ README.md
+├─ src
+│  ├─ app
+│  │  ├─ providers
+│  │  └─ router
+│  │     ├─ index.tsx
+│  │     └─ LazyRoutes.tsx
+│  ├─ App.css
+│  ├─ App.tsx
+│  ├─ assets
+│  │  └─ react.svg
+│  ├─ entities
+│  │  ├─ booking
+│  │  ├─ organization
+│  │  ├─ service
+│  │  └─ user
+│  ├─ features
+│  │  ├─ auth
+│  │  ├─ booking
+│  │  ├─ organizations
+│  │  ├─ schedule
+│  │  ├─ services
+│  │  └─ staff
+│  ├─ index.css
+│  ├─ layouts
+│  │  ├─ DashboardLayout
+│  │  └─ PublicLayout
+│  │     └─ PublicLayout.tsx
+│  ├─ main.tsx
+│  ├─ pages
+│  │  └─ Home
+│  │     ├─ HomePage.tsx
+│  │     ├─ index.ts
+│  │     ├─ model
+│  │     └─ ui
+│  │        └─ Hero.tsx
+│  ├─ shared
+│  │  ├─ api
+│  │  ├─ hooks
+│  │  ├─ lib
+│  │  └─ ui
+│  │     ├─ icons
+│  │     │  ├─ BurgerIcon.tsx
+│  │     │  └─ XIcon.tsx
+│  │     └─ index.ts
+│  └─ widgets
+│     ├─ Footer.tsx
+│     └─ Header
+│        ├─ index.ts
+│        ├─ model
+│        │  ├─ constans.ts
+│        │  └─ types.ts
+│        └─ ui
+│           ├─ Header.tsx
+│           ├─ MobileNav.tsx
+│           └─ NavItem.tsx
+├─ tsconfig.app.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+└─ vite.config.ts
+
+```

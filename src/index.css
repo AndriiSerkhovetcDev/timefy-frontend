@@ -3,4 +3,5 @@
 @theme {
   --color-primary: #1a3c40;
   --color-secondary: #4ecdc4;
+  --font-sans: "Inter", sans-serif;
 }
