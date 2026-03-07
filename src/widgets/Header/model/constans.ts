@@ -7,11 +7,10 @@ export const navItems: NavItemType[] = [
 ];
 
 export const modileNavBtns: NavItemType[] = [
-  { id: "login", text: "Log In", link: "", variant: "outline" },
   { id: "trial", text: "Start Free Trial", link: "#", variant: "primary" },
 ];
 
 export const desktopNavBtns: NavItemType[] = [
-  { id: "login", text: "Log In", link: "", variant: "desktopOutline" },
+  { id: "login", text: "Вхід", link: "/login", variant: "desktopOutline" },
   { id: "trial", text: "Start Free Trial", link: "#", variant: "desktopPrimary" },
 ];
