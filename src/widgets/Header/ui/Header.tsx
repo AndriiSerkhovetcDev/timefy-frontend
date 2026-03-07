@@ -32,7 +32,7 @@ export const Header = () => {
               <NavItem key={item.id} {...item} />
             ))}
           </div>
-          <div className="flex md:hidden items-center sgap-2">
+          <div className="flex md:hidden items-center gap-5">
             <div className="flex-1">
               <NavItem id="login" text="Вхід" link="/login" variant="outline" />
             </div>
