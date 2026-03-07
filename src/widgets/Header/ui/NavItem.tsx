@@ -3,7 +3,7 @@ import type { NavItemType } from "../model/types";
 const variantClasses = {
   default:
     "block px-3 py-3 rounded-md text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50",
-  outline: "text-center w-full py-2 border border-gray-200 rounded-lg text-primary font-medium",
+  outline: "text-center px-6 py-2 border border-gray-200 rounded-lg text-primary font-medium",
   primary: "text-center w-full py-2 bg-primary text-white rounded-lg font-medium shadow-md",
   desktop: "text-gray-500 hover:text-primary font-medium transition-colors",
   desktopOutline: "text-primary font-semibold hover:text-secondary transition-colors",

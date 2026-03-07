@@ -36,7 +36,7 @@ function MobileNav() {
 
   return (
     <>
-      <div className="md:hidden" ref={buttonRef}>
+      <div className="md:hidden flex items-center" ref={buttonRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="text-gray-600 hover:text-primary focus:outline-none"
