@@ -36,10 +36,8 @@ export const useAuthForm = <T extends FieldValues>({
       const res = await apiCall(submitValues as T);
       const { data } = res;
 
-      if (data?.user && data?.token) {
-        login(data.user, data.token);
-        navigate(redirectTo);
-      }
+      login(data.user, data.token);
+      navigate(redirectTo);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Щось пішло не так");
     }
