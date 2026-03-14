@@ -1,5 +1,5 @@
 import { registerSchema, type RegisterFormValues } from "../model/shemas";
-import { checkLoginExists, registration } from "@/shared/api/authApi";
+import { checkIsExists, registration } from "@/shared/api/authApi";
 import { FormField, PhoneField } from "@/shared/ui";
 import { useAuthForm } from "../model/useAuthForm";
 
@@ -10,6 +10,7 @@ export const registerFields = [
     placeholder: "Введіть логін",
     type: "text",
     required: true,
+    checkExists: true,
   },
   {
     name: "email",
@@ -17,6 +18,7 @@ export const registerFields = [
     placeholder: "Введіть електронну адресу",
     type: "email",
     required: true,
+    checkExists: true,
   },
   {
     name: "phone",
@@ -24,6 +26,7 @@ export const registerFields = [
     placeholder: "Введіть номер телефону",
     type: "tel",
     required: true,
+    checkExists: true,
   },
   {
     name: "password",
@@ -31,6 +34,7 @@ export const registerFields = [
     placeholder: "Введіть пароль",
     type: "password",
     required: true,
+    checkExists: false,
   },
   {
     name: "confirm_password",
@@ -38,8 +42,15 @@ export const registerFields = [
     placeholder: "Введіть пароль ще раз",
     type: "password",
     required: true,
+    checkExists: false,
   },
 ];
+
+export const fieldKeyMap = {
+  login: "checkLogin",
+  email: "checkEmail",
+  phone: "checkPhone",
+} as const;
 
 export const RegisterForm = () => {
   const {
@@ -54,27 +65,36 @@ export const RegisterForm = () => {
   } = useAuthForm({
     schema: registerSchema,
     apiCall: registration,
-    redirectTo: "/dashboard",
+    redirectTo: "/login",
+    transformValues: ({ confirm_password, ...rest }) => rest,
   });
 
-  const handleLoginBlur = async () => {
-    const login = getValues("login");
+  const handleExistsBlur = async (field: "login" | "email" | "phone") => {
+    let value = getValues(field);
+    if (!value) return;
 
-    if (!login) return;
+    if (field === "phone") {
+      value = "+" + value.replace(/\D/g, "");
+    }
 
     try {
-      const { isAvailable } = await checkLoginExists(login);
+      const res = await checkIsExists(field, value);
+      const { data } = res;
 
-      if (!isAvailable) {
-        setError("login", { message: "Цей логін вже зайнятий" });
+      if (!data[fieldKeyMap[field]]) {
+        setError(field, { message: `Це значення вже зайняте` });
       }
     } catch {}
   };
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
-      {registerFields.map((field) =>
-        field.type === "tel" ? (
+      {registerFields.map((field) => {
+        const { onBlur: rhfOnBlur, ...restRegister } = register(
+          field.name as keyof RegisterFormValues,
+        );
+
+        return field.type === "tel" ? (
           <PhoneField
             key={field.name}
             control={control}
@@ -82,22 +102,27 @@ export const RegisterForm = () => {
             label={field.label}
             required={field.required}
             error={errors[field.name as keyof RegisterFormValues]?.message}
+            onBlur={field.checkExists ? () => handleExistsBlur(field.name as "phone") : undefined}
           />
         ) : (
           <FormField
             key={field.name}
+            {...restRegister}
             label={field.label}
             placeholder={field.placeholder}
             type={field.type}
             watchValue={field.name === "password" ? watch("password") : undefined}
             required={field.required}
             error={errors[field.name as keyof RegisterFormValues]?.message}
-            {...register(field.name as keyof RegisterFormValues, {
-              onBlur: field.name === "login" ? handleLoginBlur : undefined,
-            })}
+            onBlur={(e) => {
+              rhfOnBlur(e);
+              if (field.checkExists) {
+                handleExistsBlur(field.name as "login" | "email");
+              }
+            }}
           />
-        ),
-      )}
+        );
+      })}
       {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{error}</p>}
 
       <button

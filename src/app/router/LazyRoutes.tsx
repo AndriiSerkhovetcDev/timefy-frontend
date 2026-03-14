@@ -1,10 +1,11 @@
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { HomePage, LoginPage, PublicLayout, RegisterPage } from ".";
+import { PageLoader } from "@/shared/ui";
 
 const LazyRoutes = () => {
   return (
-    <Suspense fallback={<div>Завантаження</div>}>
+    <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
