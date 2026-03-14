@@ -10,22 +10,34 @@ type RegisterData = {
   password: string;
 };
 
-type AuthResponse = {
-  user: {
-    id: string;
-    login: string;
-    role: "ADMIN" | "SUPPORT" | "OWNER";
-    email: string;
-    phone: string;
+export type AuthResponse = {
+  data: {
+    user: {
+      id: string;
+      login: string;
+      role: "ADMIN" | "SUPPORT" | "OWNER";
+      email: string;
+      phone: string;
+    };
+    token: string;
   };
-  token: string;
+};
+
+type CheckField = "login" | "email" | "phone";
+
+type CheckExistsResponse = {
+  data: {
+    checkLogin: boolean;
+    checkEmail: boolean;
+    checkPhone: boolean;
+  };
 };
 
 //api
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const API_LOGIN_URL = `${API_BASE_URL}/auth/login`;
 const API_REGISTER_URL = `${API_BASE_URL}/auth/register`;
-const API_CHECK_LOGIN_URL = `${API_BASE_URL}/auth/check-login`;
+const API_CHECK_LOGIN_URL = `${API_BASE_URL}/auth/check`;
 
 export const login = async (data: LoginData): Promise<AuthResponse> => {
   const response = await fetch(API_LOGIN_URL, {
@@ -51,12 +63,15 @@ export const registration = async (data: RegisterData): Promise<AuthResponse> =>
   return response.json();
 };
 
-export const checkLoginExists = async (login: string): Promise<{ isAvailable: boolean }> => {
-  const response = await fetch(`${API_CHECK_LOGIN_URL}?login=${login}`, {
-    method: "GET",
+export const checkIsExists = async (
+  field: CheckField,
+  value: string,
+): Promise<CheckExistsResponse> => {
+  const response = await fetch(API_CHECK_LOGIN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ [field]: value }),
   });
-
-  if (!response.ok) throw new Error("Помилка перевірки логіна");
-
+  if (!response.ok) throw new Error("Помилка перевірки");
   return response.json();
 };

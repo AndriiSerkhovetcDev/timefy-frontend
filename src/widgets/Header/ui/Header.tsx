@@ -1,9 +1,12 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { desktopNavBtns, navItems } from "../model/constans";
 import MobileNav from "./MobileNav";
 import { NavItem } from "./NavItem";
 
 export const Header = () => {
+  const location = useLocation();
+  const isLoginOrRegisterPage = location.pathname === "/login" || location.pathname === "/register";
+
   return (
     <header
       id="header"
@@ -28,14 +31,19 @@ export const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            {desktopNavBtns.map((item) => (
-              <NavItem key={item.id} {...item} />
-            ))}
+            {desktopNavBtns
+              .filter((item) => !(isLoginOrRegisterPage && item.id === "login"))
+              .map((item) => (
+                <NavItem key={item.id} {...item} />
+              ))}
           </div>
+
           <div className="flex md:hidden items-center gap-5">
-            <div className="flex-1">
-              <NavItem id="login" text="Вхід" link="/login" variant="outline" />
-            </div>
+            {!isLoginOrRegisterPage && (
+              <div className="flex-1">
+                <NavItem id="login" text="Вхід" link="/login" variant="outline" />
+              </div>
+            )}
             <MobileNav />
           </div>
         </div>

@@ -1,49 +1,45 @@
-// features/auth/model/useAuthForm.ts
 import { useState } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
 import { type FieldValues } from "react-hook-form";
 import { useAuthStore } from "./authStore";
-import type { User } from "./types";
 import type { $ZodType } from "node_modules/zod/v4/core/schemas";
+import { useNavigate } from "react-router-dom";
+import type { AuthResponse } from "@/shared/api/authApi";
 
 type UseAuthFormOptions<T extends FieldValues> = {
   schema: $ZodType<T, FieldValues>;
-  apiCall: (values: T) => Promise<{ token: string; user: User }>;
+  apiCall: (values: T) => Promise<AuthResponse>;
   redirectTo: string;
+  transformValues?: (values: T) => Partial<T>;
 };
 
 export const useAuthForm = <T extends FieldValues>({
   schema,
   apiCall,
   redirectTo,
+  transformValues,
 }: UseAuthFormOptions<T>) => {
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuthStore();
   const navigate = useNavigate();
-  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<T>({
     resolver: zodResolver(schema) as Resolver<T>,
-    mode: "onBlur",
+    mode: "onChange",
   });
 
   const onSubmit = async (values: T) => {
     try {
-      const data = {
-        user: {
-          id: "1",
-          role: "OWNER" as const,
-          login: "testuser",
-          email: "test@test.com",
-          phone: "+380671234567",
-        },
-        token: "fake-token",
-      };
-      // setError(null);
-      // const data = await apiCall(values);
-      login(data.user, data.token);
-      // navigate(redirectTo);
+      setError(null);
+      const submitValues = transformValues ? transformValues(values) : values;
+      const res = await apiCall(submitValues as T);
+      const { data } = res;
+
+      if (data?.user && data?.token) {
+        login(data.user, data.token);
+        navigate(redirectTo);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Щось пішло не так");
     }

@@ -6,3 +6,4 @@ export { FormField } from "./FormFields/FormField";
 export { EyeIcon } from "./icons/EyeIcon";
 export { EyeOffIcon } from "./icons/EyeOffIcon";
 export { PhoneField } from "./FormFields/PhoneField";
+export { PageLoader } from "./PageLoader";
