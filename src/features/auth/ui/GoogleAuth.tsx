@@ -1,28 +1,13 @@
-import { googleAuth } from "@/shared/api/authApi";
 import { GoogleIcon } from "@/shared/ui";
-import { useAuthStore } from "../model/authStore";
-import { useNavigate } from "react-router-dom";
+import { API_GOOGLE_AUTH_URL } from "@/shared/api/authApi";
 
 type GoogleAuthProps = {
   label?: string;
 };
 
 export const GoogleAuth = ({ label = "Увійти через Google" }: GoogleAuthProps) => {
-  const { login } = useAuthStore();
-  const navigate = useNavigate();
-
-  const handleGoogleAuth = async () => {
-    try {
-      const data = await googleAuth();
-      console.log(data);
-
-      if (data?.user && data?.token) {
-        login(data.user, data.token);
-        navigate("/dashboard");
-      }
-    } catch (error) {
-      console.error("Помилка Google авторизації:", error);
-    }
+  const handleGoogleAuth = () => {
+    window.location.href = API_GOOGLE_AUTH_URL;
   };
 
   return (

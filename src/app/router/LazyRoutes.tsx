@@ -1,8 +1,9 @@
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import { HomePage, LoginPage, PublicLayout, RegisterPage } from ".";
+import { DashboardPage, HomePage, LoginPage, PublicLayout, RegisterPage } from ".";
 import { PageLoader } from "@/shared/ui";
 import { AuthCallbackPage } from "@/pages/AuthCallback/AuthCallBackPage";
+import { ProtectedRoute } from "@/shared/ui/ProtectedRoute";
 
 const LazyRoutes = () => {
   return (
@@ -13,6 +14,10 @@ const LazyRoutes = () => {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="auth/callback" element={<AuthCallbackPage />} />
+        </Route>
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="/dashboard" element={<DashboardPage />} />
         </Route>
       </Routes>
     </Suspense>

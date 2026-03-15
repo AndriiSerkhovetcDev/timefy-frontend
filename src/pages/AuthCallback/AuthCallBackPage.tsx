@@ -1,32 +1,27 @@
-import type { User } from "@/features/auth/model/types";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/features/auth/model/authStore";
+import type { User } from "@/features/auth/model/types";
 
 export const AuthCallbackPage = () => {
+  const { login } = useAuthStore();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const error = params.get("error");
     const token = params.get("token");
+    const userRaw = params.get("user");
 
-    if (error) {
-      window.opener?.postMessage({ type: "AUTH_ERROR", message: error }, window.location.origin);
-      setTimeout(() => window.close(), 100);
+    if (error || !token || !userRaw) {
+      navigate("/login");
       return;
     }
 
-    const user: User = {
-      id: params.get("id") ?? "",
-      login: params.get("login") ?? "",
-      role: params.get("role") as "ADMIN" | "SUPPORT" | "OWNER",
-      email: params.get("email") ?? "",
-      phone: params.get("phone") ?? "",
-    };
+    const user: User = JSON.parse(decodeURIComponent(userRaw));
 
-    const type = token ? "AUTH_SUCCESS" : "AUTH_ERROR";
-    const payload = token ? { user, token } : { message: "Помилка авторизації" };
-
-    console.log("sending postMessage", { type, payload });
-    window.opener?.postMessage({ type, payload }, window.location.origin);
-    setTimeout(() => window.close(), 100);
+    login(user, token);
+    navigate("/dashboard");
   }, []);
 
   return <div>Авторизація...</div>;
