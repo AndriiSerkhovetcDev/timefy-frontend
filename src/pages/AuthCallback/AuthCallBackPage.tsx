@@ -24,6 +24,7 @@ export const AuthCallbackPage = () => {
     const type = token ? "AUTH_SUCCESS" : "AUTH_ERROR";
     const payload = token ? { user, token } : { message: "Помилка авторизації" };
 
+    console.log("sending postMessage", { type, payload });
     window.opener?.postMessage({ type, payload }, window.location.origin);
     setTimeout(() => window.close(), 100);
   }, []);

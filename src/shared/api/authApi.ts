@@ -93,6 +93,7 @@ export const googleAuth = (): Promise<{ token: string; user: User }> => {
     }
 
     const handleMessage = (event: MessageEvent) => {
+      console.log("message received:", event.data);
       if (event.origin !== window.location.origin) return;
 
       if (event.data?.type === "AUTH_SUCCESS") {
