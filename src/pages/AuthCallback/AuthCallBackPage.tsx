@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import type { User } from "@/features/auth/model/types";
+import { PageLoader } from "@/shared/ui";
 
 export const AuthCallbackPage = () => {
   const { login } = useAuthStore();
@@ -24,5 +25,5 @@ export const AuthCallbackPage = () => {
     navigate("/dashboard");
   }, []);
 
-  return <div>Авторизація...</div>;
+  return <PageLoader />;
 };
