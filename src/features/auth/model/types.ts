@@ -6,6 +6,7 @@ export type User = {
   last_name?: string;
   email: string;
   phone: string;
+  emailVerified: boolean;
 };
 
 export type AuthState = {
@@ -13,4 +14,5 @@ export type AuthState = {
   token: string | null;
   login: (user: User, token: string) => void;
   logout: () => void;
+  setEmailVerified: (value: boolean) => void;
 };

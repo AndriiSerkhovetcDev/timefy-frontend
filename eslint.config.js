@@ -23,6 +23,8 @@ export default defineConfig([
     rules: {
       "prettier/prettier": "error",
       "react/react-in-jsx-scope": "off",
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
     },
   },
 ]);

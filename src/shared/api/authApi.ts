@@ -18,6 +18,7 @@ export type AuthResponse = {
       role: "ADMIN" | "SUPPORT" | "OWNER";
       email: string;
       phone: string;
+      emailVerified: boolean;
     };
     token: string;
   };
@@ -33,17 +34,35 @@ type CheckExistsResponse = {
   };
 };
 
+type VerifyEmailPayload = {
+  login: string;
+  code: string;
+};
+
+type VerifyEmailResponse = {
+  codeVerified: boolean;
+};
+
+type ResendVerifyEmailPayload = {
+  login: string;
+};
+
 //api
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const API_LOGIN_URL = `${API_BASE_URL}/auth/login`;
 const API_REGISTER_URL = `${API_BASE_URL}/auth/register`;
 const API_CHECK_LOGIN_URL = `${API_BASE_URL}/auth/check`;
+const API_VERIFY_EMAIL = `${API_BASE_URL}/auth/verify-email`;
+const API_RESEND_VERIFY_EMAIL = `${API_BASE_URL}/auth/resend-verify-email`;
 export const API_GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
+
+//headers
+const HEADERS = { "Content-Type": "application/json" };
 
 export const login = async (data: LoginData): Promise<AuthResponse> => {
   const response = await fetch(API_LOGIN_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: HEADERS,
     body: JSON.stringify(data),
   });
 
@@ -55,7 +74,7 @@ export const login = async (data: LoginData): Promise<AuthResponse> => {
 export const registration = async (data: RegisterData): Promise<AuthResponse> => {
   const response = await fetch(API_REGISTER_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: HEADERS,
     body: JSON.stringify(data),
   });
 
@@ -70,9 +89,30 @@ export const checkIsExists = async (
 ): Promise<CheckExistsResponse> => {
   const response = await fetch(API_CHECK_LOGIN_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: HEADERS,
     body: JSON.stringify({ [field]: value }),
   });
   if (!response.ok) throw new Error("Помилка перевірки");
   return response.json();
+};
+
+export const verifyEmail = async (payload: VerifyEmailPayload): Promise<VerifyEmailResponse> => {
+  const response = await fetch(API_VERIFY_EMAIL, {
+    method: "POST",
+    headers: HEADERS,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) throw new Error("Помилка перевірки");
+  return response.json();
+};
+
+export const resendVerifyEmail = async (payload: ResendVerifyEmailPayload): Promise<void> => {
+  const response = await fetch(API_RESEND_VERIFY_EMAIL, {
+    method: "POST",
+    headers: HEADERS,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) throw new Error("Помилка надсилання коду");
 };

@@ -9,3 +9,6 @@ export { GoogleIcon } from "./icons/GoogleIcon";
 export { FormField } from "./FormFields/FormField";
 export { PhoneField } from "./FormFields/PhoneField";
 export { PageLoader } from "./PageLoader";
+
+export { RouteGuard } from "./RouteGuard";
+export { UserRouteGuard } from "./UserRouteGuard";
