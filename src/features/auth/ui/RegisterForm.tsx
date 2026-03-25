@@ -65,8 +65,9 @@ export const RegisterForm = () => {
   } = useAuthForm({
     schema: registerSchema,
     apiCall: registration,
-    redirectTo: "/login",
+    redirectTo: "/dashboard",
     transformValues: ({ confirm_password, ...rest }) => rest,
+    checkEmailVerified: true,
   });
 
   const handleExistsBlur = async (field: "login" | "email" | "phone") => {

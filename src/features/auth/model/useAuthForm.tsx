@@ -12,6 +12,7 @@ type UseAuthFormOptions<T extends FieldValues> = {
   apiCall: (values: T) => Promise<AuthResponse>;
   redirectTo: string;
   transformValues?: (values: T) => Partial<T>;
+  checkEmailVerified?: boolean;
 };
 
 export const useAuthForm = <T extends FieldValues>({
@@ -19,6 +20,7 @@ export const useAuthForm = <T extends FieldValues>({
   apiCall,
   redirectTo,
   transformValues,
+  checkEmailVerified,
 }: UseAuthFormOptions<T>) => {
   const [error, setError] = useState<string | null>(null);
   const { login } = useAuthStore();
@@ -37,7 +39,13 @@ export const useAuthForm = <T extends FieldValues>({
       const { data } = res;
 
       login(data.user, data.token);
-      navigate(redirectTo);
+
+      const isEmailVerified = data.user.emailVerified;
+      if (checkEmailVerified && !isEmailVerified) {
+        navigate("/verify-email");
+      } else {
+        navigate(redirectTo);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Щось пішло не так");
     }

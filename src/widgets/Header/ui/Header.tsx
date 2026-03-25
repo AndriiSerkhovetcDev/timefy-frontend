@@ -3,9 +3,11 @@ import { desktopNavBtns, navItems } from "../model/constans";
 import MobileNav from "./MobileNav";
 import { NavItem } from "./NavItem";
 
+const authPages = ["login", "register", "verify-email"];
+
 export const Header = () => {
   const location = useLocation();
-  const isLoginOrRegisterPage = location.pathname === "/login" || location.pathname === "/register";
+  const isAuthPage = authPages.some((link) => location.pathname === `/${link}`);
 
   return (
     <header
@@ -32,14 +34,14 @@ export const Header = () => {
 
           <div className="hidden md:flex items-center space-x-4">
             {desktopNavBtns
-              .filter((item) => !(isLoginOrRegisterPage && item.id === "login"))
+              .filter((item) => !(isAuthPage && item.id === "login"))
               .map((item) => (
                 <NavItem key={item.id} {...item} />
               ))}
           </div>
 
           <div className="flex md:hidden items-center gap-5">
-            {!isLoginOrRegisterPage && (
+            {!isAuthPage && (
               <div className="flex-1">
                 <NavItem id="login" text="Вхід" link="/login" variant="outline" />
               </div>
