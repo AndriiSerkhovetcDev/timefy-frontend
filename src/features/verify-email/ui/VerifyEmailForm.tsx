@@ -1,5 +1,5 @@
 import { selectUserLogin, useAuthStore } from "@/features/auth/model/authStore";
-import { resendVerifyEmail, verifyEmail } from "@/shared/api/authApi";
+import { verifyEmail } from "@/shared/api/authApi";
 import {
   useRef,
   useState,
@@ -80,7 +80,6 @@ export const VerifyEmailForm = () => {
     inputsRef.current[0]?.focus();
 
     // TODO: resend API ще не готовий
-    // if (!userLogin) return;
 
     // try {
     //   await resendVerifyEmail({ login: userLogin });
@@ -91,19 +90,21 @@ export const VerifyEmailForm = () => {
 
   const handleSubmit = useCallback(
     async (value: string) => {
-      console.log("Код підтвердження:", value);
+      try {
+        const payload = preparePayload(userLogin!, value);
+        const { codeVerified } = await verifyEmail(payload);
 
-      if (!userLogin || !code) return;
-
-      const payload = preparePayload(userLogin, value);
-      const { codeVerified } = await verifyEmail(payload);
-
-      if (codeVerified) {
-        setEmailVerified(true);
-        setVerifyError("");
-        navigate("/dashboard");
-      } else {
-        setVerifyError("Невірний код");
+        if (codeVerified) {
+          setEmailVerified(true);
+          setVerifyError("");
+          navigate("/dashboard");
+        } else {
+          setVerifyError("Невірний код");
+        }
+      } catch {
+        setVerifyError("Введено не вірний код");
+        setCode(Array(CODE_LENGTH).fill(""));
+        inputsRef.current[0]?.focus();
       }
     },
     [userLogin, setEmailVerified, navigate],
