@@ -9,6 +9,12 @@ export const LoginPage = () => {
         <h1 className="mb-1 text-2xl text-center font-bold text-primary">Вхід</h1>
         <LoginForm />
 
+        <div className="flex justify-center mt-2">
+          <Link to="/forgot-password" className="text-sm text-gray-500 hover:underline">
+            Забули пароль?
+          </Link>
+        </div>
+
         <div className="flex items-center gap-3 my-2">
           <div className="flex-1 h-px bg-gray-200" />
           <span className="text-sm text-gray-400">або</span>
