@@ -1,5 +1,5 @@
 import { selectUserLogin, useAuthStore } from "@/features/auth/model/authStore";
-import { verifyEmail } from "@/shared/api/authApi";
+import { resendVerifyEmail, verifyEmail } from "@/shared/api/authApi";
 import {
   useRef,
   useState,
@@ -24,6 +24,8 @@ export const VerifyEmailForm = () => {
 
   const handleChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
+
+    setVerifyError("");
 
     const newCode = [...code];
     newCode[index] = value.slice(-1);
@@ -79,19 +81,25 @@ export const VerifyEmailForm = () => {
     setCode(Array(CODE_LENGTH).fill(""));
     inputsRef.current[0]?.focus();
 
-    // TODO: resend API ще не готовий
-
-    // try {
-    //   await resendVerifyEmail({ login: userLogin });
-    // } catch {
-    //   // показати помилку
-    // }
+    try {
+      if (userLogin) {
+        await resendVerifyEmail({ login: userLogin });
+      }
+    } catch {
+      setVerifyError("Щось пішло не так");
+    }
   };
 
   const handleSubmit = useCallback(
     async (value: string) => {
       try {
-        const payload = preparePayload(userLogin!, value);
+        if (!userLogin) return;
+
+        const payload = {
+          login: userLogin,
+          code: value,
+        };
+
         const { codeVerified } = await verifyEmail(payload);
 
         if (codeVerified) {
@@ -109,11 +117,6 @@ export const VerifyEmailForm = () => {
     },
     [userLogin, setEmailVerified, navigate],
   );
-
-  const preparePayload = (login: string, code: string) => ({
-    login,
-    code,
-  });
 
   useEffect(() => {
     const isComplete = code.every((digit) => digit !== "");
