@@ -24,6 +24,12 @@ export type AuthResponse = {
   };
 };
 
+export type ForgotPassResponse = {
+  data: {
+    success: boolean;
+  };
+};
+
 type CheckField = "login" | "email" | "phone";
 
 type CheckExistsResponse = {
@@ -47,6 +53,8 @@ type ResendVerifyEmailPayload = {
   login: string;
 };
 
+type ForgotPassEmailStepPayload = { email: string } | { login: string };
+
 //api
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 const API_LOGIN_URL = `${API_BASE_URL}/auth/login`;
@@ -54,6 +62,7 @@ const API_REGISTER_URL = `${API_BASE_URL}/auth/register`;
 const API_CHECK_LOGIN_URL = `${API_BASE_URL}/auth/check`;
 const API_VERIFY_EMAIL = `${API_BASE_URL}/auth/verify-email`;
 const API_RESEND_VERIFY_EMAIL = `${API_BASE_URL}/auth/resend-verify-email`;
+const API_FORGOT_PASS_EMAIL_STEP = `${API_BASE_URL}/auth//forgot-password`;
 export const API_GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
 
 //headers
@@ -115,4 +124,21 @@ export const resendVerifyEmail = async (payload: ResendVerifyEmailPayload): Prom
   });
 
   if (!response.ok) throw new Error("Помилка надсилання коду");
+};
+
+export const forgotPasswordEmailStep = async (
+  payload: ForgotPassEmailStepPayload,
+): Promise<{ success: boolean }> => {
+  const response = await fetch(API_FORGOT_PASS_EMAIL_STEP, {
+    method: "POST",
+    headers: HEADERS,
+    body: JSON.stringify(payload),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData?.message || "Не вдалося надіслати лист на вказаний email");
+  }
+
+  return response.json();
 };
