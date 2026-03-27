@@ -6,23 +6,21 @@ import type { $ZodType } from "zod/v4/core";
 import { useNavigate } from "react-router-dom";
 import type { AuthResponse } from "@/shared/api/authApi";
 
-type UseAuthFormOptions<T extends FieldValues, TResponse = AuthResponse, TPayload = T> = {
-  schema: $ZodType<T, FieldValues>;
-  apiCall: (values: TPayload) => Promise<TResponse>;
-  redirectTo: string;
-  transformValues?: (values: T) => TPayload;
-  checkEmailVerified?: boolean;
-};
-
 const isAuthResponse = (res: unknown): res is AuthResponse => {
   return !!res && typeof res === "object" && "data" in res;
 };
 
-export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse, TPayload = T>({
+type UseAuthFormOptions<T extends FieldValues, TResponse = AuthResponse> = {
+  schema: $ZodType<T, FieldValues>;
+  apiCall: (values: T) => Promise<TResponse>;
+  redirectTo: string;
+  checkEmailVerified?: boolean;
+};
+
+export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
   schema,
   apiCall,
   redirectTo,
-  transformValues,
   checkEmailVerified,
 }: UseAuthFormOptions<T, TResponse>) => {
   const [error, setError] = useState<string | null>(null);
@@ -37,11 +35,7 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse, TPa
   const onSubmit = async (values: T) => {
     try {
       setError(null);
-      const submitValues = transformValues
-        ? transformValues(values)
-        : (values as unknown as TPayload);
-
-      const res = await apiCall(submitValues as T);
+      const res = await apiCall(values);
 
       if (isAuthResponse(res)) {
         login(res.data.user, res.data.token);
