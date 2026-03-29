@@ -22,6 +22,12 @@ export const VerifyEmailForm = () => {
   const setEmailVerified = useAuthStore((state) => state.setEmailVerified);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (userLogin) {
+      resendVerifyEmail({ login: userLogin });
+    }
+  }, []);
+
   const handleChange = (value: string, index: number) => {
     if (!/^\d*$/.test(value)) return;
 

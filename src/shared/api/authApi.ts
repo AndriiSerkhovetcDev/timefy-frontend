@@ -1,9 +1,11 @@
-type LoginData = {
+import { httpClient } from "./httpClient";
+
+type LoginPayload = {
   login: string;
   password: string;
 };
 
-type RegisterData = {
+type RegisterPayload = {
   login: string;
   email: string;
   phone: string;
@@ -13,7 +15,6 @@ type RegisterData = {
 export type AuthResponse = {
   data: {
     user: {
-      id: string;
       login: string;
       role: "ADMIN" | "SUPPORT" | "OWNER";
       email: string;
@@ -56,89 +57,38 @@ type ResendVerifyEmailPayload = {
 type ForgotPassEmailStepPayload = { email: string } | { login: string };
 
 //api
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-const API_LOGIN_URL = `${API_BASE_URL}/auth/login`;
-const API_REGISTER_URL = `${API_BASE_URL}/auth/register`;
-const API_CHECK_LOGIN_URL = `${API_BASE_URL}/auth/check`;
-const API_VERIFY_EMAIL = `${API_BASE_URL}/auth/verify-email`;
-const API_RESEND_VERIFY_EMAIL = `${API_BASE_URL}/auth/resend-verify-email`;
-const API_FORGOT_PASS_EMAIL_STEP = `${API_BASE_URL}/auth//forgot-password`;
-export const API_GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
+const API_LOGIN_URL = "/auth/login";
+const API_REGISTER_URL = "auth/register";
+const API_CHECK_LOGIN_URL = "/auth/check";
+const API_VERIFY_EMAIL = "/auth/verify-email";
+const API_RESEND_VERIFY_EMAIL = "/auth/resend-verify-email";
+const API_FORGOT_PASS_EMAIL_STEP = "/auth//forgot-password";
 
-//headers
-const HEADERS = { "Content-Type": "application/json" };
-
-export const login = async (data: LoginData): Promise<AuthResponse> => {
-  const response = await fetch(API_LOGIN_URL, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) throw new Error("Помилка входу");
-
-  return response.json();
+export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
+  return httpClient.post(API_LOGIN_URL, payload);
 };
 
-export const registration = async (data: RegisterData): Promise<AuthResponse> => {
-  const response = await fetch(API_REGISTER_URL, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify(data),
-  });
-
-  if (!response.ok) throw new Error("Помилка реєстрації");
-
-  return response.json();
+export const registration = async (payload: RegisterPayload): Promise<AuthResponse> => {
+  return httpClient.post(API_REGISTER_URL, payload);
 };
 
 export const checkIsExists = async (
   field: CheckField,
   value: string,
 ): Promise<CheckExistsResponse> => {
-  const response = await fetch(API_CHECK_LOGIN_URL, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify({ [field]: value }),
-  });
-  if (!response.ok) throw new Error("Помилка перевірки");
-  return response.json();
+  return httpClient.post(API_CHECK_LOGIN_URL, { [field]: value });
 };
 
 export const verifyEmail = async (payload: VerifyEmailPayload): Promise<VerifyEmailResponse> => {
-  const response = await fetch(API_VERIFY_EMAIL, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) throw new Error("Помилка перевірки");
-  return response.json();
+  return httpClient.post(API_VERIFY_EMAIL, payload);
 };
 
 export const resendVerifyEmail = async (payload: ResendVerifyEmailPayload): Promise<void> => {
-  const response = await fetch(API_RESEND_VERIFY_EMAIL, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) throw new Error("Помилка надсилання коду");
+  return httpClient.post(API_RESEND_VERIFY_EMAIL, payload);
 };
 
 export const forgotPasswordEmailStep = async (
   payload: ForgotPassEmailStepPayload,
 ): Promise<{ success: boolean }> => {
-  const response = await fetch(API_FORGOT_PASS_EMAIL_STEP, {
-    method: "POST",
-    headers: HEADERS,
-    body: JSON.stringify(payload),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(errorData?.message || "Не вдалося надіслати лист на вказаний email");
-  }
-
-  return response.json();
+  return httpClient.post(API_FORGOT_PASS_EMAIL_STEP, payload);
 };
