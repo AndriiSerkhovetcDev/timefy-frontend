@@ -1,9 +1,11 @@
 import { GoogleIcon } from "@/shared/ui";
-import { API_GOOGLE_AUTH_URL } from "@/shared/api/authApi";
 
 type GoogleAuthProps = {
   label?: string;
 };
+
+const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
 
 export const GoogleAuth = ({ label = "Увійти через Google" }: GoogleAuthProps) => {
   const handleGoogleAuth = () => {

@@ -8,10 +8,7 @@ export const loginSchema = z.object({
     .transform((val) => val.trim()),
   password: z
     .string()
-    .min(8, "Пароль має бути не менше 8 символів")
-    .regex(/[A-Z]/, "Має містити велику літеру")
-    .regex(/[0-9]/, "Має містити цифру")
-    .regex(/[!@#$%^&*]/, "Має містити спеціальний символ")
+    .min(1, "Пароль не може бути порожнім")
     .transform((val) => val.trim()),
 });
 
