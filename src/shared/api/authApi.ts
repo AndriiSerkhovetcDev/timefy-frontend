@@ -60,7 +60,7 @@ type ForgotPassEmailStepPayload = { email: string } | { login: string };
 
 //api
 const API_LOGIN_URL = "/auth/login";
-const API_REGISTER_URL = "auth/register";
+const API_REGISTER_URL = "/auth/register";
 const API_CHECK_LOGIN_URL = "/auth/check";
 const API_VERIFY_EMAIL = "/auth/verify-email";
 const API_RESEND_VERIFY_EMAIL = "/auth/resend-verify-email";
