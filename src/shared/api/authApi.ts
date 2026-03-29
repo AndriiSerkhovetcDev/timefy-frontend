@@ -47,7 +47,9 @@ type VerifyEmailPayload = {
 };
 
 type VerifyEmailResponse = {
-  codeVerified: boolean;
+  data: {
+    codeVerified: boolean;
+  };
 };
 
 type ResendVerifyEmailPayload = {

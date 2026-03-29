@@ -106,9 +106,9 @@ export const VerifyEmailForm = () => {
           code: value,
         };
 
-        const { codeVerified } = await verifyEmail(payload);
+        const { data } = await verifyEmail(payload);
 
-        if (codeVerified) {
+        if (data.codeVerified) {
           setEmailVerified(true);
           setVerifyError("");
           navigate("/dashboard");
