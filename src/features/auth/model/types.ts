@@ -6,6 +6,7 @@ export type User = {
   email: string;
   phone: string;
   emailVerified: boolean;
+  avatar?: string;
 };
 
 export type AuthState = {

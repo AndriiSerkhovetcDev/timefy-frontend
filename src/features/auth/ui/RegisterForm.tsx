@@ -65,7 +65,7 @@ export const RegisterForm = () => {
   } = useAuthForm({
     schema: registerSchema,
     apiCall: ({ confirm_password, ...rest }) => registration(rest),
-    redirectTo: "/dashboard",
+    redirectTo: "/",
     checkEmailVerified: true,
   });
 

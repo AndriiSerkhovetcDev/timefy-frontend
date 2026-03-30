@@ -22,7 +22,7 @@ export const AuthCallbackPage = () => {
     const user: User = JSON.parse(decodeURIComponent(userRaw));
 
     login(user, token);
-    navigate("/dashboard");
+    navigate("/");
   }, []);
 
   return <PageLoader />;

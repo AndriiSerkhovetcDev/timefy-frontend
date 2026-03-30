@@ -111,7 +111,7 @@ export const VerifyEmailForm = () => {
         if (data.codeVerified) {
           setEmailVerified(true);
           setVerifyError("");
-          navigate("/dashboard");
+          navigate("/");
         } else {
           setVerifyError("Невірний код");
         }

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import {
+  DashboardLayout,
   DashboardPage,
   ForgotPasswordPage,
   HomePage,
@@ -30,7 +31,9 @@ const LazyRoutes = () => {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<DashboardLayout />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

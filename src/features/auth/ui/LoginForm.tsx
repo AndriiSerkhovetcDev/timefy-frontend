@@ -29,7 +29,7 @@ export const LoginForm = () => {
   } = useAuthForm({
     schema: loginSchema,
     apiCall: login,
-    redirectTo: "/dashboard",
+    redirectTo: "/",
   });
 
   return (
