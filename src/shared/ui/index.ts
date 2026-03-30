@@ -5,6 +5,7 @@ export { PlayIcon } from "./icons/PlayIcon";
 export { EyeIcon } from "./icons/EyeIcon";
 export { EyeOffIcon } from "./icons/EyeOffIcon";
 export { GoogleIcon } from "./icons/GoogleIcon";
+export { Logo } from "./icons/Logo";
 
 export { FormField } from "./FormFields/FormField";
 export { PhoneField } from "./FormFields/PhoneField";
