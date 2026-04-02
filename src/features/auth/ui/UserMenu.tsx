@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export const userMenuItems = [
   { id: "dashboard", text: "Дашборд", link: "/dashboard", isDanger: false, isAdmin: false },
-  { id: "schema", text: "Схеми", link: "/schema", isDanger: false, isAdmin: true },
+  { id: "schemas", text: "Схеми", link: "/schemas", isDanger: false, isAdmin: true },
   { id: "logout", text: "Вийти", isDanger: true, isAdmin: false },
 ];
 
