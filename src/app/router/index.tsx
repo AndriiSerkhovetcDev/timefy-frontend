@@ -8,3 +8,4 @@ export const ForgotPasswordPage = lazy(() => import("@/pages/ForgotPassword"));
 export const DashboardPage = lazy(() => import("@/pages/Dashboard/DashboardPage"));
 export const PublicLayout = lazy(() => import("@/layouts/PublicLayout/PublicLayout"));
 export const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout/DashboardLayout"));
+export const SchemasPage = lazy(() => import("@/pages/Schemas/SchemasPage"));
