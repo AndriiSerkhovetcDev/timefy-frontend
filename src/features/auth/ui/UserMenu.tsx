@@ -20,7 +20,7 @@ export const UserMenu = () => {
   const navigate = useNavigate();
 
   const filteredItems = userMenuItems.filter((item) => !item.isAdmin || user?.role === "ADMIN");
-  const isShowLogin = user?.authData.isWeb && !(user.first_name || user.last_name);
+  const isShowLogin = user?.authData?.isWeb && !(user.first_name || user.last_name);
 
   const handleOpenDropdown = () => {
     setIsOpenDropdown((prev) => !prev);
