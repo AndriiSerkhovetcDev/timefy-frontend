@@ -20,7 +20,7 @@ export const UserMenu = () => {
   const navigate = useNavigate();
 
   const filteredItems = userMenuItems.filter((item) => !item.isAdmin || user?.role === "ADMIN");
-  const isShowLogin = user?.authData?.isWeb && !(user.first_name || user.last_name);
+  const isShowLogin = user?.authData?.isWeb && !(user.firstName || user.lastName);
 
   const handleOpenDropdown = () => {
     setIsOpenDropdown((prev) => !prev);
@@ -64,9 +64,9 @@ export const UserMenu = () => {
             </p>
 
             <div className="px-4 pb-4 pt-2 border-b border-gray-100">
-              {user?.first_name && user.last_name && (
+              {user?.firstName && user.lastName && (
                 <div className="font-medium text-sm text-primary">
-                  {user?.first_name} {user.last_name}
+                  {user?.firstName} {user.lastName}
                 </div>
               )}
               {isShowLogin && <div className="font-medium text-sm text-primary">{user?.login}</div>}
