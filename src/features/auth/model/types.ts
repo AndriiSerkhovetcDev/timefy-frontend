@@ -1,6 +1,6 @@
 export type User = {
   login: string;
-  role: "ADMIN" | "SUPPORT" | "OWNER";
+  role: "USER" | "ADMIN" | "SUPPORT" | "OWNER";
   first_name?: string;
   last_name?: string;
   email: string;
