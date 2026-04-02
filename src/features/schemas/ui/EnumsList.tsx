@@ -1,4 +1,3 @@
-import { Save } from "lucide-react";
 import { useState } from "react";
 import type { SchemaEnum } from "../model/types";
 import { useSchemasStore } from "../model/schemasStore";

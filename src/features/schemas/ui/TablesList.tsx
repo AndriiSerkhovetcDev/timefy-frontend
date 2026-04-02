@@ -67,9 +67,9 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
     setForm(table);
   }, [table.name]);
 
-  // const handleSave = () => {
-  //   updateTable(schemaName, table.name, form);
-  // };
+  const handleSave = () => {
+    updateTable(schemaName, table.name, form);
+  };
 
   const setGraphQL = (key: string, value: boolean) => {
     setForm((prev) => {
@@ -111,7 +111,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
     <div className="px-8 py-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-base font-medium text-gray-900">Table: {table.name}</h2>
-        {/* <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
           <button
             onClick={handleSave}
             className="flex items-center gap-1.5 text-xs text-white bg-teal-600 hover:bg-teal-700 px-3 py-1.5 rounded-lg transition"
@@ -119,7 +119,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
             <Save size={12} />
             Зберегти зміни
           </button>
-        </div> */}
+        </div>
       </div>
 
       {/* GraphQL */}

@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 type LogoProps = {
   isSidebarCollapsed?: boolean;
 };
