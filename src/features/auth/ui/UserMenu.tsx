@@ -4,8 +4,9 @@ import defaultUserImg from "@/assets/default-avatar.png";
 import { Link, useNavigate } from "react-router-dom";
 
 export const userMenuItems = [
-  { id: "dashboard", text: "Дашборд", link: "/dashboard", isDanger: false },
-  { id: "logout", text: "Вийти", isDanger: true },
+  { id: "dashboard", text: "Дашборд", link: "/dashboard", isDanger: false, isAdmin: false },
+  { id: "schema", text: "Схеми", link: "/schema", isDanger: false, isAdmin: true },
+  { id: "logout", text: "Вийти", isDanger: true, isAdmin: false },
 ];
 
 const dangeLinkStyle = "text-red-500 hover:bg-red-50";
@@ -17,6 +18,9 @@ export const UserMenu = () => {
   const user = useAuthStore(selectUser);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
+
+  const filteredItems = userMenuItems.filter((item) => !item.isAdmin || user?.role === "ADMIN");
+  const isShowLogin = user?.authData.isWeb && !(user.first_name || user.last_name);
 
   const handleOpenDropdown = () => {
     setIsOpenDropdown((prev) => !prev);
@@ -60,12 +64,17 @@ export const UserMenu = () => {
             </p>
 
             <div className="px-4 pb-4 pt-2 border-b border-gray-100">
-              <div className="font-medium text-sm text-primary">{user?.login}</div>
+              {user?.first_name && user.last_name && (
+                <div className="font-medium text-sm text-primary">
+                  {user?.first_name} {user.last_name}
+                </div>
+              )}
+              {isShowLogin && <div className="font-medium text-sm text-primary">{user?.login}</div>}
               <div className="truncate text-xs text-gray-500">{user?.email}</div>
             </div>
 
             <ul className="p-2">
-              {userMenuItems.map((item) => (
+              {filteredItems.map((item) => (
                 <li key={item.id}>
                   {item.link ? (
                     <Link

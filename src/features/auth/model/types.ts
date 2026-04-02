@@ -7,6 +7,10 @@ export type User = {
   phone: string;
   emailVerified: boolean;
   avatar?: string;
+  authData: {
+    isWeb: boolean;
+    isGoogle: boolean;
+  };
 };
 
 export type AuthState = {

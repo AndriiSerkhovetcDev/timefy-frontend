@@ -10,6 +10,7 @@ export { Logo } from "./icons/Logo";
 export { FormField } from "./FormFields/FormField";
 export { PhoneField } from "./FormFields/PhoneField";
 export { PageLoader } from "./PageLoader";
+export { StyledSelect } from "./StyledSelect";
 
 export { RouteGuard } from "./RouteGuard";
 export { UserRouteGuard } from "./UserRouteGuard";

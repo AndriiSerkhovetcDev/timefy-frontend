@@ -8,6 +8,7 @@ import {
   LoginPage,
   PublicLayout,
   RegisterPage,
+  SchemasPage,
   VerifyEmailPage,
 } from ".";
 import { PageLoader, UserRouteGuard } from "@/shared/ui";
@@ -34,6 +35,8 @@ const LazyRoutes = () => {
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
           </Route>
+
+          <Route path="/schemas" element={<SchemasPage />} />
         </Route>
       </Routes>
     </Suspense>

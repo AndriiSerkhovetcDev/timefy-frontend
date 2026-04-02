@@ -1,4 +1,10 @@
-export const Logo = () => {
+import { cn } from "@/lib/utils";
+
+type LogoProps = {
+  isSidebarCollapsed?: boolean;
+};
+
+export const Logo = ({ isSidebarCollapsed = false }: LogoProps) => {
   return (
     <>
       <div className="w-10 h-10 bg-linear-to-br from-primary to-secondary rounded-xl flex items-center justify-center text-white shadow-lg">
@@ -7,7 +13,15 @@ export const Logo = () => {
         </svg>
       </div>
 
-      <span className="font-bold text-2xl tracking-tight text-primary">Timefy</span>
+      <span
+        className="font-bold text-2xl tracking-tight text-white transition-all duration-200 overflow-hidden whitespace-nowrap"
+        style={{
+          maxWidth: isSidebarCollapsed ? 0 : 120,
+          opacity: isSidebarCollapsed ? 0 : 1,
+        }}
+      >
+        Timefy
+      </span>
     </>
   );
 };
