@@ -57,7 +57,7 @@ type ResendVerifyEmailPayload = {
 };
 
 type resetPasswordPayload = {
-  password: string;
+  newPassword: string;
   token: string;
 };
 

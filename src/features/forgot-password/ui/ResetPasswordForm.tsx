@@ -46,7 +46,7 @@ export const ResetPasswordForm = () => {
         setError("Токен відсутній або недійсний");
         return;
       }
-      await resetPassword({ password: values.password, token });
+      await resetPassword({ newPassword: values.password, token });
       reset();
       navigete("/login");
     } catch (e) {
