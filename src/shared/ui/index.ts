@@ -11,6 +11,7 @@ export { FormField } from "./FormFields/FormField";
 export { PhoneField } from "./FormFields/PhoneField";
 export { PageLoader } from "./PageLoader";
 export { StyledSelect } from "./StyledSelect";
+export { Notifications } from "./Notifications";
 
 export { RouteGuard } from "./RouteGuard";
 export { UserRouteGuard } from "./UserRouteGuard";

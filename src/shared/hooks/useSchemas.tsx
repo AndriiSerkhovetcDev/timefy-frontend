@@ -1,6 +1,7 @@
 import { useSchemasStore } from "@/features/schemas/model/schemasStore";
 import { useEffect } from "react";
 import { getSchema } from "../api/schemaApi";
+import { withNotify } from "../lib/withNotify";
 
 export const useSchemas = () => {
   const { setSchemas, setLoading, setError } = useSchemasStore();
@@ -9,12 +10,11 @@ export const useSchemas = () => {
     const fetchSchemas = async () => {
       setLoading(true);
       try {
-        const { data } = await getSchema();
+        const { data } = await withNotify(getSchema());
         if (data?.schemas) {
           setSchemas(data.schemas);
         }
-      } catch (error) {
-        console.warn(error);
+      } catch {
         setError("Не вдалося завантажити схеми");
       } finally {
         setLoading(false);

@@ -23,13 +23,13 @@ export const loginFields = [
 export const LoginForm = () => {
   const {
     register,
-    error,
     onSubmit,
     formState: { errors, isValid, isSubmitting },
   } = useAuthForm({
     schema: loginSchema,
     apiCall: login,
     redirectTo: "/",
+    successMessage: "Знов ти сюди прийшов? Іди спати вже)",
   });
 
   return (
@@ -45,8 +45,6 @@ export const LoginForm = () => {
           {...register(field.name as keyof LoginFormValues)}
         />
       ))}
-
-      {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{error}</p>}
 
       <button
         type="submit"

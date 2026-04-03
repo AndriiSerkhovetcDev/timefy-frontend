@@ -1,10 +1,10 @@
-import { useState } from "react";
 import { useForm, type Resolver, type FieldValues } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAuthStore } from "./authStore";
 import type { $ZodType } from "zod/v4/core";
 import { useNavigate } from "react-router-dom";
 import type { AuthResponse } from "@/shared/api/authApi";
+import { withNotify } from "@/shared/lib/withNotify";
 
 const isAuthResponse = (res: unknown): res is AuthResponse => {
   return !!res && typeof res === "object" && "data" in res;
@@ -15,6 +15,7 @@ type UseAuthFormOptions<T extends FieldValues, TResponse = AuthResponse> = {
   apiCall: (values: T) => Promise<TResponse>;
   redirectTo: string;
   checkEmailVerified?: boolean;
+  successMessage?: string;
 };
 
 export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
@@ -22,8 +23,8 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
   apiCall,
   redirectTo,
   checkEmailVerified,
+  successMessage,
 }: UseAuthFormOptions<T, TResponse>) => {
-  const [error, setError] = useState<string | null>(null);
   const { login } = useAuthStore();
   const navigate = useNavigate();
 
@@ -34,8 +35,9 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
 
   const onSubmit = async (values: T) => {
     try {
-      setError(null);
-      const res = await apiCall(values);
+      const res = await withNotify(apiCall(values), {
+        success: successMessage,
+      });
 
       if (isAuthResponse(res)) {
         login(res.data.user, res.data.token);
@@ -48,14 +50,11 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
       } else {
         navigate(redirectTo);
       }
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Щось пішло не так");
-    }
+    } catch {}
   };
 
   return {
     ...form,
-    error,
     onSubmit: form.handleSubmit(onSubmit),
   };
 };

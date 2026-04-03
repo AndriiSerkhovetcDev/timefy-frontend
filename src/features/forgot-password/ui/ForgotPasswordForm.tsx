@@ -3,6 +3,7 @@ import {
   type ForgotPassEmailStepValue,
 } from "@/features/auth/model/shemas";
 import { forgotPasswordEmailStep, type ForgotPassEmailStepPayload } from "@/shared/api/authApi";
+import { withNotify } from "@/shared/lib/withNotify";
 import { FormField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Mail } from "lucide-react";
@@ -29,7 +30,6 @@ export const ForgotPasswordForm = () => {
     resolver: zodResolver(forgotPassEmailStepSchema),
     mode: "onChange",
   });
-  const [error, setError] = useState<string | null>(null);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submittedValues, setSubmittedValues] = useState<ForgotPassEmailStepPayload | null>(null);
 
@@ -38,27 +38,21 @@ export const ForgotPasswordForm = () => {
   };
 
   const handleOnSubmit = async (values: ForgotPassEmailStepValue) => {
+    const submitValues = transformValues(values.email_login);
+    setSubmittedValues(submitValues);
+
     try {
-      setError(null);
-      const submitValues = transformValues(values.email_login);
-      setSubmittedValues(submitValues);
-      await forgotPasswordEmailStep(submitValues);
+      await withNotify(forgotPasswordEmailStep(submitValues));
       reset();
       setIsSuccess(true);
-    } catch (e) {
+    } catch {
       setSubmittedValues(null);
-      setError(e instanceof Error ? e.message : "Щось пішло не так");
     }
   };
 
   const handleResend = async () => {
     if (!submittedValues) return;
-    try {
-      setError(null);
-      await forgotPasswordEmailStep(submittedValues);
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Щось пішло не так");
-    }
+    await withNotify(forgotPasswordEmailStep(submittedValues));
   };
 
   if (isSuccess) {
@@ -79,8 +73,6 @@ export const ForgotPasswordForm = () => {
           error={errors[forgotPassEmailStepField.name as keyof ForgotPassEmailStepValue]?.message}
           {...register(forgotPassEmailStepField.name as keyof ForgotPassEmailStepValue)}
         />
-
-        {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{error}</p>}
 
         <button
           type="submit"

@@ -56,7 +56,6 @@ export const RegisterForm = () => {
   const {
     register,
     control,
-    error,
     onSubmit,
     formState: { errors, isValid, isSubmitting },
     getValues,
@@ -67,6 +66,7 @@ export const RegisterForm = () => {
     apiCall: ({ confirm_password, ...rest }) => registration(rest),
     redirectTo: "/",
     checkEmailVerified: true,
+    successMessage: "Акаунт створено!",
   });
 
   const handleExistsBlur = async (field: "login" | "email" | "phone") => {
@@ -123,7 +123,6 @@ export const RegisterForm = () => {
           />
         );
       })}
-      {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{error}</p>}
 
       <button
         type="submit"

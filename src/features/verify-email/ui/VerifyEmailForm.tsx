@@ -1,5 +1,6 @@
 import { selectUserLogin, useAuthStore } from "@/features/auth/model/authStore";
 import { resendVerifyEmail, verifyEmail } from "@/shared/api/authApi";
+import { withNotify } from "@/shared/lib/withNotify";
 import {
   useRef,
   useState,
@@ -87,36 +88,25 @@ export const VerifyEmailForm = () => {
     setCode(Array(CODE_LENGTH).fill(""));
     inputsRef.current[0]?.focus();
 
-    try {
-      if (userLogin) {
-        await resendVerifyEmail({ login: userLogin });
-      }
-    } catch {
-      setVerifyError("Щось пішло не так");
-    }
+    if (!userLogin) return;
+    await withNotify(resendVerifyEmail({ login: userLogin }));
   };
 
   const handleSubmit = useCallback(
     async (value: string) => {
+      if (!userLogin) return;
+
       try {
-        if (!userLogin) return;
-
-        const payload = {
-          login: userLogin,
-          code: value,
-        };
-
-        const { data } = await verifyEmail(payload);
+        const { data } = await withNotify(verifyEmail({ login: userLogin, code: value }));
 
         if (data.codeVerified) {
           setEmailVerified(true);
-          setVerifyError("");
           navigate("/");
         } else {
           setVerifyError("Невірний код");
         }
       } catch {
-        setVerifyError("Введено не вірний код");
+        setVerifyError("Введено невірний код");
         setCode(Array(CODE_LENGTH).fill(""));
         inputsRef.current[0]?.focus();
       }
