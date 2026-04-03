@@ -8,6 +8,7 @@ import {
   LoginPage,
   PublicLayout,
   RegisterPage,
+  ResetPasswordPage,
   SchemasPage,
   VerifyEmailPage,
 } from ".";
@@ -25,6 +26,7 @@ const LazyRoutes = () => {
           <Route path="register" element={<RegisterPage />} />
           <Route path="auth/callback" element={<AuthCallbackPage />} />
           <Route path="forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="reset-password" element={<ResetPasswordPage />} />
 
           <Route element={<UserRouteGuard />}>
             <Route path="verify-email" element={<VerifyEmailPage />} />
