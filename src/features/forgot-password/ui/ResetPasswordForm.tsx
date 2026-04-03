@@ -32,10 +32,11 @@ export const ResetPasswordForm = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm({
     resolver: zodResolver(forgotPassResetSchema),
-    mode: "onChange",
+    mode: "onBlur",
   });
 
   const handleOnSubmit = async (values: { password: string; confirm_password: string }) => {
@@ -62,6 +63,7 @@ export const ResetPasswordForm = () => {
           placeholder={field.placeholder}
           type={field.type}
           required={field.required}
+          watchValue={field.name === "password" ? watch("password") : undefined}
           error={errors[field.name as keyof ForgotPassResetValues]?.message}
           {...register(field.name as keyof ForgotPassResetValues)}
         />
