@@ -56,7 +56,12 @@ type ResendVerifyEmailPayload = {
   login: string;
 };
 
-type ForgotPassEmailStepPayload = { email: string } | { login: string };
+type resetPasswordPayload = {
+  password: string;
+  token: string;
+};
+
+export type ForgotPassEmailStepPayload = { email: string } | { login: string };
 
 //api
 const API_LOGIN_URL = "/auth/login";
@@ -64,7 +69,8 @@ const API_REGISTER_URL = "/auth/register";
 const API_CHECK_LOGIN_URL = "/auth/check";
 const API_VERIFY_EMAIL = "/auth/verify-email";
 const API_RESEND_VERIFY_EMAIL = "/auth/resend-verify-email";
-const API_FORGOT_PASS_EMAIL_STEP = "/auth//forgot-password";
+const API_FORGOT_PASS_EMAIL_STEP = "/auth/forgot-password";
+const API_FORGOT_PASS_RESET_PASS = "/auth/reset-password";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
   return httpClient.post(API_LOGIN_URL, payload);
@@ -93,4 +99,10 @@ export const forgotPasswordEmailStep = async (
   payload: ForgotPassEmailStepPayload,
 ): Promise<{ success: boolean }> => {
   return httpClient.post(API_FORGOT_PASS_EMAIL_STEP, payload);
+};
+
+export const resetPassword = async (
+  payload: resetPasswordPayload,
+): Promise<{ success: boolean }> => {
+  return httpClient.post(API_FORGOT_PASS_RESET_PASS, payload);
 };
