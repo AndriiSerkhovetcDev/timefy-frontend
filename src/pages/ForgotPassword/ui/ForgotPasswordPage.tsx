@@ -1,4 +1,4 @@
-import { ForgotPasswordForm } from "@/features/forgot-password/ui/ForgotPasswordForm";
+import { ForgotPasswordForm } from "@/features/forgot-password";
 
 export const ForgotPasswordPage = () => {
   return (
@@ -9,3 +9,5 @@ export const ForgotPasswordPage = () => {
     </div>
   );
 };
+
+export default ForgotPasswordPage;

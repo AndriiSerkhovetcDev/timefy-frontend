@@ -23,7 +23,7 @@ const resetPasswordFields = [
   },
 ];
 
-export const ResetPassword = () => {
+export const ResetPasswordForm = () => {
   const [error, setError] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
