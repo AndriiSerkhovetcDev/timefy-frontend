@@ -1,8 +1,9 @@
 import { forgotPassResetSchema, type ForgotPassResetValues } from "@/features/auth/model/shemas";
 import { resetPassword } from "@/shared/api/authApi";
+import { withNotify } from "@/shared/lib/withNotify";
+import { notify } from "@/shared/lib/notify";
 import { FormField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -24,10 +25,9 @@ const resetPasswordFields = [
 ];
 
 export const ResetPasswordForm = () => {
-  const [error, setError] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
-  const navigete = useNavigate();
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
@@ -40,19 +40,18 @@ export const ResetPasswordForm = () => {
   });
 
   const handleOnSubmit = async (values: { password: string; confirm_password: string }) => {
-    try {
-      setError(null);
-
-      if (!token) {
-        setError("Токен відсутній або недійсний");
-        return;
-      }
-      await resetPassword({ newPassword: values.password, token });
-      reset();
-      navigete("/login");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Щось пішло не так");
+    if (!token) {
+      notify.error("Токен відсутній або недійсний");
+      return;
     }
+
+    await withNotify(resetPassword({ newPassword: values.password, token }), {
+      loading: "Збереження...",
+      success: "Пароль змінено",
+    });
+
+    reset();
+    navigate("/login");
   };
 
   return (
@@ -68,7 +67,6 @@ export const ResetPasswordForm = () => {
           {...register(field.name as keyof ForgotPassResetValues)}
         />
       ))}
-      {error && <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{error}</p>}
 
       <button
         type="submit"

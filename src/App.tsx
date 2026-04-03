@@ -1,12 +1,16 @@
 import { BrowserRouter } from "react-router-dom";
 import "./App.css";
 import LazyRoutes from "./app/router/LazyRoutes";
+import { Notifications } from "./shared/ui";
 
 function App() {
   return (
-    <BrowserRouter>
-      <LazyRoutes />
-    </BrowserRouter>
+    <>
+      <Notifications />
+      <BrowserRouter>
+        <LazyRoutes />
+      </BrowserRouter>
+    </>
   );
 }
 
