@@ -22,11 +22,11 @@ export const Notifications = () => {
           borderLeft: "3px solid",
         },
         classNames: {
-          toast: `border border-gray-100 shadow-sm overflow-hidden relative
+          toast: `border border-border shadow-sm overflow-hidden relative
             after:content-[''] after:absolute after:bottom-0 after:left-0
             after:h-[2px] after:w-full after:animate-[shrink_3s_linear_forwards]`,
           title: "text-[#1a3c40] font-medium text-sm",
-          description: "text-gray-500 text-xs",
+          description: "text-text-muted text-xs",
           closeButton:
             "!top-[8px] !right-[-6px] !left-auto !translate-y-0 !bg-transparent !border-none !shadow-none !w-7 !h-7 !text-gray-900 !p-0 [&>svg]:!w-4 [&>svg]:!h-4",
         },

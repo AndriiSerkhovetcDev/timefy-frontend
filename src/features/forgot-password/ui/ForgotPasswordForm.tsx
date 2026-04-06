@@ -95,13 +95,13 @@ const SuccessSendEmail = ({ handleResend }: { handleResend: () => Promise<void> 
 
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold">Перевірте пошту</h1>
-        <p className="text-gray-500 text-sm max-w-sm">
+        <p className="text-text-muted text-sm max-w-sm">
           Ми надіслали посилання для скидання паролю на{" "}
           <span className="font-medium text-gray-700">email</span>
         </p>
       </div>
 
-      <p className="text-gray-400 text-xs max-w-sm">
+      <p className="text-text-muted text-xs max-w-sm">
         Не отримали листа? Перевірте папку "Спам" або{" "}
         <button onClick={handleResend} className="text-primary hover:underline">
           надішліть ще раз
@@ -110,7 +110,7 @@ const SuccessSendEmail = ({ handleResend }: { handleResend: () => Promise<void> 
 
       <Link
         to="/login"
-        className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1.5 transition mt-2"
+        className="text-sm text-text-muted hover:text-gray-700 flex items-center gap-1.5 transition mt-2"
       >
         <ArrowLeft size={14} />
         Повернутись до входу

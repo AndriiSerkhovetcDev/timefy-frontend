@@ -51,6 +51,15 @@
   --font-sans: "Inter", sans-serif;
   --animate-shrink: shrink 4s linear forwards;
 
+  --color-bg-main: #f8fafa;
+  --color-bg-surface: #ffffff;
+  --color-bg-input: #f3f7f7;
+  --color-text-main: #1a1a1a;
+  --color-text-muted: #6b7280;
+  --color-text-placeholder: #9ca3af;
+  --color-border: #e5e7eb;
+  --color-error: #ef4444;
+
   @keyframes shrink {
     0% {
       width: 100%;
@@ -59,6 +68,19 @@
       width: 0%;
     }
   }
+}
+
+.dark {
+  --color-primary: #3fa7a3;
+  --color-secondary: #2f8f8b;
+  --color-bg-main: #0f1414;
+  --color-bg-surface: #1b2222;
+  --color-bg-input: #151b1b;
+  --color-text-main: #e6f1f1;
+  --color-text-muted: #9fb3b3;
+  --color-text-placeholder: #6e8080;
+  --color-border: #2a3333;
+  --color-error: #ff6b6b;
 }
 
 :root {
@@ -144,4 +166,13 @@
   select {
     font-size: 16px;
   }
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-bg-input) inset !important;
+  -webkit-text-fill-color: var(--color-text-main) !important;
+  caret-color: var(--color-text-main);
+  transition: background-color 600000s ease-in-out 0s;
 }

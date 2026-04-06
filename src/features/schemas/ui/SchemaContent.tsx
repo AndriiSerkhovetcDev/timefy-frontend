@@ -35,10 +35,10 @@ export const SchemaContent = () => {
       onValueChange={(v) => setActiveTab(v as SchemaTab)}
       className="flex-1 flex flex-col min-w-0 h-[calc(100vh-3.5rem)] overflow-hidden"
     >
-      <div className="px-6 pt-5 pb-0 bg-white border-b border-gray-100 shrink-0">
+      <div className="px-6 pt-5 pb-0 bg-bg-main border-b border-border shrink-0">
         <div className="flex justify-between items-center gap-3 mb-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500">GraphQL API</span>
+            <span className="text-sm text-text-muted">GraphQL API</span>
             <Switch
               checked={schema.graphql.enabled}
               onCheckedChange={() => toggleGraphQL(schema.name)}
@@ -56,7 +56,7 @@ export const SchemaContent = () => {
                 key={t.key}
                 value={t.key}
                 className="
-                  px-4 pb-3 text-sm text-gray-500 hover:text-gray-800
+                  px-4 pb-3 text-sm text-text-muted hover:text-gray-800
                   rounded-none border-b-2 border-transparent
                   data-[state=active]:border-b-teal-600
                   data-[state=active]:text-teal-700
@@ -64,7 +64,7 @@ export const SchemaContent = () => {
                   data-[state=active]:shadow-none!"
               >
                 {t.label}
-                <span className="ml-1.5 text-xs text-gray-400">{count}</span>
+                <span className="ml-1.5 text-xs text-text-muted">{count}</span>
               </TabsTrigger>
             );
           })}

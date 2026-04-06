@@ -5,6 +5,7 @@ import { NavItem } from "./NavItem";
 import { selectIsAuthenticated, useAuthStore } from "@/features/auth/model/authStore";
 import { UserMenu } from "@/features/auth/ui";
 import { Logo } from "@/shared/ui";
+import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 const authPages = ["login", "register", "verify-email"];
 
@@ -16,7 +17,7 @@ export const Header = () => {
   return (
     <header
       id="header"
-      className="sticky w-full top-0 z-50 bg-white border-b border-gray-100 transition-all duration-300"
+      className="sticky w-full top-0 z-50 bg-bg-main border-b border-border transition-all duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
@@ -31,6 +32,7 @@ export const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
+            <ThemeToggle />
             {!isAuthenticated ? (
               desktopNavBtns
                 .filter((item) => !(isAuthPage && item.id === "login"))
@@ -41,6 +43,7 @@ export const Header = () => {
           </div>
 
           <div className="flex md:hidden items-center gap-5">
+            <ThemeToggle />
             {!isAuthPage && !isAuthenticated && (
               <div className="flex-1">
                 <NavItem id="login" text="Вхід" link="/login" variant="outline" />

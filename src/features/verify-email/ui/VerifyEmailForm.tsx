@@ -157,7 +157,7 @@ export const VerifyEmailForm = () => {
       {verifyError && (
         <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{verifyError}</p>
       )}
-      <div className="text-sm text-gray-500">
+      <div className="text-sm text-text-muted">
         {canResend ? (
           <button onClick={handleResend} className="text-blue-500 hover:underline cursor-pointer">
             Надіслати повторно

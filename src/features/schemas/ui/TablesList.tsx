@@ -17,7 +17,7 @@ export const TablesList = ({ items }: { items: SchemaTable[] }) => {
 
   return (
     <div className="flex h-full w-full overflow-hidden">
-      <div className="w-64 border-r border-gray-100 shrink-0 flex flex-col">
+      <div className="w-64 border-r border-border shrink-0 flex flex-col">
         {/* Скролена зона */}
         <div className="flex-1 overflow-auto">
           {!items.length ? (
@@ -31,7 +31,7 @@ export const TablesList = ({ items }: { items: SchemaTable[] }) => {
                   "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-gray-50",
                   activeTable === item.name
                     ? "bg-teal-50 text-teal-700"
-                    : "text-gray-700 hover:bg-gray-50",
+                    : "text-gray-700 hover:bg-bg-main",
                 )}
               >
                 <span className="font-mono text-xs">{item.name}</span>
@@ -41,8 +41,8 @@ export const TablesList = ({ items }: { items: SchemaTable[] }) => {
         </div>
 
         {/* Кнопка — завжди внизу */}
-        <div className="p-3 border-t border-gray-100 shrink-0">
-          <button className="w-full text-xs border border-dashed border-gray-300 text-gray-500 hover:border-teal-400 hover:text-teal-600 px-3 py-2 rounded-lg transition">
+        <div className="p-3 border-t border-border shrink-0">
+          <button className="w-full text-xs border border-dashed border-gray-300 text-text-muted hover:border-teal-400 hover:text-teal-600 px-3 py-2 rounded-lg transition">
             + Створити таблицю
           </button>
         </div>
@@ -110,7 +110,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
   return (
     <div className="px-8 py-6">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-base font-medium text-gray-900">Table: {table.name}</h2>
+        <h2 className="text-base font-medium text-text-main">Table: {table.name}</h2>
         <div className="flex items-center gap-2">
           <button
             onClick={handleSave}
@@ -163,12 +163,12 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
           {form.history?.enabled && (
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-3">
-                <span className="text-sm text-gray-500">Mode</span>
+                <span className="text-sm text-text-muted">Mode</span>
                 <Select
                   value={form.history?.mode ?? "snapshot"}
                   onValueChange={(v) => setHistory({ mode: v as any })}
                 >
-                  <SelectTrigger className="text-xs font-mono border-gray-200 h-8 min-w-28">
+                  <SelectTrigger className="text-xs font-mono border-border h-8 min-w-28">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -191,15 +191,15 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
           <h3 className="text-sm font-medium text-primary">Columns</h3>
           <button
             // onClick={() => addColumn({ name: "", type: "", nullable: true, default: "" })}
-            className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition"
+            className="text-xs border border-border px-3 py-1.5 rounded-lg hover:bg-bg-main transition"
           >
             + Column
           </button>
         </div>
         {form.columns?.length ? (
-          <div className="border border-gray-100 rounded-lg overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <thead className="bg-bg-main text-xs text-text-muted uppercase tracking-wide">
                 <tr>
                   <th className="text-left px-4 py-2.5 font-medium">Name</th>
                   <th className="text-left px-4 py-2.5 font-medium">Type</th>
@@ -220,21 +220,21 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
             </table>
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Немає колонок</p>
+          <p className="text-sm text-text-muted">Немає колонок</p>
         )}
       </section>
 
       <section className="mb-8">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-primary mb-3">Constraints</h3>
-          <button className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition">
+          <button className="text-xs border border-border px-3 py-1.5 rounded-lg hover:bg-bg-main transition">
             + Constraint
           </button>
         </div>
         {table.constraints?.length ? (
-          <div className="border border-gray-100 rounded-lg overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <thead className="bg-bg-main text-xs text-text-muted uppercase tracking-wide">
                 <tr>
                   <th className="text-left px-4 py-2.5 font-medium">Type</th>
                   <th className="text-left px-4 py-2.5 font-medium">Name</th>
@@ -245,39 +245,39 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
               </thead>
               <tbody>
                 {table.constraints.map((c) => (
-                  <tr key={c.name} className="border-t border-gray-100 hover:bg-gray-50">
-                    <td className="px-4 py-2.5 text-xs text-gray-500">{c.type}</td>
+                  <tr key={c.name} className="border-t border-border hover:bg-bg-main">
+                    <td className="px-4 py-2.5 text-xs text-text-muted">{c.type}</td>
                     <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{c.name}</td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-500">
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {c.columns?.join(", ") ?? c.expression ?? "—"}
                     </td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-500">
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {c.references
                         ? `${c.references.schema}.${c.references.table}(${c.references.columns.join(", ")})`
                         : "—"}
                     </td>
-                    <td className="px-4 py-2.5 text-xs text-gray-500">{c.onDelete ?? "—"}</td>
+                    <td className="px-4 py-2.5 text-xs text-text-muted">{c.onDelete ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Немає constraints</p>
+          <p className="text-sm text-text-muted">Немає constraints</p>
         )}
       </section>
 
       <section>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-sm font-medium text-primary">Indexes</h3>
-          <button className="text-xs border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-50 transition">
+          <button className="text-xs border border-border px-3 py-1.5 rounded-lg hover:bg-bg-main transition">
             + Index
           </button>
         </div>
         {table.indexes?.length ? (
-          <div className="border border-gray-100 rounded-lg overflow-hidden">
+          <div className="border border-border rounded-lg overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-gray-50 text-xs text-gray-500 uppercase tracking-wide">
+              <thead className="bg-bg-main text-xs text-text-muted uppercase tracking-wide">
                 <tr>
                   <th className="text-left px-4 py-2.5 font-medium">Name</th>
                   <th className="text-left px-4 py-2.5 font-medium">Columns</th>
@@ -287,12 +287,12 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
               </thead>
               <tbody>
                 {table.indexes.map((idx) => (
-                  <tr key={idx.name} className="border-t border-gray-100 hover:bg-gray-50">
+                  <tr key={idx.name} className="border-t border-border hover:bg-bg-main">
                     <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{idx.name}</td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-500">
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {idx.columns.join(", ")}
                     </td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-500">
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {idx.where ?? "—"}
                     </td>
                   </tr>
@@ -301,7 +301,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
             </table>
           </div>
         ) : (
-          <p className="text-sm text-gray-400">Немає indexes</p>
+          <p className="text-sm text-text-muted">Немає indexes</p>
         )}
       </section>
     </div>
@@ -315,9 +315,9 @@ export const ColumnRow = ({
   col: SchemaColumn;
   onChange: (patch: Partial<SchemaColumn>) => void;
 }) => (
-  <tr className="border-t border-gray-100 hover:bg-gray-50">
+  <tr className="border-t border-border hover:bg-bg-main">
     <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{col.name}</td>
-    <td className="px-4 py-2.5 font-mono text-xs text-gray-500">{col.type}</td>
+    <td className="px-4 py-2.5 font-mono text-xs text-text-muted">{col.type}</td>
     <td className="px-4 py-2.5 text-center">
       <input
         type="checkbox"
@@ -331,11 +331,11 @@ export const ColumnRow = ({
         type="text"
         defaultValue={col.default ?? ""}
         onBlur={(e) => onChange({ default: e.target.value })}
-        className="w-full text-xs font-mono border border-gray-200 rounded px-2 py-1 focus:outline-none focus:border-teal-400"
+        className="w-full text-xs font-mono border border-border rounded px-2 py-1 focus:outline-none focus:border-teal-400"
       />
     </td>
     <td className="px-4 py-2.5">
-      <button className="text-xs border border-gray-200 px-2.5 py-1 rounded-lg hover:bg-gray-50 text-gray-600 transition">
+      <button className="text-xs border border-border px-2.5 py-1 rounded-lg hover:bg-bg-main text-gray-600 transition">
         <Save size={12} />
       </button>
     </td>

@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <footer id="footer" className="bg-white border-t border-gray-100 pt-16 pb-8">
+    <footer id="footer" className="bg-white border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div>
@@ -34,7 +34,7 @@ function Footer() {
             <div className="flex gap-4">
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -57,7 +57,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -80,7 +80,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -103,7 +103,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-500 hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -267,9 +267,9 @@ function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-gray-400">© 2024 Timefy Inc. All rights reserved.</p>
-          <div className="flex gap-6 text-xs text-gray-400">
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-xs text-text-muted">© 2024 Timefy Inc. All rights reserved.</p>
+          <div className="flex gap-6 text-xs text-text-muted">
             <a href="#" className="hover:text-primary transition-colors">
               Privacy
             </a>

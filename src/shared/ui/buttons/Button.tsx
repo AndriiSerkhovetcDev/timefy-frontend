@@ -13,7 +13,7 @@ const VARIANTS = {
     "bg-primary text-white shadow-xl shadow-primary/25 hover:shadow-2xl hover:-translate-y-1",
   secondary:
     "mt-10 bg-secondary text-primary font-bold px-8 py-3 rounded-full hover:bg-white transition-colors shadow-lg shadow-secondary/20",
-  outlet: "bg-white text-text-dark border border-gray-200 hover:bg-gray-50",
+  outlet: "bg-bg-surface text-text-dark border border-border hover:bg-bg-main",
 };
 
 const Button = ({

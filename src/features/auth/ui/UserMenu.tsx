@@ -10,7 +10,7 @@ export const userMenuItems = [
 ];
 
 const dangeLinkStyle = "text-red-500 hover:bg-red-50";
-const defaultLinkStyle = "text-gray-700 hover:bg-gray-50 hover:text-primary";
+const defaultLinkStyle = "text-gray-700 hover:bg-bg-main hover:text-primary";
 
 export const UserMenu = () => {
   const [isOpenDropdwn, setIsOpenDropdown] = useState(false);
@@ -57,20 +57,20 @@ export const UserMenu = () => {
         {isOpenDropdwn && (
           <div
             id="userDropdown"
-            className="absolute right-0 top-12 z-10 bg-white border border-gray-100 rounded-xl shadow-sm w-48"
+            className="absolute right-0 top-12 z-10 bg-bg-surface border border-border rounded-xl shadow-sm w-48"
           >
-            <p className="px-4 pt-3 pb-1 text-xs font-medium text-gray-400 uppercase tracking-wide">
+            <p className="px-4 pt-3 pb-1 text-xs font-medium text-text-muted uppercase tracking-wide">
               Обліковий запис
             </p>
 
-            <div className="px-4 pb-4 pt-2 border-b border-gray-100">
+            <div className="px-4 pb-4 pt-2 border-b border-border">
               {user?.firstName && user.lastName && (
                 <div className="font-medium text-sm text-primary">
                   {user?.firstName} {user.lastName}
                 </div>
               )}
               {isShowLogin && <div className="font-medium text-sm text-primary">{user?.login}</div>}
-              <div className="truncate text-xs text-gray-500">{user?.email}</div>
+              <div className="truncate text-xs text-text-muted">{user?.email}</div>
             </div>
 
             <ul className="p-2">
@@ -79,7 +79,7 @@ export const UserMenu = () => {
                   {item.link ? (
                     <Link
                       to={item.link}
-                      className={`block w-full px-3 py-2 text-sm rounded-lg transition
+                      className={`block w-full px-3 py-2 text-sm text-text-main rounded-lg transition
           ${item.isDanger ? dangeLinkStyle : defaultLinkStyle}`}
                     >
                       {item.text}
@@ -87,7 +87,7 @@ export const UserMenu = () => {
                   ) : (
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-3 py-2 text-sm text-red-500 hover:bg-red-50 rounded-lg transition"
+                      className="block w-full text-left px-3 py-2 text-sm text-error hover:bg-error/10 rounded-lg transition"
                     >
                       {item.text}
                     </button>
