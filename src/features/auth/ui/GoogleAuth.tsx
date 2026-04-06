@@ -16,7 +16,7 @@ export const GoogleAuth = ({ label = "Увійти через Google" }: GoogleA
     <button
       type="button"
       onClick={handleGoogleAuth}
-      className="flex items-center justify-center gap-2 w-full py-2.5 border border-gray-200 rounded-lg text-gray-700 font-medium transition hover:bg-gray-50 cursor-pointer active:scale-95"
+      className="flex items-center justify-center gap-2 w-full py-2.5 border border-gray-200 rounded-lg text-gray-700 text-sm font-medium transition hover:bg-gray-50 cursor-pointer active:scale-95"
     >
       <GoogleIcon />
       {label}
