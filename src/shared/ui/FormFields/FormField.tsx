@@ -34,7 +34,7 @@ export const FormField = ({
         <input
           {...rest}
           type={rest.type === "password" ? (showPassword ? "text" : "password") : rest.type}
-          className="w-full text-sm rounded-lg border border-gray-200 px-4 py-2.5 outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+          className="w-full text-base rounded-lg border border-gray-200 px-4 py-2.5 outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
           onFocus={() => setIsFocused(true)}
           onBlur={(e) => {
             setIsFocused(false);
