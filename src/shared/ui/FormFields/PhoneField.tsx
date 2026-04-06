@@ -32,7 +32,7 @@ export const PhoneField = ({ control, name, label, error, required, onBlur }: Pr
               onBlur?.();
             }}
             placeholder="+38 (0XX) XXX-XX-XX"
-            className="w-full  rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-base outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
           />
         )}
       />
