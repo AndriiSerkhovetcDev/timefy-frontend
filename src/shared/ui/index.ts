@@ -15,3 +15,4 @@ export { Notifications } from "./Notifications";
 
 export { RouteGuard } from "./RouteGuard";
 export { UserRouteGuard } from "./UserRouteGuard";
+export { PublicRoute } from "./PublicRoute";

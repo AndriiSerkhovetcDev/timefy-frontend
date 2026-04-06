@@ -41,3 +41,4 @@ export const selectUser = (state: AuthState) => state.user;
 export const selectToken = (state: AuthState) => state.token;
 export const selectUserEmail = (state: AuthState) => state.user?.email;
 export const selectUserLogin = (state: AuthState) => state.user?.login;
+export const selectIsEmailVerified = (state: AuthState) => state.user?.emailVerified;

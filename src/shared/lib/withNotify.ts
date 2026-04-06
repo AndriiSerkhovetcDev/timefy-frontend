@@ -10,7 +10,9 @@ export const withNotify = async <T>(
 
   const loadingTimer = messages?.loading
     ? setTimeout(() => {
-        toastId = toast.loading(messages.loading);
+        toastId = toast.loading(messages.loading, {
+          style: { background: "transparent", border: "none", boxShadow: "none", padding: 0 },
+        });
       }, LOADING_DELAY)
     : undefined;
 

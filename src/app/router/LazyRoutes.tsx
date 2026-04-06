@@ -12,7 +12,7 @@ import {
   SchemasPage,
   VerifyEmailPage,
 } from ".";
-import { PageLoader, UserRouteGuard } from "@/shared/ui";
+import { PageLoader, PublicRoute, UserRouteGuard } from "@/shared/ui";
 import { AuthCallbackPage } from "@/pages/AuthCallback/AuthCallBackPage";
 import { ProtectedRoute } from "@/shared/ui/ProtectedRoute";
 
@@ -22,11 +22,14 @@ const LazyRoutes = () => {
       <Routes>
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
-          <Route path="login" element={<LoginPage />} />
-          <Route path="register" element={<RegisterPage />} />
           <Route path="auth/callback" element={<AuthCallbackPage />} />
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="reset-password" element={<ResetPasswordPage />} />
+
+          <Route element={<PublicRoute />}>
+            <Route path="login" element={<LoginPage />} />
+            <Route path="register" element={<RegisterPage />} />
+            <Route path="forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="reset-password" element={<ResetPasswordPage />} />
+          </Route>
 
           <Route element={<UserRouteGuard />}>
             <Route path="verify-email" element={<VerifyEmailPage />} />

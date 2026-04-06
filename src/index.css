@@ -49,6 +49,16 @@
   --color-primary: #1a3c40;
   --color-secondary: #4ecdc4;
   --font-sans: "Inter", sans-serif;
+  --animate-shrink: shrink 4s linear forwards;
+
+  @keyframes shrink {
+    0% {
+      width: 100%;
+    }
+    100% {
+      width: 0%;
+    }
+  }
 }
 
 :root {
@@ -130,8 +140,8 @@
   }
 
   input,
-  select,
-  textarea {
-    font-size: max(16px, 1em);
+  textarea,
+  select {
+    font-size: 16px;
   }
 }

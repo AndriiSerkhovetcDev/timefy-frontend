@@ -1,8 +1,12 @@
+import { cn } from "@/lib/utils";
+import { useLocation } from "react-router-dom";
+
 type LogoProps = {
   isSidebarCollapsed?: boolean;
 };
 
 export const Logo = ({ isSidebarCollapsed = false }: LogoProps) => {
+  const isSchemas = useLocation().pathname.startsWith("/schemas");
   return (
     <>
       <div className="w-10 h-10 bg-linear-to-br from-primary to-secondary rounded-xl flex items-center justify-center text-white shadow-lg">
@@ -12,7 +16,10 @@ export const Logo = ({ isSidebarCollapsed = false }: LogoProps) => {
       </div>
 
       <span
-        className="font-bold text-2xl tracking-tight text-white transition-all duration-200 overflow-hidden whitespace-nowrap"
+        className={cn(
+          "font-bold text-2xl tracking-tight  transition-all duration-200 overflow-hidden whitespace-nowrap",
+          isSchemas ? "text-white" : "text-primary",
+        )}
         style={{
           maxWidth: isSidebarCollapsed ? 0 : 120,
           opacity: isSidebarCollapsed ? 0 : 1,

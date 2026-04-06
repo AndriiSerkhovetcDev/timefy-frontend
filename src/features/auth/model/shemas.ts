@@ -4,7 +4,7 @@ export const loginSchema = z.object({
   login: z
     .string()
     .min(1, "Логін не може бути порожнім")
-    .regex(/^[a-zA-Z0-9_]+$/, "Тільки літери, цифри та _")
+    .regex(/^[a-zA-Z0-9_]+$/, "Тільки латинські літери, цифри та _")
     .transform((val) => val.trim()),
   password: z
     .string()
@@ -17,7 +17,7 @@ export const registerSchema = z
     login: z
       .string()
       .min(1, "Логін не може бути порожнім")
-      .regex(/^[a-zA-Z0-9_]+$/, "Тільки літери, цифри та _")
+      .regex(/^[a-zA-Z0-9_]+$/, "Тільки латинські літери, цифри та _")
       .transform((val) => val.trim()),
     email: z.email("Неправильна електронна адреса").transform((val) => val.trim().toLowerCase()),
     phone: z

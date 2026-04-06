@@ -29,7 +29,7 @@ export const LoginForm = () => {
     schema: loginSchema,
     apiCall: login,
     redirectTo: "/",
-    successMessage: "Знов ти сюди прийшов? Іди спати вже)",
+    successMessage: "Успішний вхід!",
   });
 
   return (
