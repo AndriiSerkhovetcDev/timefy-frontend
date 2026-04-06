@@ -5,7 +5,7 @@ function PublicLayout() {
   return (
     <div className="flex min-h-dvh flex-col">
       <Header />
-      <main className="flex flex-1 flex-col px-4">
+      <main className="flex flex-1 flex-col bg-gray-50 px-4">
         <Outlet />
       </main>
     </div>
