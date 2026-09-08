@@ -10,7 +10,7 @@ export const SchemasPage = () => {
 
   if (error) {
     return (
-      <div className="flex h-screen items-center justify-center text-sm text-red-400">{error}</div>
+      <div className="flex h-screen items-center justify-center text-sm text-error">{error}</div>
     );
   }
   return (

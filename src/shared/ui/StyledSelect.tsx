@@ -14,7 +14,7 @@ export const StyledSelect = ({
   options: string[];
 }) => (
   <Select defaultValue={defaultValue}>
-    <SelectTrigger className="text-xs font-mono border-border focus:ring-teal-400 h-8">
+    <SelectTrigger className="text-xs font-mono border-border focus:ring-ring h-8">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>

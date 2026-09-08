@@ -2,6 +2,7 @@ import { UserMenu } from "@/features/auth/ui";
 import { Bell, PanelLeftClose, PanelLeftOpen, Save, Settings } from "lucide-react";
 import { useSchemasStore } from "../model/schemasStore";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/shared/ui";
 
 export const SchemasHeader = () => {
   const { isSidebarCollapsed, toggleSidebar, activeSchema, isDirty, setDirty } = useSchemasStore();
@@ -28,18 +29,19 @@ export const SchemasHeader = () => {
             <h1 className="pl-5 text-xl font-semibold text-text-main">{activeSchema}</h1>
           </div>
           <div className="flex items-center gap-5">
+            <ThemeToggle />
             <button
               onClick={() => setDirty(false)}
               className="relative text-text-muted hover:text-primary transition"
             >
-              <Save className={cn("w-5 h-5", isDirty && "text-teal-600")} />
+              <Save className={cn("w-5 h-5", isDirty && "text-primary")} />
               {isDirty && (
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-teal-500 rounded-full" />
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full" />
               )}
             </button>
             <Settings className="w-5 h-5 text-text-muted cursor-pointer hover:text-primary transition" />
             <Bell className="w-5 h-5 text-text-muted cursor-pointer hover:text-primary transition" />
-            <div className="inline-block h-8 w-px bg-gray-300"></div>
+            <div className="inline-block h-8 w-px bg-border"></div>
             <UserMenu />
           </div>
         </div>

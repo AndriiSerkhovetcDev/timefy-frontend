@@ -1,7 +1,7 @@
 import { UserMenu } from "@/features/auth/ui";
 import { Link } from "react-router-dom";
 import { Bell } from "lucide-react";
-import { Logo } from "@/shared/ui";
+import { Logo, ThemeToggle } from "@/shared/ui";
 
 export const DashboardHeader = () => {
   return (
@@ -16,6 +16,7 @@ export const DashboardHeader = () => {
           </Link>
 
           <div className="flex items-center gap-5">
+            <ThemeToggle />
             <Bell className="w-5 h-5 text-text-muted cursor-pointer hover:text-primary transition" />
             <UserMenu />
           </div>

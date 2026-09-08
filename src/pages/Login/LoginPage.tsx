@@ -16,9 +16,9 @@ export const LoginPage = () => {
         </div>
 
         <div className="flex items-center gap-3 my-2">
-          <div className="flex-1 h-px bg-gray-200" />
+          <div className="flex-1 h-px bg-border" />
           <span className="text-sm text-text-muted">або</span>
-          <div className="flex-1 h-px bg-gray-200" />
+          <div className="flex-1 h-px bg-border" />
         </div>
         <GoogleAuth />
 

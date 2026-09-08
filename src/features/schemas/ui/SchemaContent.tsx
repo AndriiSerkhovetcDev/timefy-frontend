@@ -56,10 +56,10 @@ export const SchemaContent = () => {
                 key={t.key}
                 value={t.key}
                 className="
-                  px-4 pb-3 text-sm text-text-muted hover:text-gray-800
+                  px-4 pb-3 text-sm text-text-muted hover:text-text-main
                   rounded-none border-b-2 border-transparent
-                  data-[state=active]:border-b-teal-600
-                  data-[state=active]:text-teal-700
+                  data-[state=active]:border-b-primary
+                  data-[state=active]:text-primary
                   data-[state=active]:bg-transparent
                   data-[state=active]:shadow-none!"
               >

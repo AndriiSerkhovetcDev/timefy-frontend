@@ -10,10 +10,10 @@ type ButtonProps = {
 
 const VARIANTS = {
   primary:
-    "bg-primary text-white shadow-xl shadow-primary/25 hover:shadow-2xl hover:-translate-y-1",
+    "bg-primary text-primary-foreground shadow-xl shadow-primary/25 hover:shadow-2xl hover:-translate-y-1",
   secondary:
-    "mt-10 bg-secondary text-primary font-bold px-8 py-3 rounded-full hover:bg-white transition-colors shadow-lg shadow-secondary/20",
-  outlet: "bg-bg-surface text-text-dark border border-border hover:bg-bg-main",
+    "mt-10 bg-secondary text-secondary-foreground font-bold px-8 py-3 rounded-full hover:bg-bg-surface transition-colors shadow-lg shadow-secondary/20",
+  outlet: "bg-bg-surface text-text-main border border-border hover:bg-bg-main",
 };
 
 const Button = ({

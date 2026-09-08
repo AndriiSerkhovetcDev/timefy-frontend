@@ -9,8 +9,8 @@ export const userMenuItems = [
   { id: "logout", text: "Вийти", isDanger: true, isAdmin: false },
 ];
 
-const dangeLinkStyle = "text-red-500 hover:bg-red-50";
-const defaultLinkStyle = "text-gray-700 hover:bg-bg-main hover:text-primary";
+const dangerLinkStyle = "text-error hover:bg-error/10";
+const defaultLinkStyle = "text-text-main hover:bg-bg-main hover:text-primary";
 
 export const UserMenu = () => {
   const [isOpenDropdwn, setIsOpenDropdown] = useState(false);
@@ -80,7 +80,7 @@ export const UserMenu = () => {
                     <Link
                       to={item.link}
                       className={`block w-full px-3 py-2 text-sm text-text-main rounded-lg transition
-          ${item.isDanger ? dangeLinkStyle : defaultLinkStyle}`}
+          ${item.isDanger ? dangerLinkStyle : defaultLinkStyle}`}
                     >
                       {item.text}
                     </Link>

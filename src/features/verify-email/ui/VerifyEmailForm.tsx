@@ -155,7 +155,7 @@ export const VerifyEmailForm = () => {
         ))}
       </div>
       {verifyError && (
-        <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">{verifyError}</p>
+        <p className="rounded-lg bg-error-surface px-4 py-2 text-sm text-error">{verifyError}</p>
       )}
       <div className="text-sm text-text-muted">
         {canResend ? (

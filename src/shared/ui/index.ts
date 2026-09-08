@@ -12,6 +12,7 @@ export { PhoneField } from "./FormFields/PhoneField";
 export { PageLoader } from "./PageLoader";
 export { StyledSelect } from "./StyledSelect";
 export { Notifications } from "./Notifications";
+export { ThemeToggle } from "./ThemeToggle";
 
 export { RouteGuard } from "./RouteGuard";
 export { UserRouteGuard } from "./UserRouteGuard";

@@ -18,10 +18,10 @@ export const FunctionsList = ({ items }: { items: SchemaFunction[] }) => {
                 key={item.name}
                 onClick={() => setActiveTable(item.name)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-gray-50",
+                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-border",
                   activeTable === item.name
-                    ? "bg-teal-50 text-teal-700"
-                    : "text-gray-700 hover:bg-bg-main",
+                    ? "bg-accent text-accent-foreground"
+                    : "text-text-main hover:bg-bg-main",
                 )}
               >
                 <span className="font-mono text-xs">{item.name}</span>
@@ -31,7 +31,7 @@ export const FunctionsList = ({ items }: { items: SchemaFunction[] }) => {
         </div>
 
         <div className="p-3 border-t border-border shrink-0">
-          <button className="w-full text-xs border border-dashed border-gray-300 text-text-muted hover:border-teal-400 hover:text-teal-600 px-3 py-2 rounded-lg transition">
+          <button className="w-full text-xs border border-dashed border-border text-text-muted hover:border-primary hover:text-primary px-3 py-2 rounded-lg transition">
             + Створити функцію
           </button>
         </div>
@@ -45,7 +45,7 @@ export const FunctionsList = ({ items }: { items: SchemaFunction[] }) => {
               <h3 className="text-sm font-medium text-primary mb-3">Definition</h3>
               <textarea
                 defaultValue={items.find((f) => f.name === activeTable)?.definition ?? ""}
-                className="w-full text-xs font-mono border border-border rounded-lg px-4 py-3 text-gray-700 bg-bg-main focus:outline-none focus:border-teal-400"
+                className="w-full text-xs font-mono border border-border rounded-lg px-4 py-3 text-text-main bg-bg-input focus:outline-none focus:border-primary"
                 rows={3}
               />
             </section>

@@ -4,11 +4,12 @@ const variantClasses = {
   default:
     "block px-3 py-3 rounded-md text-base font-medium text-text-main hover:text-primary hover:bg-bg-main",
   outline: "text-center px-6 py-2 border border-border rounded-lg text-primary font-medium",
-  primary: "text-center w-full py-2 bg-primary text-white rounded-lg font-medium shadow-md",
+  primary:
+    "text-center w-full py-2 bg-primary text-primary-foreground rounded-lg font-medium shadow-md",
   desktop: "text-text-muted hover:text-primary font-medium transition-colors",
   desktopOutline: "text-primary font-semibold hover:text-secondary transition-colors",
   desktopPrimary:
-    "bg-primary hover:bg-opacity-90 text-white px-6 py-2.5 rounded-full font-medium shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-0.5",
+    "bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2.5 rounded-full font-medium shadow-lg shadow-primary/20 transition-all transform hover:-translate-y-0.5",
 };
 
 export type NavVariant = keyof typeof variantClasses;

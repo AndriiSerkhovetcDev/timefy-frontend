@@ -1,11 +1,11 @@
 function Footer() {
   return (
-    <footer id="footer" className="bg-white border-t border-border pt-16 pb-8">
+    <footer id="footer" className="bg-bg-surface border-t border-border pt-16 pb-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-8 h-8 bg-linear-to-br from-primary to-secondary rounded-lg flex items-center justify-center text-white text-sm shadow-md">
+              <div className="w-8 h-8 bg-linear-to-br from-primary to-secondary rounded-lg flex items-center justify-center text-primary-foreground text-sm shadow-md">
                 <i data-fa-i2svg="">
                   <svg
                     className="svg-inline--fa fa-calendar-check"
@@ -27,14 +27,14 @@ function Footer() {
               </div>
               <span className="font-bold text-xl text-primary">Timefy</span>
             </div>
-            <p className="text-text-light text-sm leading-relaxed mb-6">
+            <p className="text-text-muted text-sm leading-relaxed mb-6">
               The all-in-one booking platform for masters and salons. Manage your business
               efficiently and grow online.
             </p>
             <div className="flex gap-4">
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-primary-foreground transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -57,7 +57,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-primary-foreground transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -80,7 +80,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-primary-foreground transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -103,7 +103,7 @@ function Footer() {
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-white transition-all"
+                className="w-10 h-10 rounded-full bg-bg-main flex items-center justify-center text-text-muted hover:bg-primary hover:text-primary-foreground transition-all"
               >
                 <i data-fa-i2svg="">
                   <svg
@@ -128,8 +128,8 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-text-dark mb-6">Product</h4>
-            <ul className="space-y-3 text-sm text-text-light">
+            <h4 className="font-bold text-text-main mb-6">Product</h4>
+            <ul className="space-y-3 text-sm text-text-muted">
               <li>
                 <a href="#features" className="hover:text-primary transition-colors">
                   Features
@@ -159,8 +159,8 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-text-dark mb-6">Support</h4>
-            <ul className="space-y-3 text-sm text-text-light">
+            <h4 className="font-bold text-text-main mb-6">Support</h4>
+            <ul className="space-y-3 text-sm text-text-muted">
               <li>
                 <a href="#" className="hover:text-primary transition-colors">
                   Help Center
@@ -190,8 +190,8 @@ function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-text-dark mb-6">Contact</h4>
-            <ul className="space-y-3 text-sm text-text-light">
+            <h4 className="font-bold text-text-main mb-6">Contact</h4>
+            <ul className="space-y-3 text-sm text-text-muted">
               <li className="flex items-start gap-2">
                 <i className="text-primary mt-1" data-fa-i2svg="">
                   <svg

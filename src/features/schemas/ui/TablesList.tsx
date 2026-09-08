@@ -28,10 +28,10 @@ export const TablesList = ({ items }: { items: SchemaTable[] }) => {
                 key={item.name}
                 onClick={() => setActiveTable(item.name)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-gray-50",
+                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-border",
                   activeTable === item.name
-                    ? "bg-teal-50 text-teal-700"
-                    : "text-gray-700 hover:bg-bg-main",
+                    ? "bg-accent text-accent-foreground"
+                    : "text-text-main hover:bg-bg-main",
                 )}
               >
                 <span className="font-mono text-xs">{item.name}</span>
@@ -42,7 +42,7 @@ export const TablesList = ({ items }: { items: SchemaTable[] }) => {
 
         {/* Кнопка — завжди внизу */}
         <div className="p-3 border-t border-border shrink-0">
-          <button className="w-full text-xs border border-dashed border-gray-300 text-text-muted hover:border-teal-400 hover:text-teal-600 px-3 py-2 rounded-lg transition">
+          <button className="w-full text-xs border border-dashed border-border text-text-muted hover:border-primary hover:text-primary px-3 py-2 rounded-lg transition">
             + Створити таблицю
           </button>
         </div>
@@ -114,7 +114,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
         <div className="flex items-center gap-2">
           <button
             onClick={handleSave}
-            className="flex items-center gap-1.5 text-xs text-white bg-teal-600 hover:bg-teal-700 px-3 py-1.5 rounded-lg transition"
+            className="flex items-center gap-1.5 text-xs text-primary-foreground bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-lg transition"
           >
             <Save size={12} />
             Зберегти зміни
@@ -137,9 +137,9 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
                   type="checkbox"
                   checked={checked}
                   onChange={(e) => setGraphQL(key, e.target.checked)}
-                  className="w-4 h-4 accent-teal-600"
+                  className="w-4 h-4 accent-primary"
                 />
-                <span className="text-sm text-gray-700 capitalize">{key}</span>
+                <span className="text-sm text-text-main capitalize">{key}</span>
               </label>
             );
           })}
@@ -155,9 +155,9 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
               type="checkbox"
               checked={form.history?.enabled ?? false}
               onChange={(e) => setHistory({ enabled: e.target.checked })}
-              className="w-4 h-4 accent-teal-600"
+              className="w-4 h-4 accent-primary"
             />
-            <span className="text-sm text-gray-700">Enabled</span>
+            <span className="text-sm text-text-main">Enabled</span>
           </label>
 
           {form.history?.enabled && (
@@ -247,7 +247,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
                 {table.constraints.map((c) => (
                   <tr key={c.name} className="border-t border-border hover:bg-bg-main">
                     <td className="px-4 py-2.5 text-xs text-text-muted">{c.type}</td>
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{c.name}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-main">{c.name}</td>
                     <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {c.columns?.join(", ") ?? c.expression ?? "—"}
                     </td>
@@ -288,7 +288,7 @@ export const TableDetail = ({ table, schemaName }: { table: SchemaTable; schemaN
               <tbody>
                 {table.indexes.map((idx) => (
                   <tr key={idx.name} className="border-t border-border hover:bg-bg-main">
-                    <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{idx.name}</td>
+                    <td className="px-4 py-2.5 font-mono text-xs text-text-main">{idx.name}</td>
                     <td className="px-4 py-2.5 font-mono text-xs text-text-muted">
                       {idx.columns.join(", ")}
                     </td>
@@ -316,14 +316,14 @@ export const ColumnRow = ({
   onChange: (patch: Partial<SchemaColumn>) => void;
 }) => (
   <tr className="border-t border-border hover:bg-bg-main">
-    <td className="px-4 py-2.5 font-mono text-xs text-gray-800">{col.name}</td>
+    <td className="px-4 py-2.5 font-mono text-xs text-text-main">{col.name}</td>
     <td className="px-4 py-2.5 font-mono text-xs text-text-muted">{col.type}</td>
     <td className="px-4 py-2.5 text-center">
       <input
         type="checkbox"
         checked={col.nullable}
         onChange={(e) => onChange({ nullable: e.target.checked })}
-        className="accent-teal-600"
+        className="accent-primary"
       />
     </td>
     <td className="px-4 py-2.5">
@@ -331,11 +331,11 @@ export const ColumnRow = ({
         type="text"
         defaultValue={col.default ?? ""}
         onBlur={(e) => onChange({ default: e.target.value })}
-        className="w-full text-xs font-mono border border-border rounded px-2 py-1 focus:outline-none focus:border-teal-400"
+        className="w-full text-xs font-mono border border-border rounded px-2 py-1 focus:outline-none focus:border-primary"
       />
     </td>
     <td className="px-4 py-2.5">
-      <button className="text-xs border border-border px-2.5 py-1 rounded-lg hover:bg-bg-main text-gray-600 transition">
+      <button className="text-xs border border-border px-2.5 py-1 rounded-lg hover:bg-bg-main text-text-muted transition">
         <Save size={12} />
       </button>
     </td>

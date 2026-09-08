@@ -6,10 +6,13 @@ export const ThemeToggle = () => {
 
   return (
     <button
+      type="button"
       onClick={toggle}
-      className="p-2 rounded-lg border border-border text-text-muted hover:bg-bg-input transition cursor-pointer"
+      aria-label={isDark ? "Увімкнути світлу тему" : "Увімкнути темну тему"}
+      title={isDark ? "Світла тема" : "Темна тема"}
+      className="cursor-pointer rounded-lg border border-border p-2 text-text-muted transition hover:bg-bg-input hover:text-text-main focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      {isDark ? <Sun size={18} /> : <Moon size={18} />}
+      {isDark ? <Sun size={18} aria-hidden="true" /> : <Moon size={18} aria-hidden="true" />}
     </button>
   );
 };

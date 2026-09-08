@@ -77,7 +77,7 @@ export const ForgotPasswordForm = () => {
         <button
           type="submit"
           disabled={!isValid || isSubmitting}
-          className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90 active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
+          className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
         >
           {isSubmitting ? "Завантаження..." : "Надіслати"}
         </button>
@@ -89,15 +89,15 @@ export const ForgotPasswordForm = () => {
 const SuccessSendEmail = ({ handleResend }: { handleResend: () => Promise<void> }) => {
   return (
     <div className="flex flex-col items-center gap-4 text-center">
-      <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center">
-        <Mail className="w-5 h-5 text-teal-600" />
+      <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
+        <Mail className="w-5 h-5 text-primary" />
       </div>
 
       <div className="flex flex-col gap-1">
         <h1 className="text-2xl font-semibold">Перевірте пошту</h1>
         <p className="text-text-muted text-sm max-w-sm">
           Ми надіслали посилання для скидання паролю на{" "}
-          <span className="font-medium text-gray-700">email</span>
+          <span className="font-medium text-text-main">email</span>
         </p>
       </div>
 
@@ -110,7 +110,7 @@ const SuccessSendEmail = ({ handleResend }: { handleResend: () => Promise<void> 
 
       <Link
         to="/login"
-        className="text-sm text-text-muted hover:text-gray-700 flex items-center gap-1.5 transition mt-2"
+        className="text-sm text-text-muted hover:text-text-main flex items-center gap-1.5 transition mt-2"
       >
         <ArrowLeft size={14} />
         Повернутись до входу

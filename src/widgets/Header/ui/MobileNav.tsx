@@ -39,7 +39,7 @@ function MobileNav() {
       <div className="md:hidden flex items-center" ref={buttonRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-600 hover:text-primary focus:outline-none"
+          className="text-text-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
         >
           {isOpen ? <XIcon /> : <BurgerIcon />}
         </button>

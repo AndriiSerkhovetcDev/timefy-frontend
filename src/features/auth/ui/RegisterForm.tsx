@@ -127,7 +127,7 @@ export const RegisterForm = () => {
       <button
         type="submit"
         disabled={!isValid || isSubmitting}
-        className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-white transition hover:bg-primary/90 active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
+        className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
       >
         {isSubmitting ? "Завантаження..." : "Зареєструватись"}
       </button>

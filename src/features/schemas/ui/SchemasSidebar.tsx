@@ -16,17 +16,16 @@ export const SchemasSidebar = () => {
   return (
     <aside
       className={cn(
-        "sticky top-0 flex flex-col shrink-0 h-screen transition-all duration-200",
+        "sticky top-0 flex flex-col shrink-0 h-screen bg-sidebar-shell text-sidebar-shell-foreground transition-all duration-200",
         isSidebarCollapsed ? "w-20" : "w-64",
       )}
-      style={{ background: "#1a3c40" }}
     >
-      <div className="flex items-center gap-2 px-4 py-5 border-b border-white/10 h-14">
+      <div className="flex items-center gap-2 px-4 py-5 border-b border-sidebar-shell-foreground/10 h-14">
         <Logo isSidebarCollapsed={isSidebarCollapsed} />
       </div>
       {!isSidebarCollapsed && (
         <div className="flex items-center justify-between px-4 pt-4 pb-2">
-          <span className="text-xs font-medium text-white/50 uppercase tracking-wider">
+          <span className="text-xs font-medium text-sidebar-shell-foreground/50 uppercase tracking-wider">
             Schemas
           </span>
         </div>
@@ -36,7 +35,7 @@ export const SchemasSidebar = () => {
         <div className="flex justify-center pt-4 pb-2">
           <button
             onClick={() => navigate("/dashboard/schemas/create")}
-            className="text-white/50 hover:text-white transition text-lg leading-none"
+            className="text-sidebar-shell-foreground/50 hover:text-sidebar-shell-foreground transition text-lg leading-none"
           >
             +
           </button>
@@ -51,8 +50,8 @@ export const SchemasSidebar = () => {
               "flex items-center gap-2 px-2 py-2.5 rounded-lg cursor-pointer transition-colors mb-1",
               isSidebarCollapsed ? "justify-center" : "px-3",
               activeSchema === schema.name
-                ? "bg-white/15 text-white"
-                : "text-white/60 hover:bg-white/10 hover:text-white",
+                ? "bg-sidebar-shell-foreground/15 text-sidebar-shell-foreground"
+                : "text-sidebar-shell-foreground/60 hover:bg-sidebar-shell-foreground/10 hover:text-sidebar-shell-foreground",
             )}
             onClick={() => setActiveSchema(schema.name)}
             title={isSidebarCollapsed ? schema.name : undefined}
@@ -67,10 +66,10 @@ export const SchemasSidebar = () => {
         ))}
       </nav>
 
-      <div className="p-3 border-t border-white/10">
+      <div className="p-3 border-t border-sidebar-shell-foreground/10">
         <button
           onClick={() => navigate("/dashboard/schemas/create")}
-          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition text-sm"
+          className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sidebar-shell-foreground/60 hover:bg-sidebar-shell-foreground/10 hover:text-sidebar-shell-foreground transition text-sm"
         >
           <Plus size={14} />
           {!isSidebarCollapsed && <span>Додати схему</span>}

@@ -19,10 +19,10 @@ export const TriggersList = ({ items }: { items: SchemaTrigger[] }) => {
                 key={item.name}
                 onClick={() => setActiveTable(item.name)}
                 className={cn(
-                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-gray-50",
+                  "flex items-center gap-2 px-4 py-2.5 cursor-pointer transition-colors border-b border-border",
                   activeTable === item.name
-                    ? "bg-teal-50 text-teal-700"
-                    : "text-gray-700 hover:bg-bg-main",
+                    ? "bg-accent text-accent-foreground"
+                    : "text-text-main hover:bg-bg-main",
                 )}
               >
                 <span className="font-mono text-xs">{item.name}</span>
@@ -32,7 +32,7 @@ export const TriggersList = ({ items }: { items: SchemaTrigger[] }) => {
         </div>
 
         <div className="p-3 border-t border-border shrink-0">
-          <button className="w-full text-xs border border-dashed border-gray-300 text-text-muted hover:border-teal-400 hover:text-teal-600 px-3 py-2 rounded-lg transition">
+          <button className="w-full text-xs border border-dashed border-border text-text-muted hover:border-primary hover:text-primary px-3 py-2 rounded-lg transition">
             + Створити trigger
           </button>
         </div>
@@ -62,7 +62,7 @@ const TriggerDetail = ({ trigger }: { trigger: SchemaTrigger }) => {
             <input
               type="text"
               defaultValue={trigger.table ?? ""}
-              className="text-xs font-mono border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-400"
+              className="text-xs font-mono border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary"
             />
           </div>
 
@@ -71,7 +71,7 @@ const TriggerDetail = ({ trigger }: { trigger: SchemaTrigger }) => {
             <input
               type="text"
               defaultValue={trigger.functionName ?? ""}
-              className="text-xs font-mono border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-teal-400"
+              className="text-xs font-mono border border-border rounded-lg px-3 py-1.5 focus:outline-none focus:border-primary"
             />
           </div>
 
