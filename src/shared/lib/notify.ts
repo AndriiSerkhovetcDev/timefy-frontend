@@ -9,33 +9,33 @@ export const notify = {
   success: (message: string, options?: NotifyOptions) =>
     toast.success(message, {
       ...options,
-      style: { borderLeft: "3px solid #4ecdc4", background: "#f0fdfb" },
+      style: { borderLeft: "3px solid var(--success)", background: "var(--success-surface)" },
       classNames: {
-        toast: "after:bg-[#4ecdc4]",
+        toast: "after:bg-success",
       },
     }),
   error: (message: string, options?: NotifyOptions) =>
     toast.error(message, {
       ...options,
-      style: { borderLeft: "3px solid #f87171", background: "#fef2f2" },
+      style: { borderLeft: "3px solid var(--error)", background: "var(--error-surface)" },
       classNames: {
-        toast: "after:bg-[#f87171]",
+        toast: "after:bg-error",
       },
     }),
   warning: (message: string, options?: NotifyOptions) =>
     toast.warning(message, {
       ...options,
-      style: { borderLeft: "3px solid #fbbf24", background: "#fffbeb" },
+      style: { borderLeft: "3px solid var(--warning)", background: "var(--warning-surface)" },
       classNames: {
-        toast: "after:bg-[#fbbf24]",
+        toast: "after:bg-warning",
       },
     }),
   info: (message: string, options?: NotifyOptions) =>
     toast.info(message, {
       ...options,
-      style: { borderLeft: "3px solid #1a3c40", background: "#f0f4f4" },
+      style: { borderLeft: "3px solid var(--primary)", background: "var(--info-surface)" },
       classNames: {
-        toast: "after:bg-[#1a3c40]",
+        toast: "after:bg-primary",
       },
     }),
 

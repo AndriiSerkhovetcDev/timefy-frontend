@@ -4,10 +4,10 @@ type PasswordStrength = {
 
 export const strengthLevels = [
   { width: "0%", backgroundColor: "transparent" },
-  { width: "25%", backgroundColor: "#ef4444" },
-  { width: "50%", backgroundColor: "#f59e0b" },
-  { width: "75%", backgroundColor: "#84cc16" },
-  { width: "100%", backgroundColor: "#4ecdc4" },
+  { width: "25%", backgroundColor: "var(--strength-weak)" },
+  { width: "50%", backgroundColor: "var(--strength-fair)" },
+  { width: "75%", backgroundColor: "var(--strength-good)" },
+  { width: "100%", backgroundColor: "var(--success)" },
 ];
 export const PasswordStrength = ({ password = "" }: PasswordStrength) => {
   const getStrength = (password: string) => {

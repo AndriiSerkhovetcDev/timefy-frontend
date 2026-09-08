@@ -39,7 +39,7 @@ function MobileNav() {
       <div className="md:hidden flex items-center" ref={buttonRef}>
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="text-gray-600 hover:text-primary focus:outline-none"
+          className="text-text-muted hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
         >
           {isOpen ? <XIcon /> : <BurgerIcon />}
         </button>
@@ -53,7 +53,7 @@ function MobileNav() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="fixed bg-white border-t z-40 left-0 border-gray-100 w-full shadow-lg"
+              className="fixed bg-bg-surface border-t z-40 left-0 border-border w-full shadow-lg"
               style={{ top: headerHeight }}
               ref={dropdownRef}
             >
@@ -61,7 +61,7 @@ function MobileNav() {
                 {navItems.map((item) => (
                   <NavItem key={item.id} {...item} />
                 ))}
-                <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col space-y-3 px-3">
+                <div className="mt-4 pt-4 border-t border-border flex flex-col space-y-3 px-3">
                   {modileNavBtns.map((item) => (
                     <NavItem key={item.id} {...item} />
                   ))}
