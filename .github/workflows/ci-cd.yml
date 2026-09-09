@@ -1,0 +1,89 @@
+name: CI/CD
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-cd-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+  deploy:
+    name: Deploy to server
+    if: github.event_name == 'push'
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Validate deployment configuration
+        env:
+          DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
+          DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: |
+          test -n "$DEPLOY_PATH" || (echo "Repository variable DEPLOY_PATH is required" && exit 1)
+          test -n "$DOCKER_IMAGE" || (echo "Repository variable DOCKER_IMAGE is required" && exit 1)
+          test -n "$VITE_API_URL" || (echo "Repository variable VITE_API_URL is required" && exit 1)
+
+      - name: Build Docker image
+        env:
+          DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
+          VITE_API_URL: ${{ vars.VITE_API_URL }}
+        run: |
+          docker build \
+            --build-arg VITE_API_URL="$VITE_API_URL" \
+            --tag "$DOCKER_IMAGE:latest" \
+            .
+
+      - name: Save Docker image
+        env:
+          DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
+        run: docker save "$DOCKER_IMAGE:latest" | gzip > app.tar.gz
+
+      - name: Copy image to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: app.tar.gz
+          target: ${{ vars.DEPLOY_PATH }}
+
+      - name: Deploy frontend with Docker Compose
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            set -eu
+            docker load < "${{ vars.DEPLOY_PATH }}/app.tar.gz"
+            docker compose -f "${{ vars.DEPLOY_PATH }}/docker-compose.yml" up -d --no-build --force-recreate
+            rm -f "${{ vars.DEPLOY_PATH }}/app.tar.gz"
