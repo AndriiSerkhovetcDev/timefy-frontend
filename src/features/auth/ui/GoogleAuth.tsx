@@ -1,15 +1,13 @@
 import { GoogleIcon } from "@/shared/ui";
+import { startExternalAuthorization } from "../model/externalAuth";
 
 type GoogleAuthProps = {
   label?: string;
 };
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
-const API_GOOGLE_AUTH_URL = `${API_BASE_URL}/auth/google`;
-
 export const GoogleAuth = ({ label = "Увійти через Google" }: GoogleAuthProps) => {
   const handleGoogleAuth = () => {
-    window.location.href = API_GOOGLE_AUTH_URL;
+    startExternalAuthorization("GOOGLE");
   };
 
   return (
