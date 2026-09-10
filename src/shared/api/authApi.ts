@@ -1,5 +1,7 @@
 import type { User } from "@/features/auth/model/types";
 import { httpClient } from "./httpClient";
+import type { ExternalAuthProvider } from "@/features/auth/model/externalAuth";
+import { API_V2_BASE_URL } from "./apiConfig";
 
 type LoginPayload = {
   login: string;
@@ -17,6 +19,14 @@ export type AuthResponse = {
   data: {
     user: User;
     token: string;
+  };
+};
+
+export type ExternalAuthExchangeResponse = {
+  data: {
+    provider: ExternalAuthProvider;
+    token: string;
+    user: User;
   };
 };
 
@@ -66,6 +76,7 @@ const API_VERIFY_EMAIL = "/auth/verify-email";
 const API_RESEND_VERIFY_EMAIL = "/auth/resend-verify-email";
 const API_FORGOT_PASS_EMAIL_STEP = "/auth/forgot-password";
 const API_FORGOT_PASS_RESET_PASS = "/auth/reset-password";
+const API_OAUTH_EXCHANGE = "/auth/exchange";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
   return httpClient.post(API_LOGIN_URL, payload);
@@ -100,4 +111,14 @@ export const resetPassword = async (
   payload: resetPasswordPayload,
 ): Promise<{ success: boolean }> => {
   return httpClient.post(API_FORGOT_PASS_RESET_PASS, payload);
+};
+
+export const exchangeExternalAuthCode = async (
+  exchangeCode: string,
+): Promise<ExternalAuthExchangeResponse> => {
+  return httpClient.post(
+    API_OAUTH_EXCHANGE,
+    { exchangeCode },
+    { baseUrl: API_V2_BASE_URL, credentials: "include", cache: "no-store" },
+  );
 };

@@ -1,10 +1,9 @@
 import { useAuthStore } from "@/features/auth/model/authStore";
+import { API_V1_BASE_URL } from "./apiConfig";
 
 type RequestOptions = RequestInit & {
-  params?: Record<string, string>;
+  baseUrl?: string;
 };
-
-const BASE_URL = import.meta.env.VITE_API_URL;
 
 const getToken = () => useAuthStore.getState().token;
 
@@ -20,19 +19,20 @@ export class ApiError extends Error {
 
 const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
   const token = getToken();
-  const isFormData = options.body instanceof FormData;
+  const { baseUrl = API_V1_BASE_URL, ...requestOptions } = options;
+  const isFormData = requestOptions.body instanceof FormData;
 
   const headers: Record<string, string> = {
     ...(!isFormData && { "Content-Type": "application/json" }),
-    ...(options.headers as Record<string, string>),
+    ...(requestOptions.headers as Record<string, string>),
   };
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
 
-  const response = await fetch(`${BASE_URL}${endpoint}`, {
-    ...options,
+  const response = await fetch(`${baseUrl}${endpoint}`, {
+    ...requestOptions,
     headers,
   });
 
@@ -60,14 +60,14 @@ export const httpClient = {
 export const resolveApiAssetUrl = (path?: string | null) => {
   if (!path || /^(https?:|data:|blob:)/.test(path)) return path ?? undefined;
 
-  const apiOrigin = new URL(BASE_URL, window.location.origin).origin;
+  const apiOrigin = new URL(API_V1_BASE_URL, window.location.origin).origin;
   return new URL(path, apiOrigin).toString();
 };
 
 export const isApiAssetUrl = (path: string) => {
   if (!/^https?:/.test(path)) return true;
 
-  const apiOrigin = new URL(BASE_URL, window.location.origin).origin;
+  const apiOrigin = new URL(API_V1_BASE_URL, window.location.origin).origin;
   return new URL(path).origin === apiOrigin;
 };
 

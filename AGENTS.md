@@ -25,7 +25,7 @@
 - `src/components/ui` — shadcn/Radix UI primitives.
 - `src/assets` і `public` — статичні ресурси.
 
-Поточні API endpoints: `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/google`, `/users/update-profile`, `/users/avatar/upload`, `/users/avatar/change` і `/users/avatar/delete`.
+Поточні API endpoints: API v1 — `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/users/update-profile`, `/users/avatar/upload`, `/users/avatar/change` і `/users/avatar/delete`; API v2 — `/auth/oauth/:provider` та `/auth/exchange` для зовнішньої OAuth-авторизації.
 
 Auth і theme state зберігаються в `localStorage` через Zustand persist під ключами `auth-storage` і `theme`. Маршрути `/organizations` і `/account/*` захищені наявністю auth token.
 
@@ -58,6 +58,7 @@ npm run dev
 
 ```bash
 npm run dev          # Vite development server
+npm test             # Vitest test suite
 npm run build        # TypeScript project build, потім production Vite build
 npm run preview      # локальний preview production build
 npm run lint         # ESLint для всього репозиторію
@@ -74,10 +75,11 @@ Compose публікує Nginx на порту `80`. Nginx має SPA fallback �
 
 ## Тестування і перевірки
 
-У репозиторії немає test script, test runner configuration або test/spec файлів. Не вигадуй команду тестів. Доступний базовий verification gate:
+Тести запускаються через Vitest у `jsdom`. Базовий verification gate:
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
 
@@ -95,4 +97,4 @@ npm run build
 - Запити до backend додавай через `src/shared/api/httpClient.ts` і feature/domain API modules. Не дублюй base URL та bearer-token logic.
 - Не коміть `.env*`, secrets, tokens, `node_modules` або `dist`.
 - Не змінюй непов'язані файли і не перезаписуй вже наявні зміни робочого дерева.
-- Перед завершенням запусти щонайменше `npm run lint` і `npm run build`; якщо щось не проходить не через поточну зміну, зафіксуй це у handoff.
+- Перед завершенням запусти щонайменше `npm run lint`, `npm test` і `npm run build`; якщо щось не проходить не через поточну зміну, зафіксуй це у handoff.
