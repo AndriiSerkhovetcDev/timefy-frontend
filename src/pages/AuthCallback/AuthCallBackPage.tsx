@@ -65,16 +65,7 @@ export const AuthCallbackPage = () => {
 
         try {
           const response = await exchangeCodeOnce(callback.provider, callback.code);
-          const { provider, token, user } = response.data;
-
-          if (
-            !isExternalAuthProvider(provider) ||
-            !isEnabledExternalAuthProvider(provider) ||
-            provider !== callback.provider
-          ) {
-            failSafely();
-            return;
-          }
+          const { token, user } = response.data;
 
           if (!isActive) {
             return;

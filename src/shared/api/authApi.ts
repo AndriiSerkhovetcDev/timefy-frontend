@@ -24,7 +24,6 @@ export type AuthResponse = {
 
 export type ExternalAuthExchangeResponse = {
   data: {
-    provider: ExternalAuthProvider;
     token: string;
     user: User;
   };
