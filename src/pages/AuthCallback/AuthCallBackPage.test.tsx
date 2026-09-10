@@ -52,18 +52,14 @@ describe("AuthCallbackPage", () => {
         resolveExchange = resolve;
       }),
     );
-    window.history.replaceState(
-      {},
-      "",
-      "/auth/callback?provider=FACEBOOK&exchangeCode=single-use-code",
-    );
+    window.history.replaceState({}, "", "/auth/callback?provider=GOOGLE&code=single-use-code");
 
     renderCallback();
 
     expect(window.location.pathname).toBe("/auth/callback");
     expect(window.location.search).toBe("");
     expect(exchangeExternalAuthCode).toHaveBeenCalledOnce();
-    expect(exchangeExternalAuthCode).toHaveBeenCalledWith("single-use-code");
+    expect(exchangeExternalAuthCode).toHaveBeenCalledWith("GOOGLE", "single-use-code");
 
     resolveExchange({ data: { provider: "GOOGLE", token: "access-token", user } });
 
@@ -74,7 +70,7 @@ describe("AuthCallbackPage", () => {
   it("shows one safe failure state and does not retry a rejected exchange", async () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => undefined);
     exchangeExternalAuthCode.mockRejectedValue(new Error("sensitive backend reason"));
-    window.history.replaceState({}, "", "/auth/callback?exchangeCode=rejected-code");
+    window.history.replaceState({}, "", "/auth/callback?provider=GOOGLE&code=rejected-code");
 
     const view = renderCallback();
 

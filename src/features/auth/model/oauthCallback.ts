@@ -2,7 +2,7 @@ import type { User } from "./types";
 
 export type OAuthCallbackPayload = {
   provider: string | null;
-  exchangeCode: string | null;
+  code: string | null;
   error: string | null;
   legacyToken: string | null;
   legacyUser: string | null;
@@ -16,7 +16,7 @@ export const consumeOAuthCallback = (): OAuthCallbackPayload => {
 
     activeCallbackPayload = {
       provider: params.get("provider"),
-      exchangeCode: params.get("exchangeCode"),
+      code: params.get("code"),
       error: params.get("error"),
       legacyToken: params.get("token"),
       legacyUser: params.get("user"),
@@ -28,7 +28,7 @@ export const consumeOAuthCallback = (): OAuthCallbackPayload => {
   return (
     activeCallbackPayload ?? {
       provider: null,
-      exchangeCode: null,
+      code: null,
       error: null,
       legacyToken: null,
       legacyUser: null,

@@ -17,15 +17,16 @@ import { PageLoader } from "@/shared/ui";
 
 const exchangeRequests = new Map<string, Promise<ExternalAuthExchangeResponse>>();
 
-const exchangeCodeOnce = (exchangeCode: string) => {
-  const activeRequest = exchangeRequests.get(exchangeCode);
+const exchangeCodeOnce = (provider: "GOOGLE", code: string) => {
+  const requestKey = `${provider}:${code}`;
+  const activeRequest = exchangeRequests.get(requestKey);
 
   if (activeRequest) {
     return activeRequest;
   }
 
-  const request = exchangeExternalAuthCode(exchangeCode);
-  exchangeRequests.set(exchangeCode, request);
+  const request = exchangeExternalAuthCode(provider, code);
+  exchangeRequests.set(requestKey, request);
   return request;
 };
 
@@ -53,12 +54,24 @@ export const AuthCallbackPage = () => {
         return;
       }
 
-      if (callback.exchangeCode) {
+      if (callback.code) {
+        if (
+          !isExternalAuthProvider(callback.provider) ||
+          !isEnabledExternalAuthProvider(callback.provider)
+        ) {
+          failSafely();
+          return;
+        }
+
         try {
-          const response = await exchangeCodeOnce(callback.exchangeCode);
+          const response = await exchangeCodeOnce(callback.provider, callback.code);
           const { provider, token, user } = response.data;
 
-          if (!isExternalAuthProvider(provider) || !isEnabledExternalAuthProvider(provider)) {
+          if (
+            !isExternalAuthProvider(provider) ||
+            !isEnabledExternalAuthProvider(provider) ||
+            provider !== callback.provider
+          ) {
             failSafely();
             return;
           }
