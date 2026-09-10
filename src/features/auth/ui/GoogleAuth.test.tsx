@@ -21,7 +21,7 @@ describe("GoogleAuth", () => {
 
     expect(startExternalAuthorization).toHaveBeenCalledWith("GOOGLE");
     expect(EXTERNAL_AUTH_PROVIDERS.GOOGLE.authorizationUrl).toBe(
-      "http://localhost:3000/api/v2/auth/oauth/google",
+      "http://localhost:3000/api/v2/auth/google",
     );
     expect(EXTERNAL_AUTH_PROVIDERS.FACEBOOK.enabled).toBe(false);
     expect(EXTERNAL_AUTH_PROVIDERS.INSTAGRAM.enabled).toBe(false);

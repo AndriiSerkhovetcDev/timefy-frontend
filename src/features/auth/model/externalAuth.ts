@@ -11,22 +11,22 @@ type ExternalAuthProviderMetadata = {
 export const EXTERNAL_AUTH_PROVIDERS: Record<ExternalAuthProvider, ExternalAuthProviderMetadata> = {
   GOOGLE: {
     label: "Google",
-    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/oauth/google"),
+    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/google"),
     enabled: true,
   },
   FACEBOOK: {
     label: "Facebook",
-    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/oauth/facebook"),
+    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/facebook"),
     enabled: false,
   },
   INSTAGRAM: {
     label: "Instagram",
-    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/oauth/instagram"),
+    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/instagram"),
     enabled: false,
   },
   APPLE: {
     label: "Apple",
-    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/oauth/apple"),
+    authorizationUrl: createApiUrl(API_V2_BASE_URL, "/auth/apple"),
     enabled: false,
   },
 };
