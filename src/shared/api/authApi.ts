@@ -114,11 +114,12 @@ export const resetPassword = async (
 };
 
 export const exchangeExternalAuthCode = async (
-  exchangeCode: string,
+  provider: ExternalAuthProvider,
+  code: string,
 ): Promise<ExternalAuthExchangeResponse> => {
   return httpClient.post(
     API_OAUTH_EXCHANGE,
-    { exchangeCode },
+    { provider, code },
     { baseUrl: API_V2_BASE_URL, credentials: "include", cache: "no-store" },
   );
 };
