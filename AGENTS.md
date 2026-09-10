@@ -25,7 +25,7 @@
 - `src/components/ui` — shadcn/Radix UI primitives.
 - `src/assets` і `public` — статичні ресурси.
 
-Поточні API endpoints: API v1 — `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/users/update-profile`, `/users/avatar/upload`, `/users/avatar/change` і `/users/avatar/delete`; API v2 — `/auth/oauth/:provider` та `/auth/exchange` для зовнішньої OAuth-авторизації.
+Поточні API endpoints: API v1 — `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/users/update-profile`, `/users/avatar/upload`, `/users/avatar/change` і `/users/avatar/delete`; API v2 — `/auth/:provider` та `/auth/exchange` для зовнішньої OAuth-авторизації.
 
 Auth і theme state зберігаються в `localStorage` через Zustand persist під ключами `auth-storage` і `theme`. Маршрути `/organizations` і `/account/*` захищені наявністю auth token.
 
