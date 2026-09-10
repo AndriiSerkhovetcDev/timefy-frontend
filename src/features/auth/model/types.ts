@@ -4,9 +4,9 @@ export type User = {
   firstName?: string;
   lastName?: string;
   email: string;
-  phone: string;
+  phone: string | null;
   emailVerified: boolean;
-  avatar?: string;
+  avatar?: string | null;
   authData?: {
     isWeb: boolean;
     isGoogle: boolean;
@@ -17,6 +17,7 @@ export type AuthState = {
   user: User | null;
   token: string | null;
   login: (user: User, token: string) => void;
+  setUser: (user: User) => void;
   logout: () => void;
   setEmailVerified: (value: boolean) => void;
 };

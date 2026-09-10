@@ -1,16 +1,20 @@
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import {
-  DashboardLayout,
-  DashboardPage,
+  AccountLayout,
+  AccountOverviewPage,
   ForgotPasswordPage,
   HomePage,
   LoginPage,
   NotFoundPage,
+  NotificationsPage,
+  OrganizationsLayout,
+  OrganizationsPage,
+  PersonalDataPage,
   PublicLayout,
   RegisterPage,
   ResetPasswordPage,
-  SchemasPage,
+  SecurityPage,
   VerifyEmailPage,
 } from ".";
 import { PageLoader, PublicRoute, UserRouteGuard } from "@/shared/ui";
@@ -40,11 +44,16 @@ const LazyRoutes = () => {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<DashboardLayout />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
+          <Route element={<OrganizationsLayout />}>
+            <Route path="/organizations" element={<OrganizationsPage />} />
           </Route>
 
-          <Route path="/schemas" element={<SchemasPage />} />
+          <Route path="/account" element={<AccountLayout />}>
+            <Route index element={<AccountOverviewPage />} />
+            <Route path="personal" element={<PersonalDataPage />} />
+            <Route path="security" element={<SecurityPage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+          </Route>
         </Route>
       </Routes>
     </Suspense>

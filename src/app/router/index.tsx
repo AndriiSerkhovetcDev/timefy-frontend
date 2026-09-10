@@ -8,8 +8,14 @@ export const ForgotPasswordPage = lazy(
   () => import("@/pages/ForgotPassword/ui/ForgotPasswordPage"),
 );
 export const ResetPasswordPage = lazy(() => import("@/pages/ForgotPassword/ui/ResetPasswordPage"));
-export const DashboardPage = lazy(() => import("@/pages/Dashboard/DashboardPage"));
+export const OrganizationsPage = lazy(() => import("@/pages/Organizations/OrganizationsPage"));
 export const PublicLayout = lazy(() => import("@/layouts/PublicLayout/PublicLayout"));
-export const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout/DashboardLayout"));
-export const SchemasPage = lazy(() => import("@/pages/Schemas/SchemasPage"));
+export const OrganizationsLayout = lazy(
+  () => import("@/layouts/OrganizationsLayout/OrganizationsLayout"),
+);
+export const AccountLayout = lazy(() => import("@/layouts/AccountLayout/AccountLayout"));
 export const NotFoundPage = lazy(() => import("@/pages/NotFound/NotFoundPage"));
+export const PersonalDataPage = lazy(() => import("@/pages/Account/PersonalDataPage"));
+export const SecurityPage = lazy(() => import("@/pages/Account/SecurityPage"));
+export const NotificationsPage = lazy(() => import("@/pages/Account/NotificationsPage"));
+export const AccountOverviewPage = lazy(() => import("@/pages/Account/AccountOverviewPage"));
