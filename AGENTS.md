@@ -6,8 +6,8 @@
 
 - публічний лендинг платформи для керування записами, календарем і клієнтами майстрів та салонів;
 - реєстрацію, вхід, Google OAuth callback, підтвердження email і відновлення пароля;
-- захищені сторінки dashboard та schemas;
-- інтерфейс для перегляду схем бази даних, таблиць, enum-типів, views, functions і triggers, а також локальної зміни налаштувань GraphQL/таблиць.
+- захищені сторінки організацій та особистого кабінету користувача;
+- зовнішнє посилання на окремий застосунок схем для ролей `ADMIN` і `SUPPORT`.
 
 ## Архітектура
 
@@ -16,18 +16,18 @@
 Код організований за шарами:
 
 - `src/app/router` — таблиця маршрутів і lazy imports.
-- `src/pages` — композиція сторінок: Home, Login, Register, VerifyEmail, ForgotPassword, AuthCallback, Dashboard і Schemas.
-- `src/layouts` — публічний та dashboard layouts з `Outlet`.
+- `src/pages` — композиція публічних, auth, організаційних та account-сторінок.
+- `src/layouts` — публічний, organizations та account layouts з `Outlet`.
 - `src/widgets` — великі повторно використовувані блоки Header і Footer.
-- `src/features/auth`, `src/features/forgot-password`, `src/features/verify-email`, `src/features/schemas` — feature-specific UI, types, validation schemas і Zustand stores.
+- `src/features/auth`, `src/features/account`, `src/features/forgot-password`, `src/features/verify-email` — feature-specific UI, types, validation schemas і Zustand stores.
 - `src/shared/api` — HTTP client на `fetch` і API functions. Base URL береться з `VITE_API_URL`; bearer token — з auth store.
 - `src/shared/hooks`, `src/shared/lib`, `src/shared/model`, `src/shared/ui` — спільні hooks, notifications, persisted theme state, route guards і UI primitives.
 - `src/components/ui` — shadcn/Radix UI primitives.
 - `src/assets` і `public` — статичні ресурси.
 
-Поточні API endpoints: `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/google` і `/schema`.
+Поточні API endpoints: `/auth/login`, `/auth/register`, `/auth/check`, `/auth/verify-email`, `/auth/resend-verify-email`, `/auth/forgot-password`, `/auth/reset-password`, `/auth/google`, `/users/update-profile`, `/users/avatar/upload`, `/users/avatar/change` і `/users/avatar/delete`.
 
-Auth і theme state зберігаються в `localStorage` через Zustand persist під ключами `auth-storage` і `theme`. Schema state не persisted. Маршрути `/dashboard` і `/schemas` захищені наявністю auth token.
+Auth і theme state зберігаються в `localStorage` через Zustand persist під ключами `auth-storage` і `theme`. Маршрути `/organizations` і `/account/*` захищені наявністю auth token.
 
 ## Стек
 

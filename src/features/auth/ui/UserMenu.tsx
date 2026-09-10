@@ -1,103 +1,90 @@
-import { useEffect, useRef, useState } from "react";
-import { selectUser, useAuthStore } from "../model/authStore";
-import defaultUserImg from "@/assets/default-avatar.png";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { selectUser, useAuthStore } from "../model/authStore";
+import type { User } from "../model/types";
+import { getUserDisplayName } from "../model/user";
+import { UserAvatar } from "./UserAvatar";
 
-export const userMenuItems = [
-  { id: "dashboard", text: "Дашборд", link: "/dashboard", isDanger: false, isAdmin: false },
-  { id: "schemas", text: "Схеми", link: "/schemas", isDanger: false, isAdmin: true },
-  { id: "logout", text: "Вийти", isDanger: true, isAdmin: false },
+type UserMenuItem = {
+  id: string;
+  text: string;
+  link: string;
+  allowedRoles?: User["role"][];
+};
+
+const userMenuItems: UserMenuItem[] = [
+  { id: "account", text: "Особистий кабінет", link: "/account" },
+  { id: "organizations", text: "Організації", link: "/organizations" },
+  {
+    id: "schemas",
+    text: "Схеми",
+    link: "https://dev.timefy.online",
+    allowedRoles: ["ADMIN", "SUPPORT"],
+  },
 ];
 
-const dangerLinkStyle = "text-error hover:bg-error/10";
-const defaultLinkStyle = "text-text-main hover:bg-bg-main hover:text-primary";
-
 export const UserMenu = () => {
-  const [isOpenDropdwn, setIsOpenDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const user = useAuthStore(selectUser);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
-  const filteredItems = userMenuItems.filter((item) => !item.isAdmin || user?.role === "ADMIN");
-  const isShowLogin = user?.authData?.isWeb && !(user.firstName || user.lastName);
-
-  const handleOpenDropdown = () => {
-    setIsOpenDropdown((prev) => !prev);
-  };
+  if (!user) {
+    return null;
+  }
 
   const handleLogout = () => {
     logout();
-    navigate("/login");
+    navigate("/login", { replace: true });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const isOutsideDropdown = !dropdownRef.current?.contains(event.target as Node);
-
-      if (isOutsideDropdown) {
-        setIsOpenDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const visibleItems = userMenuItems.filter(
+    (item) => !item.allowedRoles || item.allowedRoles.includes(user.role),
+  );
+  const displayName = getUserDisplayName(user);
 
   return (
-    <div>
-      <div className="relative" ref={dropdownRef}>
-        <img
-          className="w-10 h-10 p-1 rounded-full cursor-pointer"
-          src={user?.avatar ?? defaultUserImg}
-          alt="Bordered avatar"
-          onClick={handleOpenDropdown}
-        />
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="h-auto max-w-56 gap-3 rounded-full px-2 py-1.5">
+          <UserAvatar user={user} className="size-9 shrink-0" />
+          <span className="hidden truncate text-sm font-medium text-foreground sm:block">
+            {displayName}
+          </span>
+        </Button>
+      </DropdownMenuTrigger>
 
-        {isOpenDropdwn && (
-          <div
-            id="userDropdown"
-            className="absolute right-0 top-12 z-10 bg-bg-surface border border-border rounded-xl shadow-sm w-48"
-          >
-            <p className="px-4 pt-3 pb-1 text-xs font-medium text-text-muted uppercase tracking-wide">
-              Обліковий запис
-            </p>
-
-            <div className="px-4 pb-4 pt-2 border-b border-border">
-              {user?.firstName && user.lastName && (
-                <div className="font-medium text-sm text-primary">
-                  {user?.firstName} {user.lastName}
-                </div>
-              )}
-              {isShowLogin && <div className="font-medium text-sm text-primary">{user?.login}</div>}
-              <div className="truncate text-xs text-text-muted">{user?.email}</div>
-            </div>
-
-            <ul className="p-2">
-              {filteredItems.map((item) => (
-                <li key={item.id}>
-                  {item.link ? (
-                    <Link
-                      to={item.link}
-                      className={`block w-full px-3 py-2 text-sm text-text-main rounded-lg transition
-          ${item.isDanger ? dangerLinkStyle : defaultLinkStyle}`}
-                    >
-                      {item.text}
-                    </Link>
-                  ) : (
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-3 py-2 text-sm text-error hover:bg-error/10 rounded-lg transition"
-                    >
-                      {item.text}
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    </div>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>
+          <span className="block truncate">{displayName}</span>
+          <span className="block truncate text-xs font-normal text-muted-foreground">
+            {user.email}
+          </span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        {visibleItems.map((item) => (
+          <DropdownMenuItem key={item.id} asChild>
+            {item.link.startsWith("http") ? (
+              <a href={item.link}>{item.text}</a>
+            ) : (
+              <Link to={item.link}>{item.text}</Link>
+            )}
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem variant="destructive" onSelect={handleLogout}>
+          <LogOut aria-hidden="true" />
+          Вийти
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 };

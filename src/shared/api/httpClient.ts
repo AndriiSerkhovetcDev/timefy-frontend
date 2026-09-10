@@ -8,11 +8,22 @@ const BASE_URL = import.meta.env.VITE_API_URL;
 
 const getToken = () => useAuthStore.getState().token;
 
+export class ApiError extends Error {
+  readonly status: number;
+
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = "ApiError";
+    this.status = status;
+  }
+}
+
 const request = async <T>(endpoint: string, options: RequestOptions = {}): Promise<T> => {
   const token = getToken();
+  const isFormData = options.body instanceof FormData;
 
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(!isFormData && { "Content-Type": "application/json" }),
     ...(options.headers as Record<string, string>),
   };
 
@@ -27,7 +38,7 @@ const request = async <T>(endpoint: string, options: RequestOptions = {}): Promi
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.message ?? "Щось пішло не так");
+    throw new ApiError(error.message ?? "Щось пішло не так", response.status);
   }
 
   return response.json();
@@ -38,8 +49,48 @@ export const httpClient = {
     request<T>(endpoint, { ...options, method: "GET" }),
   post: <T>(endpoint: string, body: unknown, options?: RequestOptions) =>
     request<T>(endpoint, { ...options, method: "POST", body: JSON.stringify(body) }),
+  postForm: <T>(endpoint: string, body: FormData, options?: RequestOptions) =>
+    request<T>(endpoint, { ...options, method: "POST", body }),
   put: <T>(endpoint: string, body: unknown, options?: RequestOptions) =>
     request<T>(endpoint, { ...options, method: "PUT", body: JSON.stringify(body) }),
   delete: <T>(endpoint: string, options?: RequestOptions) =>
     request<T>(endpoint, { ...options, method: "DELETE" }),
+};
+
+export const resolveApiAssetUrl = (path?: string | null) => {
+  if (!path || /^(https?:|data:|blob:)/.test(path)) return path ?? undefined;
+
+  const apiOrigin = new URL(BASE_URL, window.location.origin).origin;
+  return new URL(path, apiOrigin).toString();
+};
+
+export const isApiAssetUrl = (path: string) => {
+  if (!/^https?:/.test(path)) return true;
+
+  const apiOrigin = new URL(BASE_URL, window.location.origin).origin;
+  return new URL(path).origin === apiOrigin;
+};
+
+export const fetchApiAsset = (path: string) => {
+  const token = getToken();
+  const url = resolveApiAssetUrl(path) ?? path;
+
+  return fetch(url, {
+    cache: "no-store",
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  }).then(async (response) => {
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new ApiError(error.message ?? "Не вдалося завантажити файл", response.status);
+    }
+
+    return response.blob();
+  });
+};
+
+export const versionApiAssetUrl = (path: string) => {
+  const url = new URL(path, window.location.origin);
+  url.searchParams.set("v", Date.now().toString());
+
+  return /^https?:/.test(path) ? url.toString() : `${url.pathname}${url.search}${url.hash}`;
 };

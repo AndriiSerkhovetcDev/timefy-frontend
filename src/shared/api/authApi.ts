@@ -1,3 +1,4 @@
+import type { User } from "@/features/auth/model/types";
 import { httpClient } from "./httpClient";
 
 type LoginPayload = {
@@ -14,13 +15,7 @@ type RegisterPayload = {
 
 export type AuthResponse = {
   data: {
-    user: {
-      login: string;
-      role: "ADMIN" | "SUPPORT" | "OWNER";
-      email: string;
-      phone: string;
-      emailVerified: boolean;
-    };
+    user: User;
     token: string;
   };
 };
