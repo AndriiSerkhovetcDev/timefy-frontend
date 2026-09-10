@@ -6,6 +6,7 @@ import {
   ForgotPasswordPage,
   HomePage,
   LoginPage,
+  NotFoundPage,
   PublicLayout,
   RegisterPage,
   ResetPasswordPage,
@@ -34,6 +35,8 @@ const LazyRoutes = () => {
           <Route element={<UserRouteGuard />}>
             <Route path="verify-email" element={<VerifyEmailPage />} />
           </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
         <Route element={<ProtectedRoute />}>
