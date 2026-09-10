@@ -11,8 +11,11 @@ export type OAuthCallbackPayload = {
 let activeCallbackPayload: OAuthCallbackPayload | null = null;
 
 export const consumeOAuthCallback = (): OAuthCallbackPayload => {
-  if (window.location.search) {
-    const params = new URLSearchParams(window.location.search);
+  if (window.location.search || window.location.hash) {
+    const callbackParameters = window.location.hash
+      ? window.location.hash.slice(1)
+      : window.location.search;
+    const params = new URLSearchParams(callbackParameters);
 
     activeCallbackPayload = {
       provider: params.get("provider"),

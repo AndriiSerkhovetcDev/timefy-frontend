@@ -45,19 +45,20 @@ describe("AuthCallbackPage", () => {
     window.history.replaceState({}, "", "/");
   });
 
-  it("cleans the URL immediately and exchanges a code only once in Strict Mode", async () => {
+  it("reads a fragment callback, cleans the URL and exchanges a code once in Strict Mode", async () => {
     let resolveExchange: (response: ExternalAuthExchangeResponse) => void = () => undefined;
     exchangeExternalAuthCode.mockReturnValue(
       new Promise<ExternalAuthExchangeResponse>((resolve) => {
         resolveExchange = resolve;
       }),
     );
-    window.history.replaceState({}, "", "/auth/callback?provider=GOOGLE&code=single-use-code");
+    window.history.replaceState({}, "", "/auth/callback#provider=GOOGLE&code=single-use-code");
 
     renderCallback();
 
     expect(window.location.pathname).toBe("/auth/callback");
     expect(window.location.search).toBe("");
+    expect(window.location.hash).toBe("");
     expect(exchangeExternalAuthCode).toHaveBeenCalledOnce();
     expect(exchangeExternalAuthCode).toHaveBeenCalledWith("GOOGLE", "single-use-code");
 
