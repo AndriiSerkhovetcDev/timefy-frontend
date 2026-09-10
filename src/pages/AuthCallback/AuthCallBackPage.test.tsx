@@ -62,7 +62,7 @@ describe("AuthCallbackPage", () => {
     expect(exchangeExternalAuthCode).toHaveBeenCalledOnce();
     expect(exchangeExternalAuthCode).toHaveBeenCalledWith("GOOGLE", "single-use-code");
 
-    resolveExchange({ data: { provider: "GOOGLE", token: "access-token", user } });
+    resolveExchange({ data: { token: "access-token", user } });
 
     await waitFor(() => expect(useAuthStore.getState().token).toBe("access-token"));
     expect(useAuthStore.getState().user).toEqual(user);
