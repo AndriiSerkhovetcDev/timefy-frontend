@@ -12,13 +12,13 @@ describe("exchangeExternalAuthCode", () => {
     );
   });
 
-  it("posts only the exchange code to API v2 with cookies and no cache", async () => {
-    await exchangeExternalAuthCode("one-time-code");
+  it("posts the provider and one-time code to API v2 with cookies and no cache", async () => {
+    await exchangeExternalAuthCode("GOOGLE", "one-time-code");
 
     expect(fetch).toHaveBeenCalledOnce();
     expect(fetch).toHaveBeenCalledWith("http://localhost:3000/api/v2/auth/exchange", {
       method: "POST",
-      body: JSON.stringify({ exchangeCode: "one-time-code" }),
+      body: JSON.stringify({ provider: "GOOGLE", code: "one-time-code" }),
       credentials: "include",
       cache: "no-store",
       headers: { "Content-Type": "application/json" },
