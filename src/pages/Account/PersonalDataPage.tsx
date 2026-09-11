@@ -330,7 +330,7 @@ export const PersonalDataPage = () => {
                 <AlertDescription className="min-w-0">
                   Ми надішлемо на вказану адресу лист із посиланням для підтвердження.
                 </AlertDescription>
-                <div className="col-start-2 mt-3 min-w-0 w-full">
+                <div className="col-span-full mt-3 w-full min-w-0">
                   <Button
                     type="button"
                     variant="outline"
