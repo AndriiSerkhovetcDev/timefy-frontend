@@ -12,3 +12,8 @@ export const profileSchema = z.object({
 
 export type ProfileFormValues = z.input<typeof profileSchema>;
 export type ProfileValues = z.output<typeof profileSchema>;
+
+const normalizeEmail = (email: string) => email.trim().toLowerCase();
+
+export const didEmailChange = (previousEmail: string, updatedEmail: string) =>
+  normalizeEmail(previousEmail) !== normalizeEmail(updatedEmail);

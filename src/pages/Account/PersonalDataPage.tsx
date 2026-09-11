@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
+  didEmailChange,
   profileSchema,
   type ProfileFormValues,
   type ProfileValues,
@@ -21,14 +22,16 @@ import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { AccountAvatar } from "@/features/account/ui/AccountAvatar";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { EmailStatus } from "@/features/account/ui/EmailStatus";
+import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
 import { resendVerifyEmail } from "@/shared/api/authApi";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageUp, Loader2, MailCheck, MailWarning, Trash2 } from "lucide-react";
+import { ImageUp, KeyRound, Loader2, MailCheck, MailWarning, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
@@ -36,10 +39,13 @@ const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
 export const PersonalDataPage = () => {
   const user = useAuthStore(selectUser);
   const setUser = useAuthStore((state) => state.setUser);
+  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
   const [isResending, setIsResending] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [emailRequiresAuthMethod, setEmailRequiresAuthMethod] = useState(false);
   const [cooldown, setCooldown] = useState(0);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const {
@@ -80,17 +86,22 @@ export const PersonalDataPage = () => {
   const handleProfileSubmit = async (values: ProfileValues) => {
     try {
       const response = await updateProfile(values);
-      const updatedUser = {
-        ...user,
-        ...response.data,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        phone: values.phone,
-      };
-      setUser(updatedUser);
+      if (didEmailChange(user.email, response.data.email)) {
+        logout();
+        navigate("/login", { replace: true, state: { reason: "EMAIL_CHANGED" } });
+        notify.success("Email змінено. Увійдіть повторно та підтвердьте нову адресу.");
+        return;
+      }
+
+      setEmailRequiresAuthMethod(false);
+      setUser(response.data);
       notify.success(response.message || "Дані профілю оновлено");
     } catch (error) {
+      if (error instanceof ApiError && error.errorCode === "EMAIL_CHANGE_REQUIRES_AUTH_METHOD") {
+        setEmailRequiresAuthMethod(true);
+        notify.warning("Перед зміною email потрібно налаштувати спосіб входу");
+        return;
+      }
       notify.error(error instanceof Error ? error.message : "Не вдалося оновити дані профілю");
     }
   };
@@ -326,6 +337,21 @@ export const PersonalDataPage = () => {
                       ? `Повторити через ${cooldown} с`
                       : "Надіслати лист для підтвердження"}
                   </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+            {emailRequiresAuthMethod && (
+              <Alert className="sm:col-span-2">
+                <KeyRound aria-hidden="true" />
+                <AlertTitle>Спочатку створіть login і пароль</AlertTitle>
+                <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span>
+                    Введений email збережено у формі. Після створення пароля повторно підтвердьте
+                    зміну email кнопкою «Зберегти зміни».
+                  </span>
+                  {user.authData?.isWeb === false && (
+                    <CreatePasswordDialog onCreated={() => setEmailRequiresAuthMethod(false)} />
+                  )}
                 </AlertDescription>
               </Alert>
             )}

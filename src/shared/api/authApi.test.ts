@@ -1,5 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { exchangeExternalAuthCode, login, logoutCurrentSession, registration } from "./authApi";
+import {
+  changePassword,
+  createPassword,
+  exchangeExternalAuthCode,
+  login,
+  logoutCurrentSession,
+  registration,
+} from "./authApi";
 
 describe("exchangeExternalAuthCode", () => {
   beforeEach(() => {
@@ -57,5 +64,34 @@ describe("exchangeExternalAuthCode", () => {
       credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
+  });
+
+  it("creates credentials without sending confirmPassword", async () => {
+    await createPassword({ login: "new_login", password: "Password1!" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:3000/api/v1/auth/create-password",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({ login: "new_login", password: "Password1!" }),
+      }),
+    );
+  });
+
+  it("changes the password with the current and new values", async () => {
+    await changePassword({ currentPassword: "Current1!", newPassword: "NewPassword1!" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      "http://localhost:3000/api/v1/auth/change-password",
+      expect.objectContaining({
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify({
+          currentPassword: "Current1!",
+          newPassword: "NewPassword1!",
+        }),
+      }),
+    );
   });
 });

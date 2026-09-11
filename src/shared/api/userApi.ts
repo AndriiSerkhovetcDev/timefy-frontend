@@ -26,12 +26,16 @@ export const updateProfile = ({
   email,
   phone,
 }: UpdateProfilePayload): Promise<UpdateProfileResponse> =>
-  httpClient.post(API_UPDATE_PROFILE, {
-    first_name: firstName,
-    last_name: lastName,
-    email,
-    phone,
-  });
+  httpClient.post(
+    API_UPDATE_PROFILE,
+    {
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone,
+    },
+    { credentials: "include" },
+  );
 
 const sendAvatar = (endpoint: string, file: File): Promise<UpdateProfileResponse> => {
   const formData = new FormData();

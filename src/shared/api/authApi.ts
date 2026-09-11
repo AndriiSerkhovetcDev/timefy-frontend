@@ -65,6 +65,23 @@ type resetPasswordPayload = {
   token: string;
 };
 
+type CreatePasswordPayload = {
+  login: string;
+  password: string;
+};
+
+type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+};
+
+type CreatePasswordResponse = {
+  status: number;
+  code: string;
+  message: string;
+  data: { user: User };
+};
+
 export type ForgotPassEmailStepPayload = { email: string } | { login: string };
 
 //api
@@ -77,6 +94,8 @@ const API_FORGOT_PASS_EMAIL_STEP = "/auth/forgot-password";
 const API_FORGOT_PASS_RESET_PASS = "/auth/reset-password";
 const API_OAUTH_EXCHANGE = "/auth/exchange";
 const API_LOGOUT = "/auth/logout";
+const API_CREATE_PASSWORD = "/auth/create-password";
+const API_CHANGE_PASSWORD = "/auth/change-password";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
   return httpClient.post(API_LOGIN_URL, payload, {
@@ -143,3 +162,9 @@ export const logoutCurrentSession = (): Promise<void> =>
     credentials: "include",
     retryUnauthorized: false,
   });
+
+export const createPassword = (payload: CreatePasswordPayload): Promise<CreatePasswordResponse> =>
+  httpClient.post(API_CREATE_PASSWORD, payload, { credentials: "include" });
+
+export const changePassword = (payload: ChangePasswordPayload): Promise<AuthResponse> =>
+  httpClient.post(API_CHANGE_PASSWORD, payload, { credentials: "include" });
