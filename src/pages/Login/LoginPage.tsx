@@ -1,12 +1,26 @@
 import { GoogleAuth } from "@/features/auth/ui/GoogleAuth";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
-import { Link } from "react-router-dom";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { MailCheck } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
 
 export const LoginPage = () => {
+  const location = useLocation();
+  const emailChanged = (location.state as { reason?: string } | null)?.reason === "EMAIL_CHANGED";
+
   return (
     <div className="flex flex-1 items-center justify-center ">
       <div className="w-full max-w-md rounded-2xl bg-bg-surface p-8 shadow-sm ring-1 ring-border">
         <h1 className="mb-1 text-2xl text-center font-bold text-primary">Вхід</h1>
+        {emailChanged && (
+          <Alert className="my-4">
+            <MailCheck aria-hidden="true" />
+            <AlertTitle>Email змінено</AlertTitle>
+            <AlertDescription>
+              Увійдіть повторно та підтвердьте нову електронну адресу.
+            </AlertDescription>
+          </Alert>
+        )}
         <LoginForm />
 
         <div className="flex justify-center mt-2">

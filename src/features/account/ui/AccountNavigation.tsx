@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { useAuthStore } from "@/features/auth/model/authStore";
+import { endCurrentSession } from "@/features/auth/model/endSession";
 import { cn } from "@/lib/utils";
 import { CircleHelp, LogOut } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -12,12 +12,11 @@ type AccountNavigationProps = {
 };
 
 export const AccountNavigation = ({ onNavigate, isCollapsed = false }: AccountNavigationProps) => {
-  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await endCurrentSession();
     onNavigate?.();
     navigate("/login", { replace: true });
   };
