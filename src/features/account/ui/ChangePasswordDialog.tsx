@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -80,9 +79,6 @@ export const ChangePasswordDialog = () => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Зміна пароля</DialogTitle>
-          <DialogDescription>
-            Після зміни backend створить нову сесію для цього пристрою.
-          </DialogDescription>
         </DialogHeader>
         <form id="change-password-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">

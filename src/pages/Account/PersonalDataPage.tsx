@@ -169,8 +169,8 @@ export const PersonalDataPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <Card>
+    <div className="min-w-0 space-y-6">
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Фото профілю</CardTitle>
           <CardDescription>Аватар, який відображається у вашому кабінеті.</CardDescription>
@@ -191,7 +191,7 @@ export const PersonalDataPage = () => {
               </div>
             )}
           </div>
-          <div className="space-y-2">
+          <div className="min-w-0 space-y-2">
             <Input
               ref={avatarInputRef}
               type="file"
@@ -262,14 +262,17 @@ export const PersonalDataPage = () => {
         </DialogContent>
       </Dialog>
 
-      <Card>
+      <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Контактні дані</CardTitle>
           <CardDescription>Оновіть контактну інформацію вашого облікового запису.</CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="grid gap-5 sm:grid-cols-2" onSubmit={handleSubmit(handleProfileSubmit)}>
-            <div className="space-y-2">
+          <form
+            className="grid min-w-0 gap-5 sm:grid-cols-2"
+            onSubmit={handleSubmit(handleProfileSubmit)}
+          >
+            <div className="min-w-0 space-y-2">
               <Label htmlFor="first-name">Ім’я</Label>
               <Input
                 id="first-name"
@@ -281,7 +284,7 @@ export const PersonalDataPage = () => {
                 <p className="text-xs text-destructive">{errors.firstName.message}</p>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <Label htmlFor="last-name">Прізвище</Label>
               <Input
                 id="last-name"
@@ -293,7 +296,7 @@ export const PersonalDataPage = () => {
                 <p className="text-xs text-destructive">{errors.lastName.message}</p>
               )}
             </div>
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <div className="flex min-h-6 items-center">
                 <Label htmlFor="phone">Номер телефону</Label>
               </div>
@@ -306,7 +309,7 @@ export const PersonalDataPage = () => {
               />
               {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
             </div>
-            <div className="space-y-2">
+            <div className="min-w-0 space-y-2">
               <div className="flex min-h-6 items-center justify-between gap-2">
                 <Label htmlFor="email">Email</Label>
                 <EmailStatus verified={user.emailVerified} />
@@ -324,13 +327,16 @@ export const PersonalDataPage = () => {
               <Alert className="sm:col-span-2">
                 <MailWarning aria-hidden="true" />
                 <AlertTitle>Підтвердіть email</AlertTitle>
-                <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span>Ми надішлемо на вказану адресу лист із посиланням для підтвердження.</span>
+                <AlertDescription className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="min-w-0">
+                    Ми надішлемо на вказану адресу лист із посиланням для підтвердження.
+                  </span>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleResend}
                     disabled={isResending || cooldown > 0}
+                    className="h-auto max-w-full whitespace-normal sm:h-9 sm:whitespace-nowrap"
                   >
                     {isResending ? <Loader2 className="animate-spin" /> : <MailCheck />}
                     {cooldown > 0
@@ -344,8 +350,8 @@ export const PersonalDataPage = () => {
               <Alert className="sm:col-span-2">
                 <KeyRound aria-hidden="true" />
                 <AlertTitle>Спочатку створіть login і пароль</AlertTitle>
-                <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span>
+                <AlertDescription className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <span className="min-w-0">
                     Введений email збережено у формі. Після створення пароля повторно підтвердьте
                     зміну email кнопкою «Зберегти зміни».
                   </span>
