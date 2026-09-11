@@ -327,23 +327,23 @@ export const PersonalDataPage = () => {
               <Alert className="sm:col-span-2">
                 <MailWarning aria-hidden="true" />
                 <AlertTitle>Підтвердіть email</AlertTitle>
-                <AlertDescription className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <span className="min-w-0">
-                    Ми надішлемо на вказану адресу лист із посиланням для підтвердження.
-                  </span>
+                <AlertDescription className="min-w-0">
+                  Ми надішлемо на вказану адресу лист із посиланням для підтвердження.
+                </AlertDescription>
+                <div className="col-start-2 mt-3 min-w-0 w-full">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleResend}
                     disabled={isResending || cooldown > 0}
-                    className="h-auto w-full max-w-full whitespace-normal sm:h-9 sm:w-auto sm:whitespace-nowrap"
+                    className="h-auto w-full whitespace-normal sm:h-9 sm:whitespace-nowrap"
                   >
                     {isResending ? <Loader2 className="animate-spin" /> : <MailCheck />}
                     {cooldown > 0
                       ? `Повторити через ${cooldown} с`
                       : "Надіслати лист для підтвердження"}
                   </Button>
-                </AlertDescription>
+                </div>
               </Alert>
             )}
             {emailRequiresAuthMethod && (
@@ -362,7 +362,11 @@ export const PersonalDataPage = () => {
               </Alert>
             )}
             <div className="flex justify-end sm:col-span-2">
-              <Button type="submit" disabled={!isDirty || isSubmitting}>
+              <Button
+                type="submit"
+                disabled={!isDirty || isSubmitting}
+                className="w-full sm:w-auto"
+              >
                 {isSubmitting && <Loader2 className="animate-spin" />}
                 {isSubmitting ? "Збереження…" : "Зберегти зміни"}
               </Button>
