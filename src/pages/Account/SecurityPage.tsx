@@ -26,9 +26,9 @@ export const SecurityPage = () => {
           {canCreatePassword ? (
             <Alert>
               <ShieldCheck aria-hidden="true" />
-              <AlertTitle>Створіть login і пароль</AlertTitle>
+              <AlertTitle>Створіть логін і пароль</AlertTitle>
               <AlertDescription>
-                Додайте password authentication як незалежний спосіб входу до Timefy.
+                Додайте вхід за паролем як незалежний спосіб авторизації в Timefy.
               </AlertDescription>
             </Alert>
           ) : (

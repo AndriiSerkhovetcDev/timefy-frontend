@@ -113,7 +113,6 @@ const canRefreshRequest = (
   retryUnauthorized &&
   !hasRetriedAfterRefresh &&
   Boolean(token) &&
-  useAuthStore.getState().user?.role === "USER" &&
   error.status === 401 &&
   error.errorCode === "UNAUTHORIZED";
 

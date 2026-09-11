@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/features/auth/model/authStore";
 import type { User } from "@/features/auth/model/types";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ApiError, httpClient, refreshSession } from "./httpClient";
+import { httpClient, refreshSession } from "./httpClient";
 
 const user: User = {
   login: "session-user",
@@ -124,13 +124,19 @@ describe("httpClient session refresh", () => {
     expect(useAuthStore.getState().token).toBe("new-token");
   });
 
-  it("does not use USER refresh for another role", async () => {
-    useAuthStore.setState({ user: { ...user, role: "ADMIN" }, token: "admin-token" });
-    const fetchMock = vi.fn().mockResolvedValue(response(401, { errorCode: "UNAUTHORIZED" }));
+  it("refreshes a protected request for another authorized role", async () => {
+    const admin = { ...user, role: "ADMIN" as const };
+    useAuthStore.setState({ user: admin, token: "admin-token" });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(response(401, { errorCode: "UNAUTHORIZED" }))
+      .mockResolvedValueOnce(response(200, { data: { token: "new-admin-token", user: admin } }))
+      .mockResolvedValueOnce(response(200, { data: { ok: true } }));
     vi.stubGlobal("fetch", fetchMock);
 
-    await expect(httpClient.get("/protected")).rejects.toBeInstanceOf(ApiError);
-    expect(fetchMock).toHaveBeenCalledOnce();
+    await expect(httpClient.get("/protected")).resolves.toEqual({ data: { ok: true } });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(useAuthStore.getState()).toMatchObject({ user: admin, token: "new-admin-token" });
   });
 
   it("exposes error codes and Retry-After values to feature flows", async () => {

@@ -169,7 +169,7 @@ export const PersonalDataPage = () => {
   };
 
   return (
-    <div className="w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-x-hidden space-y-6 sm:max-w-[calc(100vw-3rem)] lg:max-w-full">
+    <div className="min-w-0 space-y-6">
       <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Фото профілю</CardTitle>
@@ -192,7 +192,7 @@ export const PersonalDataPage = () => {
             )}
           </div>
           <div className="min-w-0 space-y-2">
-            <Input
+            <input
               ref={avatarInputRef}
               type="file"
               accept="image/*"
@@ -349,7 +349,7 @@ export const PersonalDataPage = () => {
             {emailRequiresAuthMethod && (
               <Alert className="sm:col-span-2">
                 <KeyRound aria-hidden="true" />
-                <AlertTitle>Спочатку створіть login і пароль</AlertTitle>
+                <AlertTitle>Спочатку створіть логін і пароль</AlertTitle>
                 <AlertDescription className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="min-w-0">
                     Введений email збережено у формі. Після створення пароля повторно підтвердьте

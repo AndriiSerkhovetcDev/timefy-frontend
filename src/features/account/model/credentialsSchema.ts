@@ -19,8 +19,8 @@ export const createPasswordSchema = z
     login: z
       .string()
       .trim()
-      .min(1, "Введіть login")
-      .max(150, "Login має містити не більше 150 символів")
+      .min(1, "Введіть логін")
+      .max(150, "Логін має містити не більше 150 символів")
       .regex(/^[a-zA-Z0-9_]+$/, "Використовуйте лише латинські літери, цифри та _"),
     password: newPasswordSchema,
     confirmPassword: z.string().min(1, "Підтвердьте пароль"),
