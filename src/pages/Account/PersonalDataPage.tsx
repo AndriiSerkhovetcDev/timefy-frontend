@@ -169,7 +169,7 @@ export const PersonalDataPage = () => {
   };
 
   return (
-    <div className="min-w-0 space-y-6">
+    <div className="w-full min-w-0 max-w-[calc(100vw-2rem)] overflow-x-hidden space-y-6 sm:max-w-[calc(100vw-3rem)] lg:max-w-full">
       <Card className="min-w-0">
         <CardHeader>
           <CardTitle>Фото профілю</CardTitle>
