@@ -71,7 +71,7 @@ export const ChangePasswordDialog = () => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button type="button">
+        <Button type="button" className="w-full sm:w-auto">
           <KeyRound aria-hidden="true" />
           Змінити пароль
         </Button>

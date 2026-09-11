@@ -34,7 +34,7 @@ export const SecurityPage = () => {
           ) : (
             <Alert>
               <KeyRound aria-hidden="true" />
-              <AlertTitle>Password authentication налаштовано</AlertTitle>
+              <AlertTitle>Вхід за паролем налаштовано</AlertTitle>
               <AlertDescription>
                 Для зміни пароля введіть поточний пароль і задайте новий.
               </AlertDescription>
