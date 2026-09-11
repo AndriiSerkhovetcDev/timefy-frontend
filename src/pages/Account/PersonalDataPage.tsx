@@ -349,7 +349,7 @@ export const PersonalDataPage = () => {
             {emailRequiresAuthMethod && (
               <Alert className="sm:col-span-2">
                 <KeyRound aria-hidden="true" />
-                <AlertTitle>Спочатку створіть login і пароль</AlertTitle>
+                <AlertTitle>Спочатку створіть логін і пароль</AlertTitle>
                 <AlertDescription className="flex min-w-0 flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <span className="min-w-0">
                     Введений email збережено у формі. Після створення пароля повторно підтвердьте

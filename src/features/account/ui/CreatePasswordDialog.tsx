@@ -60,7 +60,7 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
     try {
       const response = await refreshSession();
       if (response.data.user.authData?.isWeb) {
-        finishSuccessfully("Login і пароль уже створено");
+        finishSuccessfully("Логін і пароль уже створено");
         return;
       }
     } catch {
@@ -73,10 +73,10 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
     try {
       const response = await createPassword({ login: values.login, password: values.password });
       setUser(response.data.user);
-      finishSuccessfully("Login і пароль створено");
+      finishSuccessfully("Логін і пароль створено");
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "LOGIN_ALREADY_EXISTS") {
-        setError("login", { message: "Цей login уже використовується." });
+        setError("login", { message: "Цей логін уже використовується." });
         return;
       }
 
@@ -113,19 +113,19 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button type="button">
+        <Button type="button" className="w-full sm:w-auto">
           <KeyRound aria-hidden="true" />
-          Створити login і пароль
+          Створити логін і пароль
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Створення login і пароля</DialogTitle>
+          <DialogTitle>Створення логіна і пароля</DialogTitle>
           <DialogDescription>Додайте ще один незалежний спосіб входу до Timefy.</DialogDescription>
         </DialogHeader>
         <form id="create-password-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="create-login">Login</Label>
+            <Label htmlFor="create-login">Логін</Label>
             <Input id="create-login" autoComplete="username" {...register("login")} />
             {errors.login && <p className="text-xs text-destructive">{errors.login.message}</p>}
           </div>
