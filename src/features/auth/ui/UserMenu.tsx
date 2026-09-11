@@ -26,7 +26,7 @@ const userMenuItems: UserMenuItem[] = [
   { id: "organizations", text: "Організації", link: "/organizations" },
   {
     id: "schemas",
-    text: "Схеми",
+    text: "Налаштування Timefy",
     link: "https://dev.timefy.online",
     allowedRoles: ["ADMIN", "SUPPORT"],
   },
