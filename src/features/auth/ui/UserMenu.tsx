@@ -52,7 +52,7 @@ export const UserMenu = () => {
   const displayName = getUserDisplayName(user);
 
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-auto max-w-56 gap-3 rounded-full px-2 py-1.5">
           <UserAvatar user={user} className="size-9 shrink-0" />
