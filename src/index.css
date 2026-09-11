@@ -182,12 +182,6 @@
     @apply border-border outline-ring/50;
   }
 
-  html,
-  body,
-  #root {
-    @apply w-full max-w-full overflow-x-clip;
-  }
-
   body {
     @apply bg-background text-foreground;
   }
