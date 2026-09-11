@@ -2,7 +2,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
-import { PasswordResetDialog } from "@/features/account/ui/PasswordResetDialog";
 import { ChangePasswordDialog } from "@/features/account/ui/ChangePasswordDialog";
 import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
 import { KeyRound, ShieldCheck } from "lucide-react";
@@ -35,22 +34,14 @@ export const SecurityPage = () => {
           ) : (
             <Alert>
               <KeyRound aria-hidden="true" />
-              <AlertTitle>Зміна пароля через email</AlertTitle>
+              <AlertTitle>Password authentication налаштовано</AlertTitle>
               <AlertDescription>
-                Для безпечної зміни пароля ми надішлемо одноразове посилання на email. Поточну сесію
-                буде завершено.
+                Для зміни пароля введіть поточний пароль і задайте новий.
               </AlertDescription>
             </Alert>
           )}
 
-          {canCreatePassword ? (
-            <CreatePasswordDialog />
-          ) : (
-            <div className="flex flex-wrap gap-2">
-              <ChangePasswordDialog />
-              <PasswordResetDialog email={user.email} />
-            </div>
-          )}
+          {canCreatePassword ? <CreatePasswordDialog /> : <ChangePasswordDialog />}
         </CardContent>
       </Card>
 
