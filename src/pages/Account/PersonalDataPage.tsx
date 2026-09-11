@@ -336,7 +336,7 @@ export const PersonalDataPage = () => {
                     variant="outline"
                     onClick={handleResend}
                     disabled={isResending || cooldown > 0}
-                    className="h-auto max-w-full whitespace-normal sm:h-9 sm:whitespace-nowrap"
+                    className="h-auto w-full max-w-full whitespace-normal sm:h-9 sm:w-auto sm:whitespace-nowrap"
                   >
                     {isResending ? <Loader2 className="animate-spin" /> : <MailCheck />}
                     {cooldown > 0
