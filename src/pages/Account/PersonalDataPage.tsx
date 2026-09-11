@@ -86,7 +86,9 @@ export const PersonalDataPage = () => {
   const handleProfileSubmit = async (values: ProfileValues) => {
     try {
       const response = await updateProfile(values);
-      if (didEmailChange(user.email, response.data.email)) {
+      const updatedUser = response.data.user;
+
+      if (didEmailChange(user.email, updatedUser.email)) {
         logout();
         navigate("/login", { replace: true, state: { reason: "EMAIL_CHANGED" } });
         notify.success("Email змінено. Увійдіть повторно та підтвердьте нову адресу.");
@@ -94,7 +96,7 @@ export const PersonalDataPage = () => {
       }
 
       setEmailRequiresAuthMethod(false);
-      setUser(response.data);
+      setUser(updatedUser);
       notify.success(response.message || "Дані профілю оновлено");
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "EMAIL_CHANGE_REQUIRES_AUTH_METHOD") {
