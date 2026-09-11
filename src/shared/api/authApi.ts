@@ -76,13 +76,22 @@ const API_RESEND_VERIFY_EMAIL = "/auth/resend-verify-email";
 const API_FORGOT_PASS_EMAIL_STEP = "/auth/forgot-password";
 const API_FORGOT_PASS_RESET_PASS = "/auth/reset-password";
 const API_OAUTH_EXCHANGE = "/auth/exchange";
+const API_LOGOUT = "/auth/logout";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
-  return httpClient.post(API_LOGIN_URL, payload);
+  return httpClient.post(API_LOGIN_URL, payload, {
+    credentials: "include",
+    includeAuthorization: false,
+    retryUnauthorized: false,
+  });
 };
 
 export const registration = async (payload: RegisterPayload): Promise<AuthResponse> => {
-  return httpClient.post(API_REGISTER_URL, payload);
+  return httpClient.post(API_REGISTER_URL, payload, {
+    credentials: "include",
+    includeAuthorization: false,
+    retryUnauthorized: false,
+  });
 };
 
 export const checkIsExists = async (
@@ -119,6 +128,18 @@ export const exchangeExternalAuthCode = async (
   return httpClient.post(
     API_OAUTH_EXCHANGE,
     { provider, code },
-    { baseUrl: API_V2_BASE_URL, credentials: "include", cache: "no-store" },
+    {
+      baseUrl: API_V2_BASE_URL,
+      credentials: "include",
+      cache: "no-store",
+      includeAuthorization: false,
+      retryUnauthorized: false,
+    },
   );
 };
+
+export const logoutCurrentSession = (): Promise<void> =>
+  httpClient.post(API_LOGOUT, undefined, {
+    credentials: "include",
+    retryUnauthorized: false,
+  });

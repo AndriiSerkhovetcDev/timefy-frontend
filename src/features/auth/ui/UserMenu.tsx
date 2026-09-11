@@ -10,6 +10,7 @@ import {
 import { LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { selectUser, useAuthStore } from "../model/authStore";
+import { endCurrentSession } from "../model/endSession";
 import type { User } from "../model/types";
 import { getUserDisplayName } from "../model/user";
 import { UserAvatar } from "./UserAvatar";
@@ -34,15 +35,14 @@ const userMenuItems: UserMenuItem[] = [
 
 export const UserMenu = () => {
   const user = useAuthStore(selectUser);
-  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
   if (!user) {
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await endCurrentSession();
     navigate("/login", { replace: true });
   };
 

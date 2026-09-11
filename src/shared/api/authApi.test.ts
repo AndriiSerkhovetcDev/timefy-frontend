@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { exchangeExternalAuthCode } from "./authApi";
+import { exchangeExternalAuthCode, login, logoutCurrentSession, registration } from "./authApi";
 
 describe("exchangeExternalAuthCode", () => {
   beforeEach(() => {
@@ -21,6 +21,40 @@ describe("exchangeExternalAuthCode", () => {
       body: JSON.stringify({ provider: "GOOGLE", code: "one-time-code" }),
       credentials: "include",
       cache: "no-store",
+      headers: { "Content-Type": "application/json" },
+    });
+  });
+
+  it("sends cookies for login", async () => {
+    await login({ login: "user", password: "Password1!" });
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ credentials: "include" }),
+    );
+  });
+
+  it("sends cookies for registration", async () => {
+    await registration({
+      login: "user",
+      email: "user@example.com",
+      phone: "+380501234567",
+      password: "Password1!",
+    });
+
+    expect(fetch).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ credentials: "include" }),
+    );
+  });
+
+  it("logs out the current backend session with cookies", async () => {
+    await logoutCurrentSession();
+
+    expect(fetch).toHaveBeenCalledWith("http://localhost:3000/api/v1/auth/logout", {
+      method: "POST",
+      body: undefined,
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
     });
   });

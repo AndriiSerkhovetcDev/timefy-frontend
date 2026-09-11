@@ -15,7 +15,7 @@ import {
   passwordResetRequestSchema,
   type PasswordResetRequestValues,
 } from "@/features/account/model/passwordResetSchema";
-import { useAuthStore } from "@/features/auth/model/authStore";
+import { endCurrentSession } from "@/features/auth/model/endSession";
 import { forgotPasswordEmailStep } from "@/shared/api/authApi";
 import { notify } from "@/shared/lib/notify";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,7 +30,6 @@ type PasswordResetDialogProps = {
 
 export const PasswordResetDialog = ({ email }: PasswordResetDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
   const {
     register,
@@ -51,7 +50,7 @@ export const PasswordResetDialog = ({ email }: PasswordResetDialogProps) => {
   const handleRequest = async (values: PasswordResetRequestValues) => {
     try {
       await forgotPasswordEmailStep({ email: values.email });
-      logout();
+      await endCurrentSession();
       navigate("/login", { replace: true });
       notify.success("Лист для зміни пароля надіслано", {
         description: "Перевірте вхідні повідомлення та папку «Спам».",
