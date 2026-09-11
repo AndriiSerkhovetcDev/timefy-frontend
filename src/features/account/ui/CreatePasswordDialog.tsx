@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   createPasswordSchema,
   type CreatePasswordValues,
@@ -130,9 +131,8 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
           </div>
           <div className="space-y-2">
             <Label htmlFor="create-password">Пароль</Label>
-            <Input
+            <PasswordInput
               id="create-password"
-              type="password"
               autoComplete="new-password"
               {...register("password")}
             />
@@ -142,9 +142,8 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
           </div>
           <div className="space-y-2">
             <Label htmlFor="create-password-confirm">Підтвердження пароля</Label>
-            <Input
+            <PasswordInput
               id="create-password-confirm"
-              type="password"
               autoComplete="new-password"
               {...register("confirmPassword")}
             />

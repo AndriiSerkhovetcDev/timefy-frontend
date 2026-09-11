@@ -8,8 +8,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import {
   changePasswordSchema,
   type ChangePasswordValues,
@@ -87,9 +87,8 @@ export const ChangePasswordDialog = () => {
         <form id="change-password-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="current-password">Поточний пароль</Label>
-            <Input
+            <PasswordInput
               id="current-password"
-              type="password"
               autoComplete="current-password"
               {...register("currentPassword")}
             />
@@ -99,9 +98,8 @@ export const ChangePasswordDialog = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="new-password">Новий пароль</Label>
-            <Input
+            <PasswordInput
               id="new-password"
-              type="password"
               autoComplete="new-password"
               {...register("newPassword")}
             />
@@ -111,9 +109,8 @@ export const ChangePasswordDialog = () => {
           </div>
           <div className="space-y-2">
             <Label htmlFor="new-password-confirm">Підтвердження нового пароля</Label>
-            <Input
+            <PasswordInput
               id="new-password-confirm"
-              type="password"
               autoComplete="new-password"
               {...register("confirmPassword")}
             />
