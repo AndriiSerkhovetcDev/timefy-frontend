@@ -2,6 +2,7 @@ import type { User } from "@/features/auth/model/types";
 import { httpClient } from "./httpClient";
 import type { ExternalAuthProvider } from "@/features/auth/model/externalAuth";
 import { API_V2_BASE_URL } from "./apiConfig";
+import { parseAuthResponse } from "./authResponse";
 
 type LoginPayload = {
   login: string;
@@ -98,19 +99,21 @@ const API_CREATE_PASSWORD = "/auth/create-password";
 const API_CHANGE_PASSWORD = "/auth/change-password";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
-  return httpClient.post(API_LOGIN_URL, payload, {
+  const response = await httpClient.post(API_LOGIN_URL, payload, {
     credentials: "include",
     includeAuthorization: false,
     retryUnauthorized: false,
   });
+  return parseAuthResponse(response);
 };
 
 export const registration = async (payload: RegisterPayload): Promise<AuthResponse> => {
-  return httpClient.post(API_REGISTER_URL, payload, {
+  const response = await httpClient.post(API_REGISTER_URL, payload, {
     credentials: "include",
     includeAuthorization: false,
     retryUnauthorized: false,
   });
+  return parseAuthResponse(response);
 };
 
 export const checkIsExists = async (
@@ -144,7 +147,7 @@ export const exchangeExternalAuthCode = async (
   provider: ExternalAuthProvider,
   code: string,
 ): Promise<ExternalAuthExchangeResponse> => {
-  return httpClient.post(
+  const response = await httpClient.post(
     API_OAUTH_EXCHANGE,
     { provider, code },
     {
@@ -155,6 +158,7 @@ export const exchangeExternalAuthCode = async (
       retryUnauthorized: false,
     },
   );
+  return parseAuthResponse(response);
 };
 
 export const logoutCurrentSession = (): Promise<void> =>
@@ -166,5 +170,9 @@ export const logoutCurrentSession = (): Promise<void> =>
 export const createPassword = (payload: CreatePasswordPayload): Promise<CreatePasswordResponse> =>
   httpClient.post(API_CREATE_PASSWORD, payload, { credentials: "include" });
 
-export const changePassword = (payload: ChangePasswordPayload): Promise<AuthResponse> =>
-  httpClient.post(API_CHANGE_PASSWORD, payload, { credentials: "include" });
+export const changePassword = async (payload: ChangePasswordPayload): Promise<AuthResponse> => {
+  const response = await httpClient.post(API_CHANGE_PASSWORD, payload, {
+    credentials: "include",
+  });
+  return parseAuthResponse(response);
+};

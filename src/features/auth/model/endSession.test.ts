@@ -21,6 +21,7 @@ const user: User = {
 describe("endCurrentSession", () => {
   beforeEach(() => {
     logoutCurrentSession.mockReset();
+    logoutCurrentSession.mockResolvedValue(undefined);
     useAuthStore.setState({ user, token: "access-token" });
   });
 
@@ -33,12 +34,12 @@ describe("endCurrentSession", () => {
     expect(useAuthStore.getState()).toMatchObject({ user: null, token: null });
   });
 
-  it("does not call the USER logout endpoint for another role", async () => {
+  it("calls the business logout endpoint for another authorized role", async () => {
     useAuthStore.setState({ user: { ...user, role: "ADMIN" }, token: "admin-token" });
 
     await endCurrentSession();
 
-    expect(logoutCurrentSession).not.toHaveBeenCalled();
+    expect(logoutCurrentSession).toHaveBeenCalledOnce();
     expect(useAuthStore.getState()).toMatchObject({ user: null, token: null });
   });
 });

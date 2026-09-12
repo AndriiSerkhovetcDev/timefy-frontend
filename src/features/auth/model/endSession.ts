@@ -2,9 +2,9 @@ import { useAuthStore } from "./authStore";
 import { logoutCurrentSession } from "@/shared/api/authApi";
 
 export const endCurrentSession = async () => {
-  const { user, logout } = useAuthStore.getState();
+  const { token, logout } = useAuthStore.getState();
 
-  if (user?.role === "USER") {
+  if (token) {
     await logoutCurrentSession().catch(() => undefined);
   }
 
