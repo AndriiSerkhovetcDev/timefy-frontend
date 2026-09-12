@@ -1,5 +1,6 @@
 import { IMaskInput } from "react-imask";
 import { Controller, type Control, type FieldValues, type Path } from "react-hook-form";
+import { cn } from "@/lib/utils";
 
 type Props<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;
@@ -8,6 +9,7 @@ type Props<TFieldValues extends FieldValues> = {
   error?: string;
   required?: boolean;
   onBlur?: () => void;
+  inputClassName?: string;
 };
 
 export const PhoneField = <TFieldValues extends FieldValues>({
@@ -17,6 +19,7 @@ export const PhoneField = <TFieldValues extends FieldValues>({
   error,
   required,
   onBlur,
+  inputClassName,
 }: Props<TFieldValues>) => {
   const inputId = `phone-${name}`;
   const errorId = `${inputId}-error`;
@@ -50,7 +53,10 @@ export const PhoneField = <TFieldValues extends FieldValues>({
             placeholder="+38 (0__) ___-__-__"
             aria-invalid={Boolean(error)}
             aria-describedby={error ? errorId : undefined}
-            className="h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30"
+            className={cn(
+              "h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs outline-none transition-[color,box-shadow] placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-invalid:border-destructive aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30",
+              inputClassName,
+            )}
           />
         )}
       />
