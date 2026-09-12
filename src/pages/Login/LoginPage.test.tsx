@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { LoginPage } from "./LoginPage";
@@ -29,8 +29,18 @@ describe("LoginPage", () => {
     expect(screen.getByRole("heading", { name: "З поверненням" })).toBeTruthy();
     expect(screen.getByText("Форма входу")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Увійти через Google" })).toBeTruthy();
-    expect(screen.getByRole("link", { name: "Забули пароль?" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Забули пароль?" })).toBeTruthy();
     expect(screen.getByRole("link", { name: "Зареєструватися" })).toBeTruthy();
+  });
+
+  it("opens password recovery in a dialog", () => {
+    renderLoginPage();
+
+    fireEvent.click(screen.getByRole("button", { name: "Забули пароль?" }));
+
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Відновлення пароля" })).toBeTruthy();
+    expect(screen.getByLabelText(/Email або логін/)).toBeTruthy();
   });
 
   it("preserves the EMAIL_CHANGED message", () => {

@@ -1,5 +1,6 @@
 import { GoogleAuth } from "@/features/auth/ui/GoogleAuth";
 import { LoginForm } from "@/features/auth/ui/LoginForm";
+import { ForgotPasswordDialog } from "@/features/forgot-password";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MailCheck } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
@@ -35,12 +36,7 @@ export const LoginPage = () => {
           <LoginForm />
 
           <div className="mt-3 flex justify-end">
-            <Link
-              to="/forgot-password"
-              className="rounded-sm text-sm font-medium text-primary outline-none hover:underline focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              Забули пароль?
-            </Link>
+            <ForgotPasswordDialog />
           </div>
 
           <div className="my-6 flex items-center gap-4" aria-hidden="true">
