@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   changePassword,
   createPassword,
+  disconnectGoogle,
   exchangeExternalAuthCode,
   login,
   logoutCurrentSession,
@@ -106,5 +107,16 @@ describe("exchangeExternalAuthCode", () => {
         }),
       }),
     );
+  });
+
+  it("disconnects Google authentication through API v2", async () => {
+    await disconnectGoogle();
+
+    expect(fetch).toHaveBeenCalledWith("http://localhost:3000/api/v2/auth/google/disconnect", {
+      method: "POST",
+      body: undefined,
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+    });
   });
 });

@@ -32,7 +32,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageUp, KeyRound, Loader2, MailCheck, MailWarning, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const RESEND_COOLDOWN_SECONDS = 60;
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
@@ -317,9 +317,21 @@ export const PersonalDataPage = () => {
                 id="email"
                 type="email"
                 autoComplete="email"
+                readOnly={user.authData?.isGoogle === true}
+                className={user.authData?.isGoogle ? "cursor-not-allowed bg-muted/50" : undefined}
+                aria-describedby={user.authData?.isGoogle ? "google-email-help" : undefined}
                 aria-invalid={Boolean(errors.email)}
                 {...register("email")}
               />
+              {user.authData?.isGoogle && (
+                <p id="google-email-help" className="text-xs text-muted-foreground">
+                  Щоб змінити email, спочатку від’єднайте Google у розділі{" "}
+                  <Link to="/account/security" className="font-medium text-primary hover:underline">
+                    «Безпека»
+                  </Link>
+                  .
+                </p>
+              )}
               {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
             </div>
             {!user.emailVerified && (

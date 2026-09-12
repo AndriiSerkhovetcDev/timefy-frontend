@@ -83,6 +83,13 @@ type CreatePasswordResponse = {
   data: { user: User };
 };
 
+type DisconnectGoogleResponse = {
+  status: number;
+  code: string;
+  message: string;
+  data: { user: User };
+};
+
 export type ForgotPassEmailStepPayload = { email: string } | { login: string };
 
 //api
@@ -97,6 +104,7 @@ const API_OAUTH_EXCHANGE = "/auth/exchange";
 const API_LOGOUT = "/auth/logout";
 const API_CREATE_PASSWORD = "/auth/create-password";
 const API_CHANGE_PASSWORD = "/auth/change-password";
+const API_DISCONNECT_GOOGLE = "/auth/google/disconnect";
 
 export const login = async (payload: LoginPayload): Promise<AuthResponse> => {
   const response = await httpClient.post(API_LOGIN_URL, payload, {
@@ -176,3 +184,9 @@ export const changePassword = async (payload: ChangePasswordPayload): Promise<Au
   });
   return parseAuthResponse(response);
 };
+
+export const disconnectGoogle = (): Promise<DisconnectGoogleResponse> =>
+  httpClient.post(API_DISCONNECT_GOOGLE, undefined, {
+    baseUrl: API_V2_BASE_URL,
+    credentials: "include",
+  });
