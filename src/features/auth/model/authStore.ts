@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import type { AuthState } from "./types";
+import { allowSessionRestore, suppressSessionRestore } from "./sessionRestore";
 
 const AUTH_STORAGE_KEY = "auth-storage";
 const AUTH_CHANNEL_NAME = "timefy-auth";
@@ -25,11 +26,13 @@ export const useAuthStore = create<AuthState>()(
       (set) => ({
         user: null,
         token: null,
-        login: (user, token) =>
+        login: (user, token) => {
+          allowSessionRestore();
           set({
             user,
             token,
-          }),
+          });
+        },
         setUser: (user) => set({ user }),
         logout: () => {
           set({
@@ -72,7 +75,10 @@ export const initializeAuthSessionSync = () => {
   if (typeof BroadcastChannel !== "undefined") {
     authChannel ??= new BroadcastChannel(AUTH_CHANNEL_NAME);
     authChannel.addEventListener("message", (event: MessageEvent<AuthChannelMessage>) => {
-      if (event.data?.type === "LOGOUT") clearSession();
+      if (event.data?.type === "LOGOUT") {
+        suppressSessionRestore();
+        clearSession();
+      }
     });
   }
 

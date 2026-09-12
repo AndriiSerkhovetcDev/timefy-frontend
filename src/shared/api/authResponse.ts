@@ -4,8 +4,8 @@ import type { User } from "@/features/auth/model/types";
 const authUserSchema = z.object({
   login: z.string(),
   role: z.enum(["USER", "ADMIN", "SUPPORT"]),
-  firstName: z.string().optional(),
-  lastName: z.string().optional(),
+  firstName: z.string().nullable().optional(),
+  lastName: z.string().nullable().optional(),
   email: z.string(),
   phone: z.string().nullable(),
   emailVerified: z.boolean(),

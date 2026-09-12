@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/model/authStore";
 import { ApiError, refreshSession } from "@/shared/api/httpClient";
+import { isSessionRestoreSuppressed } from "@/features/auth/model/sessionRestore";
 import { PageLoader } from "@/shared/ui";
 import { AlertCircle, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useState, type ReactNode } from "react";
@@ -26,7 +27,11 @@ export const AuthBootstrap = ({ children }: AuthBootstrapProps) => {
   );
 
   const restoreSession = useCallback(async () => {
-    if (isOAuthCallbackPath(pathname) || useAuthStore.getState().token) {
+    if (
+      isOAuthCallbackPath(pathname) ||
+      isSessionRestoreSuppressed() ||
+      useAuthStore.getState().token
+    ) {
       setStatus("ready");
       return;
     }
