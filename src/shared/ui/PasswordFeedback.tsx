@@ -15,6 +15,8 @@ const strengthColors = [
 ];
 
 export const PasswordFeedback = ({ password = "" }: PasswordFeedbackProps) => {
+  if (!password) return null;
+
   const requirements = getPasswordRequirementResults(password);
   const strength = getPasswordStrength(password);
 

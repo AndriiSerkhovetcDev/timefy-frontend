@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/features/auth/model/authStore";
 import type { User } from "@/features/auth/model/types";
 import { API_V1_BASE_URL } from "./apiConfig";
+import { parseAuthResponse } from "./authResponse";
 
 type RequestOptions = RequestInit & {
   baseUrl?: string;
@@ -72,7 +73,7 @@ const executeRefresh = async (hasRetriedConcurrent = false): Promise<RefreshResp
   });
 
   if (response.ok) {
-    const refreshResponse = (await response.json()) as RefreshResponse;
+    const refreshResponse = parseAuthResponse(await response.json());
     useAuthStore.getState().login(refreshResponse.data.user, refreshResponse.data.token);
     return refreshResponse;
   }

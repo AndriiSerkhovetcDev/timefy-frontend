@@ -8,13 +8,26 @@ import {
   registration,
 } from "./authApi";
 
+const authResponse = {
+  data: {
+    token: "access-token",
+    user: {
+      login: "user",
+      role: "USER",
+      email: "user@example.com",
+      phone: null,
+      emailVerified: true,
+    },
+  },
+};
+
 describe("exchangeExternalAuthCode", () => {
   beforeEach(() => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ data: {} }),
+        json: () => Promise.resolve(authResponse),
       }),
     );
   });
