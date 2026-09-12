@@ -1,8 +1,7 @@
 import { useState, type InputHTMLAttributes } from "react";
 import { EyeOffIcon } from "../icons/EyeOffIcon";
 import { EyeIcon } from "../icons/EyeIcon";
-import { PasswordStrength } from "@/features/auth/ui/PasswordStrength";
-import { PasswordHint } from "@/features/auth/ui/PasswordHint";
+import { PasswordFeedback } from "../PasswordFeedback";
 
 type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -19,25 +18,19 @@ export const FormField = ({
   ...rest
 }: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
-  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <div className="flex flex-col gap-1">
       <label className="text-sm font-medium text-primary">
         {label}
         {required && <span className="ml-1 text-error">*</span>}
-        {rest.type === "password" && (
-          <PasswordHint isFocused={isFocused} password={watchValue as string} />
-        )}
       </label>
       <div className="relative">
         <input
           {...rest}
           type={rest.type === "password" ? (showPassword ? "text" : "password") : rest.type}
           className="w-full text-base rounded-lg border border-border px-4 py-2.5 outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
-          onFocus={() => setIsFocused(true)}
           onBlur={(e) => {
-            setIsFocused(false);
             rest.onBlur?.(e);
           }}
         />
@@ -50,10 +43,11 @@ export const FormField = ({
             {showPassword ? <EyeOffIcon /> : <EyeIcon />}
           </button>
         )}
-        {rest.type === "password" && rest.name !== "confirm_password" && (
-          <PasswordStrength password={watchValue as string} />
-        )}
       </div>
+
+      {rest.type === "password" && rest.name !== "confirm_password" && (
+        <PasswordFeedback password={watchValue} />
+      )}
 
       {error && <p className="text-xs text-error">{error}</p>}
     </div>

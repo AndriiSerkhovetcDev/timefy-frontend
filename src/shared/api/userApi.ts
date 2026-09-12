@@ -16,7 +16,8 @@ type ApiResponse<T> = {
 };
 
 type UpdateProfileResponse = ApiResponse<{ user: User }>;
-type AvatarResponse = ApiResponse<User>;
+type AvatarResponsePayload = User | { user: User };
+type AvatarResponse = ApiResponse<{ user: User }>;
 
 const API_UPDATE_PROFILE = "/users/update-profile";
 const API_UPLOAD_AVATAR = "/users/avatar/upload";
@@ -40,14 +41,30 @@ export const updateProfile = ({
     { credentials: "include" },
   );
 
-const sendAvatar = (endpoint: string, file: File): Promise<AvatarResponse> => {
+const normalizeAvatarResponse = (response: ApiResponse<AvatarResponsePayload>): AvatarResponse => ({
+  ...response,
+  data: {
+    user: "user" in response.data ? response.data.user : response.data,
+  },
+});
+
+const sendAvatar = async (endpoint: string, file: File): Promise<AvatarResponse> => {
   const formData = new FormData();
   formData.append("file", file);
 
-  return httpClient.postForm(endpoint, formData);
+  const response = await httpClient.postForm<ApiResponse<AvatarResponsePayload>>(
+    endpoint,
+    formData,
+  );
+  return normalizeAvatarResponse(response);
 };
 
 export const uploadAvatar = (file: File) => sendAvatar(API_UPLOAD_AVATAR, file);
 export const changeAvatar = (file: File) => sendAvatar(API_CHANGE_AVATAR, file);
-export const deleteAvatar = (): Promise<AvatarResponse> =>
-  httpClient.post(API_DELETE_AVATAR, undefined);
+export const deleteAvatar = async (): Promise<AvatarResponse> => {
+  const response = await httpClient.post<ApiResponse<AvatarResponsePayload>>(
+    API_DELETE_AVATAR,
+    undefined,
+  );
+  return normalizeAvatarResponse(response);
+};

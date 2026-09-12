@@ -44,7 +44,7 @@ export const registerFields = [
     required: true,
     checkExists: false,
   },
-];
+] as const;
 
 export const fieldKeyMap = {
   login: "checkLogin",

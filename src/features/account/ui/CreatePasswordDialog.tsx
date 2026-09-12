@@ -17,12 +17,13 @@ import {
 } from "@/features/account/model/credentialsSchema";
 import { useRateLimitCooldown } from "@/features/account/model/useRateLimitCooldown";
 import { useAuthStore } from "@/features/auth/model/authStore";
-import { createPassword } from "@/shared/api/authApi";
+import { checkIsExists, createPassword } from "@/shared/api/authApi";
 import { ApiError, refreshSession } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
+import { PasswordFeedback } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { KeyRound, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { CheckCircle2, KeyRound, Loader2 } from "lucide-react";
+import { useRef, useState, type FocusEvent } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +33,10 @@ type CreatePasswordDialogProps = {
 
 export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [loginCheckStatus, setLoginCheckStatus] = useState<
+    "idle" | "checking" | "available" | "failed"
+  >("idle");
+  const loginCheckRequestRef = useRef(0);
   const setUser = useAuthStore((state) => state.setUser);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
@@ -41,13 +46,50 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
     handleSubmit,
     reset,
     setError,
+    clearErrors,
+    getValues,
+    trigger,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<CreatePasswordValues>({ resolver: zodResolver(createPasswordSchema) });
+  const password = watch("password", "");
+  const { onBlur: onLoginBlur, onChange: onLoginChange, ...loginField } = register("login");
 
   const handleOpenChange = (open: boolean) => {
     if (isSubmitting) return;
     setIsOpen(open);
-    if (open) reset();
+    if (open) {
+      reset();
+      loginCheckRequestRef.current += 1;
+      setLoginCheckStatus("idle");
+    }
+  };
+
+  const handleLoginBlur = async (event: FocusEvent<HTMLInputElement>) => {
+    onLoginBlur(event);
+    setLoginCheckStatus("idle");
+
+    if (!(await trigger("login"))) return;
+
+    const loginValue = getValues("login").trim();
+    const requestId = ++loginCheckRequestRef.current;
+    setLoginCheckStatus("checking");
+    try {
+      const response = await checkIsExists("login", loginValue);
+      if (requestId !== loginCheckRequestRef.current) return;
+
+      if (!response.data.checkLogin) {
+        setError("login", { message: "Цей логін уже використовується" });
+        setLoginCheckStatus("idle");
+        return;
+      }
+
+      clearErrors("login");
+      setLoginCheckStatus("available");
+    } catch {
+      if (requestId !== loginCheckRequestRef.current) return;
+      setLoginCheckStatus("failed");
+    }
   };
 
   const finishSuccessfully = (message: string) => {
@@ -126,8 +168,56 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
         <form id="create-password-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="create-login">Логін</Label>
-            <Input id="create-login" autoComplete="username" {...register("login")} />
-            {errors.login && <p className="text-xs text-destructive">{errors.login.message}</p>}
+            <div className="relative">
+              <Input
+                id="create-login"
+                autoComplete="username"
+                aria-invalid={Boolean(errors.login)}
+                aria-describedby={
+                  errors.login || loginCheckStatus === "available" || loginCheckStatus === "failed"
+                    ? "create-login-status"
+                    : undefined
+                }
+                {...loginField}
+                onChange={(event) => {
+                  loginCheckRequestRef.current += 1;
+                  setLoginCheckStatus("idle");
+                  onLoginChange(event);
+                }}
+                onBlur={handleLoginBlur}
+              />
+              {loginCheckStatus === "checking" && (
+                <Loader2
+                  className="absolute right-3 top-1/2 size-4 -translate-y-1/2 animate-spin text-muted-foreground"
+                  aria-hidden="true"
+                />
+              )}
+              {loginCheckStatus === "available" && (
+                <CheckCircle2
+                  className="absolute right-3 top-1/2 size-4 -translate-y-1/2 text-success"
+                  aria-hidden="true"
+                />
+              )}
+            </div>
+            {errors.login && (
+              <p id="create-login-status" className="text-xs text-destructive">
+                {errors.login.message}
+              </p>
+            )}
+            {!errors.login && loginCheckStatus === "available" && (
+              <p id="create-login-status" className="text-xs text-success" aria-live="polite">
+                Логін доступний
+              </p>
+            )}
+            {!errors.login && loginCheckStatus === "failed" && (
+              <p
+                id="create-login-status"
+                className="text-xs text-muted-foreground"
+                aria-live="polite"
+              >
+                Не вдалося перевірити логін. Доступність буде перевірено під час створення.
+              </p>
+            )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="create-password">Пароль</Label>
@@ -136,6 +226,7 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
               autoComplete="new-password"
               {...register("password")}
             />
+            <PasswordFeedback password={password} />
             {errors.password && (
               <p className="text-xs text-destructive">{errors.password.message}</p>
             )}
@@ -161,7 +252,11 @@ export const CreatePasswordDialog = ({ onCreated }: CreatePasswordDialogProps) =
           >
             Скасувати
           </Button>
-          <Button type="submit" form="create-password-form" disabled={isSubmitting || cooldown > 0}>
+          <Button
+            type="submit"
+            form="create-password-form"
+            disabled={isSubmitting || loginCheckStatus === "checking" || cooldown > 0}
+          >
             {isSubmitting && <Loader2 className="animate-spin" />}
             {cooldown > 0 ? `Повторити через ${cooldown} с` : "Створити"}
           </Button>
