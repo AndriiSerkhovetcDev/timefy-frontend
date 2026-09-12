@@ -14,9 +14,6 @@ export const LoginPage = () => {
       <div className="flex min-w-0 items-center justify-center py-4 lg:justify-start">
         <div className="w-full max-w-[430px]">
           <div className="mb-8">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.18em] text-secondary">
-              Ваш робочий простір
-            </p>
             <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
               З поверненням
             </h1>
