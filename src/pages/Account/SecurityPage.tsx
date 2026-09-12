@@ -4,6 +4,7 @@ import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { ChangePasswordDialog } from "@/features/account/ui/ChangePasswordDialog";
 import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
+import { GoogleAuthCard } from "@/features/account/ui/GoogleAuthCard";
 import { KeyRound, ShieldCheck } from "lucide-react";
 
 export const SecurityPage = () => {
@@ -14,36 +15,40 @@ export const SecurityPage = () => {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_0.8fr]">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <KeyRound aria-hidden="true" className="text-primary" />
-            Пароль
-          </CardTitle>
-          <CardDescription>Керуйте доступом до особистого облікового запису.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {canCreatePassword ? (
-            <Alert>
-              <ShieldCheck aria-hidden="true" />
-              <AlertTitle>Створіть логін і пароль</AlertTitle>
-              <AlertDescription>
-                Додайте вхід за паролем як незалежний спосіб авторизації в Timefy.
-              </AlertDescription>
-            </Alert>
-          ) : (
-            <Alert>
-              <KeyRound aria-hidden="true" />
-              <AlertTitle>Вхід за паролем налаштовано</AlertTitle>
-              <AlertDescription>
-                Для зміни пароля введіть поточний пароль і задайте новий.
-              </AlertDescription>
-            </Alert>
-          )}
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <KeyRound aria-hidden="true" className="text-primary" />
+              Пароль
+            </CardTitle>
+            <CardDescription>Керуйте доступом до особистого облікового запису.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {canCreatePassword ? (
+              <Alert>
+                <ShieldCheck aria-hidden="true" />
+                <AlertTitle>Створіть логін і пароль</AlertTitle>
+                <AlertDescription>
+                  Додайте вхід за паролем як незалежний спосіб авторизації в Timefy.
+                </AlertDescription>
+              </Alert>
+            ) : (
+              <Alert>
+                <KeyRound aria-hidden="true" />
+                <AlertTitle>Вхід за паролем налаштовано</AlertTitle>
+                <AlertDescription>
+                  Для зміни пароля введіть поточний пароль і задайте новий.
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {canCreatePassword ? <CreatePasswordDialog /> : <ChangePasswordDialog />}
-        </CardContent>
-      </Card>
+            {canCreatePassword ? <CreatePasswordDialog /> : <ChangePasswordDialog />}
+          </CardContent>
+        </Card>
+
+        <GoogleAuthCard />
+      </div>
 
       <Card>
         <CardHeader>
