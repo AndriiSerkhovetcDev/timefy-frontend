@@ -19,7 +19,11 @@ const forgotPassEmailStepField = {
   checkExists: true,
 };
 
-export const ForgotPasswordForm = () => {
+type ForgotPasswordFormProps = {
+  onSuccess?: () => void;
+};
+
+export const ForgotPasswordForm = ({ onSuccess }: ForgotPasswordFormProps) => {
   const {
     register,
     handleSubmit,
@@ -45,6 +49,7 @@ export const ForgotPasswordForm = () => {
       await withNotify(forgotPasswordEmailStep(submitValues));
       reset();
       setIsSuccess(true);
+      onSuccess?.();
     } catch {
       setSubmittedValues(null);
     }
