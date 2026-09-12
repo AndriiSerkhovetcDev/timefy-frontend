@@ -23,6 +23,22 @@ describe("parseAuthResponse", () => {
     expect(parseAuthResponse(validResponse)).toEqual(validResponse);
   });
 
+  it("accepts an auth response with an incomplete profile after registration", () => {
+    const registrationResponse = {
+      ...validResponse,
+      data: {
+        ...validResponse.data,
+        user: {
+          ...validResponse.data.user,
+          firstName: null,
+          lastName: null,
+        },
+      },
+    };
+
+    expect(parseAuthResponse(registrationResponse)).toEqual(registrationResponse);
+  });
+
   it.each([
     {},
     { data: {} },

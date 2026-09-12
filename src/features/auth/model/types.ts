@@ -1,8 +1,8 @@
 export type User = {
   login: string;
   role: "USER" | "ADMIN" | "SUPPORT";
-  firstName?: string;
-  lastName?: string;
+  firstName?: string | null;
+  lastName?: string | null;
   email: string;
   phone: string | null;
   emailVerified: boolean;
