@@ -1,5 +1,6 @@
 import { useAuthStore } from "./authStore";
 import { logoutCurrentSession } from "@/shared/api/authApi";
+import { suppressSessionRestore } from "./sessionRestore";
 
 export const endCurrentSession = async () => {
   const { token, logout } = useAuthStore.getState();
@@ -8,5 +9,6 @@ export const endCurrentSession = async () => {
     await logoutCurrentSession().catch(() => undefined);
   }
 
+  suppressSessionRestore();
   logout();
 };
