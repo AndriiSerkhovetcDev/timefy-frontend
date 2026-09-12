@@ -27,4 +27,18 @@ describe("FormField password feedback", () => {
     expect(screen.getByText("Надійність пароля")).toBeTruthy();
     expect(screen.getByText("Надійний")).toBeTruthy();
   });
+
+  it("keeps password requirements hidden until the user starts typing", () => {
+    render(
+      <FormField
+        label="Пароль"
+        name="password"
+        type="password"
+        watchValue=""
+        showPasswordFeedback
+      />,
+    );
+
+    expect(screen.queryByText("Надійність пароля")).toBeNull();
+  });
 });
