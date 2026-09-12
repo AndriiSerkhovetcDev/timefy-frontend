@@ -23,13 +23,13 @@ export const Notifications = () => {
   return (
     <Toaster
       theme={isDark ? "dark" : "light"}
-      position="top-right"
+      position="top-center"
       richColors={false}
       closeButton
-      duration={4000}
+      duration={2500}
       gap={10}
       visibleToasts={4}
-      offset={{ top: 20, right: 20 }}
+      offset={{ top: 20 }}
       mobileOffset={{ top: 12, right: 12, left: 12 }}
       containerAriaLabel="Сповіщення"
       icons={{
