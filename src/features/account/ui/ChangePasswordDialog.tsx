@@ -18,6 +18,7 @@ import { useAuthStore } from "@/features/auth/model/authStore";
 import { changePassword } from "@/shared/api/authApi";
 import { ApiError } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
+import { PasswordFeedback } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { KeyRound, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -32,8 +33,10 @@ export const ChangePasswordDialog = () => {
     handleSubmit,
     reset,
     setError,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ChangePasswordValues>({ resolver: zodResolver(changePasswordSchema) });
+  const newPassword = watch("newPassword", "");
 
   const handleOpenChange = (open: boolean) => {
     if (isSubmitting) return;
@@ -99,6 +102,7 @@ export const ChangePasswordDialog = () => {
               autoComplete="new-password"
               {...register("newPassword")}
             />
+            <PasswordFeedback password={newPassword} />
             {errors.newPassword && (
               <p className="text-xs text-destructive">{errors.newPassword.message}</p>
             )}
