@@ -22,8 +22,11 @@ export const PhoneField = <TFieldValues extends FieldValues>({
   const errorId = `${inputId}-error`;
 
   return (
-    <div className="flex flex-col gap-1">
-      <label htmlFor={inputId} className="text-sm font-medium text-foreground">
+    <div className="flex min-w-0 flex-col gap-2">
+      <label
+        htmlFor={inputId}
+        className="flex min-h-6 items-center text-sm font-medium leading-none text-foreground"
+      >
         {label}
         {required && <span className="ml-1 text-destructive">*</span>}
       </label>

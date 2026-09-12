@@ -53,6 +53,13 @@ describe("AuthBootstrap", () => {
     expect(refreshSession).toHaveBeenCalledOnce();
   });
 
+  it("does not refresh the session before processing an OAuth callback", async () => {
+    renderBootstrap("/auth/callback");
+
+    expect(await screen.findByText("Застосунок готовий")).toBeTruthy();
+    expect(refreshSession).not.toHaveBeenCalled();
+  });
+
   it("renders an anonymous public route after invalid refresh cookies", async () => {
     refreshSession.mockRejectedValue(
       new ApiError("Сесію не відновлено", 401, { errorCode: "AUTH_REFRESH_INVALID" }),
