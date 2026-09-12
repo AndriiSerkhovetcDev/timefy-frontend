@@ -12,6 +12,8 @@ type AuthBootstrapProps = {
 
 type BootstrapStatus = "checking" | "ready" | "temporary-error";
 
+const isOAuthCallbackPath = (pathname: string) => pathname === "/auth/callback";
+
 const isProtectedPath = (pathname: string) =>
   pathname.startsWith("/account") ||
   pathname.startsWith("/organizations") ||
@@ -24,7 +26,7 @@ export const AuthBootstrap = ({ children }: AuthBootstrapProps) => {
   );
 
   const restoreSession = useCallback(async () => {
-    if (useAuthStore.getState().token) {
+    if (isOAuthCallbackPath(pathname) || useAuthStore.getState().token) {
       setStatus("ready");
       return;
     }
