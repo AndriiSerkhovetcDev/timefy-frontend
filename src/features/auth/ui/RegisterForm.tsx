@@ -101,6 +101,7 @@ export const RegisterForm = () => {
             name={field.name}
             label={field.label}
             required={field.required}
+            inputClassName="h-12 rounded-lg bg-bg-surface px-4 shadow-sm md:text-base"
             error={errors[field.name as keyof RegisterFormValues]?.message}
             onBlur={field.checkExists ? () => handleExistsBlur(field.name as "phone") : undefined}
           />
@@ -111,6 +112,7 @@ export const RegisterForm = () => {
             label={field.label}
             placeholder={field.placeholder}
             type={field.type}
+            inputClassName="h-12 bg-bg-surface shadow-sm"
             watchValue={field.name === "password" ? watch("password") : undefined}
             showPasswordFeedback={field.name === "password"}
             required={field.required}
@@ -128,7 +130,7 @@ export const RegisterForm = () => {
       <button
         type="submit"
         disabled={!isValid || isSubmitting}
-        className="mt-2 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 active:scale-95 disabled:opacity-80 disabled:cursor-not-allowed"
+        className="mt-2 h-12 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {isSubmitting ? "Завантаження..." : "Зареєструватись"}
       </button>
