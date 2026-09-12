@@ -9,6 +9,7 @@ export { Logo } from "./icons/Logo";
 
 export { FormField } from "./FormFields/FormField";
 export { PhoneField } from "./FormFields/PhoneField";
+export { PasswordFeedback } from "./PasswordFeedback";
 export { PageLoader } from "./PageLoader";
 export { StyledSelect } from "./StyledSelect";
 export { Notifications } from "./Notifications";

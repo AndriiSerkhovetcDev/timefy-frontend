@@ -27,6 +27,7 @@ import { resendVerifyEmail } from "@/shared/api/authApi";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
+import { PhoneField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageUp, KeyRound, Loader2, MailCheck, MailWarning, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
@@ -49,6 +50,7 @@ export const PersonalDataPage = () => {
   const [cooldown, setCooldown] = useState(0);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const {
+    control,
     register,
     handleSubmit,
     reset,
@@ -139,10 +141,11 @@ export const PersonalDataPage = () => {
     setIsUploadingAvatar(true);
     try {
       const response = user.avatar ? await changeAvatar(file) : await uploadAvatar(file);
-      const avatar = response.data.avatar ?? user.avatar;
+      const updatedUser = response.data.user;
+      const avatar = updatedUser.avatar ?? user.avatar;
       setUser({
         ...user,
-        ...response.data,
+        ...updatedUser,
         avatar: avatar ? versionApiAssetUrl(avatar) : null,
       });
       notify.success(response.message || "Аватар оновлено");
@@ -160,7 +163,7 @@ export const PersonalDataPage = () => {
     setIsDeletingAvatar(true);
     try {
       const response = await deleteAvatar();
-      setUser({ ...user, ...response.data, avatar: null });
+      setUser({ ...user, ...response.data.user, avatar: null });
       setIsDeleteDialogOpen(false);
       notify.success(response.message || "Аватар видалено");
     } catch (error) {
@@ -298,19 +301,13 @@ export const PersonalDataPage = () => {
                 <p className="text-xs text-destructive">{errors.lastName.message}</p>
               )}
             </div>
-            <div className="min-w-0 space-y-2">
-              <div className="flex min-h-6 items-center">
-                <Label htmlFor="phone">Номер телефону</Label>
-              </div>
-              <Input
-                id="phone"
-                type="tel"
-                autoComplete="tel"
-                aria-invalid={Boolean(errors.phone)}
-                {...register("phone")}
-              />
-              {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
-            </div>
+            <PhoneField
+              control={control}
+              name="phone"
+              label="Номер телефону"
+              required
+              error={errors.phone?.message}
+            />
             <div className="min-w-0 space-y-2">
               <div className="flex min-h-6 items-center justify-between gap-2">
                 <Label htmlFor="email">Email</Label>

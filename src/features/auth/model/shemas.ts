@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { emailSchema } from "@/shared/model/email";
+import { ukrainianPhoneSchema } from "@/shared/model/phone";
 
 export const loginSchema = z.object({
   login: z
@@ -19,11 +21,8 @@ export const registerSchema = z
       .min(1, "Логін не може бути порожнім")
       .regex(/^[a-zA-Z0-9_]+$/, "Тільки латинські літери, цифри та _")
       .transform((val) => val.trim()),
-    email: z.email("Неправильна електронна адреса").transform((val) => val.trim().toLowerCase()),
-    phone: z
-      .string()
-      .min(10, "Введіть номер телефону")
-      .transform((val) => "+" + val.replace(/\D/g, "")),
+    email: emailSchema,
+    phone: ukrainianPhoneSchema,
     password: z
       .string()
       .min(8, "Пароль має бути не менше 8 символів")
@@ -48,7 +47,7 @@ export const forgotPassEmailStepSchema = z.object({
     .refine(
       (val) => {
         const isEmail = val.includes("@");
-        if (isEmail) return z.email().safeParse(val).success;
+        if (isEmail) return emailSchema.safeParse(val).success;
         return /^[a-zA-Z0-9_]+$/.test(val);
       },
       { message: "Введіть коректний email або логін" },
