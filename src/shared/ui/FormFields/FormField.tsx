@@ -8,12 +8,14 @@ type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   error?: string;
   required?: boolean;
   watchValue?: string;
+  showPasswordFeedback?: boolean;
 };
 
 export const FormField = ({
   label,
   error,
   watchValue,
+  showPasswordFeedback = false,
   required = false,
   ...rest
 }: FormFieldProps) => {
@@ -45,7 +47,7 @@ export const FormField = ({
         )}
       </div>
 
-      {rest.type === "password" && rest.name !== "confirm_password" && (
+      {rest.type === "password" && showPasswordFeedback && (
         <PasswordFeedback password={watchValue} />
       )}
 

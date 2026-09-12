@@ -112,6 +112,7 @@ export const RegisterForm = () => {
             placeholder={field.placeholder}
             type={field.type}
             watchValue={field.name === "password" ? watch("password") : undefined}
+            showPasswordFeedback={field.name === "password"}
             required={field.required}
             error={errors[field.name as keyof RegisterFormValues]?.message}
             onBlur={(e) => {
