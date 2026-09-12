@@ -2,6 +2,7 @@ import { useState, type InputHTMLAttributes } from "react";
 import { EyeOffIcon } from "../icons/EyeOffIcon";
 import { EyeIcon } from "../icons/EyeIcon";
 import { PasswordFeedback } from "../PasswordFeedback";
+import { cn } from "@/lib/utils";
 
 type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   label: string;
@@ -9,6 +10,7 @@ type FormFieldProps = InputHTMLAttributes<HTMLInputElement> & {
   required?: boolean;
   watchValue?: string;
   showPasswordFeedback?: boolean;
+  inputClassName?: string;
 };
 
 export const FormField = ({
@@ -17,21 +19,27 @@ export const FormField = ({
   watchValue,
   showPasswordFeedback = false,
   required = false,
+  inputClassName,
   ...rest
 }: FormFieldProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const inputId = rest.id ?? rest.name;
 
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm font-medium text-primary">
+    <div className="flex flex-col gap-2">
+      <label htmlFor={inputId} className="text-sm font-medium text-primary">
         {label}
         {required && <span className="ml-1 text-error">*</span>}
       </label>
       <div className="relative">
         <input
           {...rest}
+          id={inputId}
           type={rest.type === "password" ? (showPassword ? "text" : "password") : rest.type}
-          className="w-full text-base rounded-lg border border-border px-4 py-2.5 outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20"
+          className={cn(
+            "w-full rounded-lg border border-border px-4 py-2.5 text-base outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20",
+            inputClassName,
+          )}
           onBlur={(e) => {
             rest.onBlur?.(e);
           }}
@@ -40,7 +48,8 @@ export const FormField = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted cursor-pointer"
+            className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer rounded-sm text-text-muted outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            aria-label={showPassword ? "Приховати пароль" : "Показати пароль"}
           >
             {showPassword ? <EyeOffIcon /> : <EyeIcon />}
           </button>
