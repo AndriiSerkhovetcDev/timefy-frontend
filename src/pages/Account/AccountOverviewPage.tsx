@@ -195,27 +195,27 @@ export const AccountOverviewPage = () => {
       <div>
         <h2 className="text-lg font-semibold">Швидкі переходи</h2>
         <div className="mt-3 grid gap-4 md:grid-cols-3">
-          {ACCOUNT_SECTIONS.filter(({ href }) => href.startsWith("/account/")).map(
-            ({ title, description, href, icon: Icon }) => (
-              <Card
-                key={href}
-                className="flex h-full flex-col transition hover:border-primary/40 hover:shadow-md"
-              >
-                <CardHeader>
-                  <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-accent text-primary">
-                    <Icon aria-hidden="true" className="size-5" />
-                  </div>
-                  <CardTitle>{title}</CardTitle>
-                  <CardDescription>{description}</CardDescription>
-                </CardHeader>
-                <CardContent className="mt-auto">
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to={href}>Відкрити</Link>
-                  </Button>
-                </CardContent>
-              </Card>
-            ),
-          )}
+          {ACCOUNT_SECTIONS.filter(
+            ({ href }) => href.startsWith("/account/") && href !== "/account/organizations",
+          ).map(({ title, description, href, icon: Icon }) => (
+            <Card
+              key={href}
+              className="flex h-full flex-col transition hover:border-primary/40 hover:shadow-md"
+            >
+              <CardHeader>
+                <div className="mb-2 flex size-10 items-center justify-center rounded-lg bg-accent text-primary">
+                  <Icon aria-hidden="true" className="size-5" />
+                </div>
+                <CardTitle>{title}</CardTitle>
+                <CardDescription>{description}</CardDescription>
+              </CardHeader>
+              <CardContent className="mt-auto">
+                <Button asChild variant="outline" className="w-full">
+                  <Link to={href}>Відкрити</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </div>
     </div>
