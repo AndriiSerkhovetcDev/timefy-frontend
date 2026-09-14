@@ -17,14 +17,16 @@ export const OrganizationsPage = () => {
 
   return (
     <div className="flex w-full flex-1 flex-col">
-      <div className="mb-6 flex justify-end">
-        <Button asChild>
-          <Link to="/account/organizations/create">
-            <Plus aria-hidden="true" />
-            Створити компанію
-          </Link>
-        </Button>
-      </div>
+      {items.length > 0 && (
+        <div className="mb-6 flex justify-end">
+          <Button asChild>
+            <Link to="/account/organizations/create">
+              <Plus aria-hidden="true" />
+              Створити компанію
+            </Link>
+          </Button>
+        </div>
+      )}
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2">
           {[1, 2].map((item) => (
