@@ -26,6 +26,7 @@ import {
 } from "@/features/organization/model/organizationSchema";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
+import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import type {
   CreatedOrganization,
   OrganizationHistory,
@@ -256,6 +257,7 @@ export const OrganizationSettingsPage = () => {
           )}
         </CardContent>
       </Card>
+      <EmployeeInvitationCard organisationId={organization.id} />
       <Card>
         <CardHeader>
           <CardTitle>Історія змін</CardTitle>

@@ -4,6 +4,7 @@ import {
   AccountLayout,
   AccountOverviewPage,
   CreateOrganizationPage,
+  EmployeeInvitePage,
   ForgotPasswordPage,
   HomePage,
   LoginPage,
@@ -30,6 +31,7 @@ const LazyRoutes = () => {
         <Route path="/" element={<PublicLayout />}>
           <Route index element={<HomePage />} />
           <Route path="auth/callback" element={<AuthCallbackPage />} />
+          <Route path="employee-invite" element={<EmployeeInvitePage />} />
 
           <Route element={<PublicRoute />}>
             <Route path="login" element={<LoginPage />} />

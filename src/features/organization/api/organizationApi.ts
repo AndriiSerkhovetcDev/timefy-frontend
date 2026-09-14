@@ -2,6 +2,9 @@ import { httpClient } from "@/shared/api/httpClient";
 import type {
   ApiSuccess,
   CreatedOrganization,
+  CreatedInvitation,
+  Employee,
+  InvitationPreview,
   Organization,
   OrganizationHistory,
   OrganizationLogo,
@@ -66,3 +69,43 @@ export const changeOrganizationLogo = (organisationId: string, file: File) =>
 export const deleteOrganizationLogo = async (organisationId: string) =>
   (await httpClient.post<ApiSuccess<OrganizationLogo>>(`${BASE}/logo/delete`, { organisationId }))
     .data;
+
+export const addOrganizationMemberAsEmployee = async (payload: {
+  organisationId: string;
+  memberId: string;
+  position?: string | null;
+  isBookable?: boolean;
+}) => (await httpClient.post<ApiSuccess<Employee>>(`${BASE}/employees/add-member`, payload)).data;
+
+export const createEmployeeInvitation = async (payload: {
+  organisationId: string;
+  position?: string | null;
+  isBookable?: boolean;
+}) =>
+  (
+    await httpClient.post<ApiSuccess<CreatedInvitation>>(
+      `${BASE}/employee-invitations/create`,
+      payload,
+    )
+  ).data;
+
+export const previewEmployeeInvitation = async (token: string) =>
+  (
+    await httpClient.post<ApiSuccess<InvitationPreview>>(
+      `${BASE}/employee-invitations/preview`,
+      { token },
+      { includeAuthorization: false, retryUnauthorized: false },
+    )
+  ).data;
+
+export const acceptEmployeeInvitation = async (token: string) =>
+  (await httpClient.post<ApiSuccess<Employee>>(`${BASE}/employee-invitations/accept`, { token }))
+    .data;
+
+export const revokeEmployeeInvitation = async (organisationId: string, invitationId: string) =>
+  (
+    await httpClient.post<ApiSuccess<{ invitationId: string; revoked: true }>>(
+      `${BASE}/employee-invitations/revoke`,
+      { organisationId, invitationId },
+    )
+  ).data;

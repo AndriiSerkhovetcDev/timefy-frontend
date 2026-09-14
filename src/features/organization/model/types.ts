@@ -50,3 +50,27 @@ export type OrganizationHistory = {
   items: OrganizationHistoryEntry[];
   pagination: { page: number; limit: number; total: number; pages: number };
 };
+
+export type Employee = {
+  organisationId: string;
+  memberId: string;
+  position: string | null;
+  isBookable: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type InvitationPreview = {
+  organisationId: string;
+  organisationDisplayName: string;
+  organisationLogoUrl: string | null;
+  position: string | null;
+  isBookable: boolean;
+  expiresAt: string;
+};
+
+export type CreatedInvitation = InvitationPreview & {
+  invitationId: string;
+  token: string;
+  invitePath: string;
+};

@@ -5,6 +5,7 @@ import type { $ZodType } from "zod/v4/core";
 import { useNavigate } from "react-router-dom";
 import type { AuthResponse } from "@/shared/api/authApi";
 import { withNotify } from "@/shared/lib/withNotify";
+import { consumePostAuthReturnPath } from "@/shared/lib/employeeInvitationSession";
 
 const isAuthResponse = (res: unknown): res is AuthResponse => {
   return !!res && typeof res === "object" && "data" in res;
@@ -43,6 +44,12 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
 
       if (isAuthResponse(res)) {
         login(res.data.user, res.data.token);
+        const postAuthReturnPath = consumePostAuthReturnPath();
+
+        if (postAuthReturnPath) {
+          navigate(postAuthReturnPath, { replace: true });
+          return;
+        }
 
         if (checkEmailVerified && !res.data.user.emailVerified) {
           navigate(unverifiedRedirectTo);
