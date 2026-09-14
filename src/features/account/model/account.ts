@@ -1,6 +1,13 @@
 import type { User } from "@/features/auth/model/types";
 export { getUserDisplayName as getDisplayName, getUserInitials } from "@/features/auth/model/user";
-import { Bell, CircleUserRound, LayoutDashboard, LockKeyhole, type LucideIcon } from "lucide-react";
+import {
+  Bell,
+  Building2,
+  CircleUserRound,
+  LayoutDashboard,
+  LockKeyhole,
+  type LucideIcon,
+} from "lucide-react";
 
 export type AccountSection = {
   title: string;
@@ -33,6 +40,12 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
     description: "Доступні канали персональних повідомлень",
     href: "/account/notifications",
     icon: Bell,
+  },
+  {
+    title: "Організації",
+    description: "Робочі простори, команди та онлайн-запис",
+    href: "/organizations",
+    icon: Building2,
   },
 ];
 
