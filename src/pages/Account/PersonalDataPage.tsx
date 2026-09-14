@@ -345,7 +345,7 @@ export const PersonalDataPage = () => {
             !isVerificationCodeSent && "sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center",
           )}
         >
-          <CardHeader className={isVerificationCodeSent ? "gap-0 pb-4" : "gap-0 pb-3 sm:py-6"}>
+          <CardHeader className={isVerificationCodeSent ? "gap-0 pb-4" : "gap-0 pb-3 sm:pb-0"}>
             <div className="flex min-w-0 items-start gap-3 sm:items-center">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <MailCheck className="size-5" aria-hidden="true" />
@@ -359,11 +359,7 @@ export const PersonalDataPage = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent
-            className={
-              isVerificationCodeSent ? "min-w-0 pt-0" : "min-w-0 pt-0 sm:py-6 sm:pl-0 sm:pr-6"
-            }
-          >
+          <CardContent className={isVerificationCodeSent ? "min-w-0 pt-0" : "min-w-0 pt-0 sm:pl-0"}>
             <VerifyEmailForm
               compact
               redirectTo={null}
