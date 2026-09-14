@@ -12,7 +12,7 @@ import { UserMenu } from "@/features/auth/ui";
 import { Logo, ThemeToggle } from "@/shared/ui";
 import { Menu } from "lucide-react";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { getAccountSection } from "../model/account";
 import { AccountNavigation } from "./AccountNavigation";
 
@@ -42,8 +42,15 @@ export const AccountHeader = () => {
           </SheetTrigger>
           <SheetContent side="left" className="w-[min(20rem,85vw)] p-5">
             <SheetHeader className="p-0 text-left">
-              <SheetTitle className="flex items-center gap-2">
-                <Logo />
+              <SheetTitle>
+                <Link
+                  to="/account"
+                  onClick={() => setIsMenuOpen(false)}
+                  aria-label="Timefy — до особистого кабінету"
+                  className="flex items-center gap-2"
+                >
+                  <Logo />
+                </Link>
               </SheetTitle>
               <SheetDescription>Особистий кабінет користувача</SheetDescription>
             </SheetHeader>

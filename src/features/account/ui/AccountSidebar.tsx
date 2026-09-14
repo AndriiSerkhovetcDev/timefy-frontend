@@ -31,8 +31,8 @@ export const AccountSidebar = ({ isCollapsed, onCollapsedChange }: AccountSideba
 
     <div className="mb-10 flex items-center">
       <Link
-        to="/"
-        aria-label="Timefy — на головну"
+        to="/account"
+        aria-label="Timefy — до особистого кабінету"
         className={cn(
           "flex min-w-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           isCollapsed ? "translate-x-[5px] gap-0" : "translate-x-0 gap-2",

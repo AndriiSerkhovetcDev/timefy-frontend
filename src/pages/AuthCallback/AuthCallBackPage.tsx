@@ -14,6 +14,7 @@ import {
 } from "@/features/auth/model/oauthCallback";
 import { exchangeExternalAuthCode, type ExternalAuthExchangeResponse } from "@/shared/api/authApi";
 import { PageLoader } from "@/shared/ui";
+import { consumePostAuthReturnPath } from "@/shared/lib/employeeInvitationSession";
 
 const exchangeRequests = new Map<string, Promise<ExternalAuthExchangeResponse>>();
 
@@ -73,7 +74,7 @@ export const AuthCallbackPage = () => {
 
           clearOAuthCallback();
           login(user, token);
-          navigate("/", { replace: true });
+          navigate(consumePostAuthReturnPath() ?? "/", { replace: true });
         } catch {
           failSafely();
         }
@@ -89,7 +90,7 @@ export const AuthCallbackPage = () => {
 
       clearOAuthCallback();
       login(legacyAuth.user, legacyAuth.token);
-      navigate("/", { replace: true });
+      navigate(consumePostAuthReturnPath() ?? "/", { replace: true });
     };
 
     void authenticate();
