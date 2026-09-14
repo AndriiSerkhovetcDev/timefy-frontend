@@ -52,7 +52,7 @@ type NavigationItem = {
 
 const navItems: NavigationItem[] = [
   {
-    label: "Огляд",
+    label: "Головна",
     description: "Основна інформація та швидкі дії",
     href: "",
     icon: LayoutDashboard,
@@ -216,7 +216,9 @@ export const OrganizationWorkspaceLayout = () => {
               </SheetContent>
             </Sheet>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-lg font-semibold sm:text-xl">{currentSection.label}</h1>
+              <h1 className="truncate text-lg font-semibold sm:text-xl">
+                {organization.displayName}
+              </h1>
               <p className="hidden truncate text-sm text-muted-foreground sm:block">
                 {currentSection.description}
               </p>
