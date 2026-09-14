@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
-import { Building2, Plus, Settings } from "lucide-react";
+import { ArrowRight, Building2, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
@@ -72,22 +72,12 @@ export const OrganizationsPage = () => {
                 <span className="text-sm text-muted-foreground">
                   {organization.isOwner ? "Власник" : (organization.position ?? "Учасник команди")}
                 </span>
-                {organization.isOwner && (
-                  <Button
-                    asChild
-                    size="sm"
-                    variant="outline"
-                    onClick={() => select(organization.id)}
-                  >
-                    <Link
-                      to={`/organizations/${organization.id}/settings`}
-                      state={{ organization }}
-                    >
-                      <Settings aria-hidden="true" />
-                      Налаштування
-                    </Link>
-                  </Button>
-                )}
+                <Button asChild size="sm" variant="outline" onClick={() => select(organization.id)}>
+                  <Link to={`/organizations/${organization.id}`} state={{ organization }}>
+                    Відкрити
+                    <ArrowRight aria-hidden="true" />
+                  </Link>
+                </Button>
               </CardContent>
             </Card>
           ))}

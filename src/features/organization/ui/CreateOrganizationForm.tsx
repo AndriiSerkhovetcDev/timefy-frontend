@@ -128,7 +128,7 @@ export const CreateOrganizationForm = () => {
       const organization = await createOrganization({ ...values, file: values.logo });
       useOrganizationStore.getState().addCreated(organization);
       notify.success("Організацію створено");
-      navigate(`/organizations/${organization.id}/settings`);
+      navigate(`/organizations/${organization.id}`);
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "ORGANISATION_SLUG_CONFLICT") {
         setError("slug", { message: "Цю адресу щойно зайняли. Оберіть інший варіант" });
@@ -150,7 +150,7 @@ export const CreateOrganizationForm = () => {
               ? "Організацію створено"
               : "Організацію створено без логотипа. Завантажте його ще раз у налаштуваннях.",
           );
-          navigate(`/organizations/${existing.id}/settings`);
+          navigate(`/organizations/${existing.id}`);
           return;
         }
       }

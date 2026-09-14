@@ -15,10 +15,19 @@ export const CreateOrganizationPage = lazy(
 export const OrganizationSettingsPage = lazy(
   () => import("@/pages/Organizations/OrganizationSettingsPage"),
 );
+export const OrganizationOverviewPage = lazy(
+  () => import("@/pages/Organizations/OrganizationOverviewPage"),
+);
+export const OrganizationTeamPage = lazy(
+  () => import("@/pages/Organizations/OrganizationTeamPage"),
+);
 export const EmployeeInvitePage = lazy(() => import("@/pages/EmployeeInvite/EmployeeInvitePage"));
 export const PublicLayout = lazy(() => import("@/layouts/PublicLayout/PublicLayout"));
 export const OrganizationsLayout = lazy(
   () => import("@/layouts/OrganizationsLayout/OrganizationsLayout"),
+);
+export const OrganizationWorkspaceLayout = lazy(
+  () => import("@/layouts/OrganizationsLayout/OrganizationWorkspaceLayout"),
 );
 export const AccountLayout = lazy(() => import("@/layouts/AccountLayout/AccountLayout"));
 export const NotFoundPage = lazy(() => import("@/pages/NotFound/NotFoundPage"));

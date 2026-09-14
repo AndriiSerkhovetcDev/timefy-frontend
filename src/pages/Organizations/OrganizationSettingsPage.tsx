@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import {
   changeOrganizationLogo,
@@ -26,7 +27,6 @@ import {
 } from "@/features/organization/model/organizationSchema";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
-import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import type {
   CreatedOrganization,
   OrganizationHistory,
@@ -155,173 +155,187 @@ export const OrganizationSettingsPage = () => {
   };
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-6 px-4 py-8 sm:px-6">
+    <div className="space-y-6">
       <div>
-        <Button asChild variant="link" className="-ml-4">
-          <Link to="/organizations">← До організацій</Link>
-        </Button>
         <h1 className="text-2xl font-bold sm:text-3xl">Налаштування організації</h1>
         <p className="mt-1 text-muted-foreground">
           Коротка адреса /{organization.slug} створює унікальне посилання на організацію і не може
           бути змінена.
         </p>
       </div>
-      <Card>
-        <CardHeader>
-          <CardTitle>Основні дані</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
-            <div className="space-y-2">
-              <Label htmlFor="displayName">Назва</Label>
-              <Input
-                id="displayName"
-                name="displayName"
-                defaultValue={organization.displayName}
-                required
-                maxLength={200}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="legalName">Юридична назва</Label>
-              <Input
-                id="legalName"
-                name="legalName"
-                defaultValue={"legalName" in organization ? (organization.legalName ?? "") : ""}
-                maxLength={255}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="taxId">Податковий номер</Label>
-              <Input
-                id="taxId"
-                name="taxId"
-                defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
-                maxLength={100}
-              />
-            </div>
-            <div className="flex items-end">
-              <Button disabled={busy}>
-                {busy && <LoaderCircle className="animate-spin" />}Зберегти
+      <Tabs defaultValue="general" className="gap-5">
+        <div className="overflow-x-auto pb-1">
+          <TabsList variant="line">
+            <TabsTrigger value="general">Основні дані</TabsTrigger>
+            <TabsTrigger value="branding">Брендинг</TabsTrigger>
+            <TabsTrigger value="history">Історія</TabsTrigger>
+            <TabsTrigger value="danger">Небезпечна зона</TabsTrigger>
+          </TabsList>
+        </div>
+        <TabsContent value="general">
+          <Card>
+            <CardHeader>
+              <CardTitle>Основні дані</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
+                <div className="space-y-2">
+                  <Label htmlFor="displayName">Назва</Label>
+                  <Input
+                    id="displayName"
+                    name="displayName"
+                    defaultValue={organization.displayName}
+                    required
+                    maxLength={200}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="legalName">Юридична назва</Label>
+                  <Input
+                    id="legalName"
+                    name="legalName"
+                    defaultValue={"legalName" in organization ? (organization.legalName ?? "") : ""}
+                    maxLength={255}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="taxId">Податковий номер</Label>
+                  <Input
+                    id="taxId"
+                    name="taxId"
+                    defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
+                    maxLength={100}
+                  />
+                </div>
+                <div className="flex items-end">
+                  <Button disabled={busy}>
+                    {busy && <LoaderCircle className="animate-spin" />}Зберегти
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="branding">
+          <Card>
+            <CardHeader>
+              <CardTitle>Логотип</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-wrap items-center gap-4">
+              <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
+                <OrganizationLogo
+                  logoUrl={organization.logoUrl}
+                  name={organization.displayName}
+                  iconClassName="size-8 text-muted-foreground"
+                />
+              </div>
+              <Button asChild variant="outline">
+                <Label className="cursor-pointer">
+                  <ImageUp />
+                  {organization.logoUrl ? "Замінити" : "Завантажити"}
+                  <input
+                    type="file"
+                    className="sr-only"
+                    accept={ORGANIZATION_LOGO_TYPES.join(",")}
+                    onChange={onLogo}
+                    disabled={busy}
+                  />
+                </Label>
               </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader>
-          <CardTitle>Логотип</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-wrap items-center gap-4">
-          <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-            <OrganizationLogo
-              logoUrl={organization.logoUrl}
-              name={organization.displayName}
-              iconClassName="size-8 text-muted-foreground"
-            />
-          </div>
-          <Button asChild variant="outline">
-            <Label className="cursor-pointer">
-              <ImageUp />
-              {organization.logoUrl ? "Замінити" : "Завантажити"}
-              <input
-                type="file"
-                className="sr-only"
-                accept={ORGANIZATION_LOGO_TYPES.join(",")}
-                onChange={onLogo}
-                disabled={busy}
-              />
-            </Label>
-          </Button>
-          {organization.logoUrl && (
-            <Button
-              variant="outline"
-              disabled={busy}
-              onClick={() => {
-                setBusy(true);
-                void deleteOrganizationLogo(organization.id)
-                  .then((result) => updateDetails(organization.id, { logoUrl: result.logoUrl }))
-                  .then(refresh)
-                  .then(() => notify.success("Логотип видалено"))
-                  .catch((error: unknown) =>
-                    notify.error(
-                      error instanceof Error ? error.message : "Не вдалося видалити логотип",
-                    ),
-                  )
-                  .finally(() => setBusy(false));
-              }}
-            >
-              <Trash2 />
-              Видалити
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-      <EmployeeInvitationCard organisationId={organization.id} />
-      <Card>
-        <CardHeader>
-          <CardTitle>Історія змін</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Button
-            variant="outline"
-            onClick={() =>
-              void getOrganizationHistory(organization.id)
-                .then(setHistory)
-                .catch((error: unknown) =>
-                  notify.error(
-                    error instanceof Error ? error.message : "Не вдалося завантажити історію",
-                  ),
-                )
-            }
-          >
-            <History />
-            {history ? "Оновити" : "Завантажити історію"}
-          </Button>
-          {history && (
-            <div className="mt-4 space-y-3">
-              {history.items.length === 0 ? (
-                <p className="text-sm text-muted-foreground">Історія порожня.</p>
-              ) : (
-                history.items.map((entry) => (
-                  <div key={entry.id} className="rounded-lg border p-3 text-sm">
-                    <strong>{entry.action}</strong>
-                    <span className="ml-2 text-muted-foreground">
-                      {new Date(entry.createdAt).toLocaleString("uk-UA")}
-                    </span>
-                  </div>
-                ))
-              )}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-      <Card className="border-destructive/40">
-        <CardHeader>
-          <CardTitle className="text-destructive">Небезпечна зона</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive">Деактивувати організацію</Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Деактивувати «{organization.displayName}»?</DialogTitle>
-                <DialogDescription>
-                  Організація зникне з активного списку. Відновлення через користувацький API поки
-                  недоступне.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <Button variant="destructive" disabled={busy} onClick={() => void deactivate()}>
-                  Так, деактивувати
+              {organization.logoUrl && (
+                <Button
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => {
+                    setBusy(true);
+                    void deleteOrganizationLogo(organization.id)
+                      .then((result) => updateDetails(organization.id, { logoUrl: result.logoUrl }))
+                      .then(refresh)
+                      .then(() => notify.success("Логотип видалено"))
+                      .catch((error: unknown) =>
+                        notify.error(
+                          error instanceof Error ? error.message : "Не вдалося видалити логотип",
+                        ),
+                      )
+                      .finally(() => setBusy(false));
+                  }}
+                >
+                  <Trash2 />
+                  Видалити
                 </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </CardContent>
-      </Card>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="history">
+          <Card>
+            <CardHeader>
+              <CardTitle>Історія змін</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Button
+                variant="outline"
+                onClick={() =>
+                  void getOrganizationHistory(organization.id)
+                    .then(setHistory)
+                    .catch((error: unknown) =>
+                      notify.error(
+                        error instanceof Error ? error.message : "Не вдалося завантажити історію",
+                      ),
+                    )
+                }
+              >
+                <History />
+                {history ? "Оновити" : "Завантажити історію"}
+              </Button>
+              {history && (
+                <div className="mt-4 space-y-3">
+                  {history.items.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Історія порожня.</p>
+                  ) : (
+                    history.items.map((entry) => (
+                      <div key={entry.id} className="rounded-lg border p-3 text-sm">
+                        <strong>{entry.action}</strong>
+                        <span className="ml-2 text-muted-foreground">
+                          {new Date(entry.createdAt).toLocaleString("uk-UA")}
+                        </span>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+        <TabsContent value="danger">
+          <Card className="border-destructive/40">
+            <CardHeader>
+              <CardTitle className="text-destructive">Небезпечна зона</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">Деактивувати організацію</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Деактивувати «{organization.displayName}»?</DialogTitle>
+                    <DialogDescription>
+                      Організація зникне з активного списку. Відновлення через користувацький API
+                      поки недоступне.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="destructive" disabled={busy} onClick={() => void deactivate()}>
+                      Так, деактивувати
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
