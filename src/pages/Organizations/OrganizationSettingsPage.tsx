@@ -25,14 +25,15 @@ import {
   ORGANIZATION_LOGO_TYPES,
 } from "@/features/organization/model/organizationSchema";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
+import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import type {
   CreatedOrganization,
   OrganizationHistory,
   OrganizationPreview,
 } from "@/features/organization/model/types";
-import { ApiError, resolveApiAssetUrl } from "@/shared/api/httpClient";
+import { ApiError } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
-import { Building2, History, ImageUp, LoaderCircle, Trash2 } from "lucide-react";
+import { History, ImageUp, LoaderCircle, Trash2 } from "lucide-react";
 import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
@@ -41,13 +42,16 @@ export const OrganizationSettingsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore(selectUser);
-  const { items, load, select } = useOrganizationStore();
+  const { items, details, load, select, updateDetails } = useOrganizationStore();
   const stateOrganization = (
     location.state as {
       organization?: OrganizationPreview & Partial<CreatedOrganization>;
     } | null
   )?.organization;
-  const organization = items.find((item) => item.id === organizationId) ?? stateOrganization;
+  const organization =
+    details[organizationId] ??
+    stateOrganization ??
+    items.find((item) => item.id === organizationId);
   const [history, setHistory] = useState<OrganizationHistory | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -63,7 +67,8 @@ export const OrganizationSettingsPage = () => {
         </Button>
       </div>
     );
-  if (!organization.isOwner)
+  const preview = items.find((item) => item.id === organizationId);
+  if (preview && !preview.isOwner)
     return (
       <div className="mx-auto w-full max-w-4xl p-8">
         <p>Налаштування доступні лише власнику організації.</p>
@@ -94,7 +99,8 @@ export const OrganizationSettingsPage = () => {
         notify.info("Немає змін для збереження");
         return;
       }
-      await updateOrganization(changes);
+      const updated = await updateOrganization(changes);
+      updateDetails(organization.id, updated);
       await refresh();
       notify.success("Дані організації оновлено");
     } catch (error) {
@@ -117,8 +123,10 @@ export const OrganizationSettingsPage = () => {
     }
     setBusy(true);
     try {
-      if (organization.logoUrl) await changeOrganizationLogo(organization.id, file);
-      else await uploadOrganizationLogo(organization.id, file);
+      const updatedLogo = organization.logoUrl
+        ? await changeOrganizationLogo(organization.id, file)
+        : await uploadOrganizationLogo(organization.id, file);
+      updateDetails(organization.id, { logoUrl: updatedLogo.logoUrl });
       await refresh();
       notify.success("Логотип оновлено");
     } catch (error) {
@@ -175,11 +183,21 @@ export const OrganizationSettingsPage = () => {
             </div>
             <div className="space-y-2">
               <Label htmlFor="legalName">Юридична назва</Label>
-              <Input id="legalName" name="legalName" maxLength={255} />
+              <Input
+                id="legalName"
+                name="legalName"
+                defaultValue={"legalName" in organization ? (organization.legalName ?? "") : ""}
+                maxLength={255}
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="taxId">Податковий номер</Label>
-              <Input id="taxId" name="taxId" maxLength={100} />
+              <Input
+                id="taxId"
+                name="taxId"
+                defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
+                maxLength={100}
+              />
             </div>
             <div className="flex items-end">
               <Button disabled={busy}>
@@ -195,15 +213,11 @@ export const OrganizationSettingsPage = () => {
         </CardHeader>
         <CardContent className="flex flex-wrap items-center gap-4">
           <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-            {organization.logoUrl ? (
-              <img
-                src={resolveApiAssetUrl(organization.logoUrl)}
-                alt={`Логотип ${organization.displayName}`}
-                className="size-full object-cover"
-              />
-            ) : (
-              <Building2 className="size-8" />
-            )}
+            <OrganizationLogo
+              logoUrl={organization.logoUrl}
+              name={organization.displayName}
+              iconClassName="size-8 text-muted-foreground"
+            />
           </div>
           <Button asChild variant="outline">
             <Label className="cursor-pointer">
@@ -225,6 +239,7 @@ export const OrganizationSettingsPage = () => {
               onClick={() => {
                 setBusy(true);
                 void deleteOrganizationLogo(organization.id)
+                  .then((result) => updateDetails(organization.id, { logoUrl: result.logoUrl }))
                   .then(refresh)
                   .then(() => notify.success("Логотип видалено"))
                   .catch((error: unknown) =>

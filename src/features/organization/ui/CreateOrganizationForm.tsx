@@ -126,9 +126,9 @@ export const CreateOrganizationForm = () => {
     if (slugState.available === false) return;
     try {
       const organization = await createOrganization({ ...values, file: values.logo });
-      useOrganizationStore.getState().select(organization.id);
+      useOrganizationStore.getState().addCreated(organization);
       notify.success("Організацію створено");
-      navigate(`/organizations/${organization.id}/settings`, { state: { organization } });
+      navigate(`/organizations/${organization.id}/settings`);
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "ORGANISATION_SLUG_CONFLICT") {
         setError("slug", { message: "Цю адресу щойно зайняли. Оберіть інший варіант" });

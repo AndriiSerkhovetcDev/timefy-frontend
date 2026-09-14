@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
-import { resolveApiAssetUrl } from "@/shared/api/httpClient";
+import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import { Building2, Plus, Settings } from "lucide-react";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -58,15 +58,10 @@ export const OrganizationsPage = () => {
             <Card key={organization.id}>
               <CardHeader className="flex-row items-center gap-4">
                 <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-                  {organization.logoUrl ? (
-                    <img
-                      src={resolveApiAssetUrl(organization.logoUrl)}
-                      alt=""
-                      className="size-full object-cover"
-                    />
-                  ) : (
-                    <Building2 className="size-6 text-muted-foreground" />
-                  )}
+                  <OrganizationLogo
+                    logoUrl={organization.logoUrl}
+                    name={organization.displayName}
+                  />
                 </div>
                 <div className="min-w-0">
                   <CardTitle className="truncate">{organization.displayName}</CardTitle>
