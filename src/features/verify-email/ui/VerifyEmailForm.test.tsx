@@ -47,24 +47,12 @@ describe("VerifyEmailForm", () => {
     );
 
     expect(resendVerifyEmail).not.toHaveBeenCalled();
-    expect(
-      (
-        screen.getByRole("group", {
-          name: "Шестизначний код підтвердження",
-        }) as HTMLFieldSetElement
-      ).disabled,
-    ).toBe(true);
+    expect(screen.queryByRole("group", { name: "Шестизначний код підтвердження" })).toBeNull();
 
     fireEvent.click(screen.getByRole("button", { name: "Надіслати код" }));
 
     await waitFor(() => expect(resendVerifyEmail).toHaveBeenCalledWith({ login: "testuser" }));
-    expect(
-      (
-        screen.getByRole("group", {
-          name: "Шестизначний код підтвердження",
-        }) as HTMLFieldSetElement
-      ).disabled,
-    ).toBe(false);
+    expect(screen.getByRole("group", { name: "Шестизначний код підтвердження" })).toBeTruthy();
 
     for (let index = 0; index < 6; index += 1) {
       fireEvent.change(screen.getByLabelText(`Цифра ${index + 1} з 6`), {
@@ -92,13 +80,7 @@ describe("VerifyEmailForm", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Надіслати код" }));
     await waitFor(() =>
-      expect(
-        (
-          screen.getByRole("group", {
-            name: "Шестизначний код підтвердження",
-          }) as HTMLFieldSetElement
-        ).disabled,
-      ).toBe(false),
+      expect(screen.getByRole("group", { name: "Шестизначний код підтвердження" })).toBeTruthy(),
     );
 
     fireEvent.change(screen.getByLabelText("Цифра 1 з 6"), {

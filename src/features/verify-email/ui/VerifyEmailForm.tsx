@@ -172,43 +172,48 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
 
   return (
     <div className={cn("flex flex-col gap-6", compact && "gap-4")}>
-      <fieldset disabled={isVerifying || !hasRequestedCode} className="min-w-0">
-        <legend className="sr-only">Шестизначний код підтвердження</legend>
-        <div
-          className={cn("grid grid-cols-6 gap-2 sm:gap-3", compact && "mx-auto w-full max-w-lg")}
-          aria-describedby={verifyError ? "verification-code-error" : "verification-code-hint"}
-        >
-          {code.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => {
-                inputsRef.current[index] = el;
-              }}
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              autoComplete={index === 0 ? "one-time-code" : "off"}
-              maxLength={1}
-              value={digit}
-              aria-label={`Цифра ${index + 1} з ${CODE_LENGTH}`}
-              aria-invalid={Boolean(verifyError)}
-              onChange={(e) => handleChange(e.target.value, index)}
-              onKeyDown={(e) => handleKeyDown(e, index)}
-              onPaste={handlePaste}
+      {hasRequestedCode && (
+        <>
+          <fieldset disabled={isVerifying} className="min-w-0">
+            <legend className="sr-only">Шестизначний код підтвердження</legend>
+            <div
               className={cn(
-                "h-14 min-w-0 w-full rounded-xl border border-border bg-bg-surface text-center text-xl font-semibold text-text-main shadow-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:cursor-wait disabled:opacity-60 sm:h-16 sm:text-2xl",
-                compact && "h-12 rounded-lg sm:h-14 sm:text-xl",
+                "grid grid-cols-6 gap-2 sm:gap-3",
+                compact && "mx-auto w-full max-w-lg",
               )}
-            />
-          ))}
-        </div>
-      </fieldset>
+              aria-describedby={verifyError ? "verification-code-error" : "verification-code-hint"}
+            >
+              {code.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => {
+                    inputsRef.current[index] = el;
+                  }}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete={index === 0 ? "one-time-code" : "off"}
+                  maxLength={1}
+                  value={digit}
+                  aria-label={`Цифра ${index + 1} з ${CODE_LENGTH}`}
+                  aria-invalid={Boolean(verifyError)}
+                  onChange={(e) => handleChange(e.target.value, index)}
+                  onKeyDown={(e) => handleKeyDown(e, index)}
+                  onPaste={handlePaste}
+                  className={cn(
+                    "h-14 min-w-0 w-full rounded-xl border border-border bg-bg-surface text-center text-xl font-semibold text-text-main shadow-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:cursor-wait disabled:opacity-60 sm:h-16 sm:text-2xl",
+                    compact && "h-12 rounded-lg sm:h-14 sm:text-xl",
+                  )}
+                />
+              ))}
+            </div>
+          </fieldset>
 
-      <p id="verification-code-hint" className="text-center text-xs leading-5 text-text-muted">
-        {hasRequestedCode
-          ? "Код буде перевірено автоматично після введення останньої цифри."
-          : "Надішліть код, щоб підтвердити вашу електронну адресу."}
-      </p>
+          <p id="verification-code-hint" className="text-center text-xs leading-5 text-text-muted">
+            Код буде перевірено автоматично після введення останньої цифри.
+          </p>
+        </>
+      )}
 
       {isVerifying && (
         <div
@@ -236,7 +241,11 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
             type="button"
             onClick={handleResend}
             disabled={isResending}
-            className="inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-primary outline-none transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60"
+            className={cn(
+              "inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-primary outline-none transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60",
+              !hasRequestedCode &&
+                "min-h-11 bg-primary px-5 text-primary-foreground shadow-sm hover:bg-primary/90",
+            )}
           >
             <RefreshCw
               className={`size-4 ${isResending ? "animate-spin" : ""}`}
