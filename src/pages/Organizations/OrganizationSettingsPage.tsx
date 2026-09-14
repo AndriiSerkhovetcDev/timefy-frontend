@@ -175,50 +175,6 @@ export const OrganizationSettingsPage = () => {
           <div className="space-y-5">
             <Card>
               <CardHeader>
-                <CardTitle>Основні дані</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
-                  <div className="space-y-2">
-                    <Label htmlFor="displayName">Назва</Label>
-                    <Input
-                      id="displayName"
-                      name="displayName"
-                      defaultValue={organization.displayName}
-                      required
-                      maxLength={200}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="legalName">Юридична назва</Label>
-                    <Input
-                      id="legalName"
-                      name="legalName"
-                      defaultValue={
-                        "legalName" in organization ? (organization.legalName ?? "") : ""
-                      }
-                      maxLength={255}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="taxId">Податковий номер</Label>
-                    <Input
-                      id="taxId"
-                      name="taxId"
-                      defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
-                      maxLength={100}
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button disabled={busy}>
-                      {busy && <LoaderCircle className="animate-spin" />}Зберегти
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
                 <CardTitle>Логотип</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap items-center gap-4">
@@ -266,6 +222,50 @@ export const OrganizationSettingsPage = () => {
                     Видалити
                   </Button>
                 )}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Основні дані</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">Назва</Label>
+                    <Input
+                      id="displayName"
+                      name="displayName"
+                      defaultValue={organization.displayName}
+                      required
+                      maxLength={200}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="legalName">Юридична назва</Label>
+                    <Input
+                      id="legalName"
+                      name="legalName"
+                      defaultValue={
+                        "legalName" in organization ? (organization.legalName ?? "") : ""
+                      }
+                      maxLength={255}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="taxId">Податковий номер</Label>
+                    <Input
+                      id="taxId"
+                      name="taxId"
+                      defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button disabled={busy}>
+                      {busy && <LoaderCircle className="animate-spin" />}Зберегти
+                    </Button>
+                  </div>
+                </form>
               </CardContent>
             </Card>
           </div>
