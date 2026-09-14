@@ -292,7 +292,7 @@ const OrganizationSelect = ({
         <SelectContent>
           {items.map((item) => (
             <SelectItem key={item.id} value={item.id} textValue={item.displayName}>
-              <div className="min-w-0 py-0.5">
+              <div className="w-full min-w-0 py-0.5 text-left">
                 <p className="truncate font-medium">{item.displayName}</p>
                 <p className="truncate text-xs text-muted-foreground">
                   {item.isOwner ? "Власник" : (item.position ?? "Працівник")}
