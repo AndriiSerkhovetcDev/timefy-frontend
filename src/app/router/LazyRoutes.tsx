@@ -54,11 +54,12 @@ const LazyRoutes = () => {
           <Route element={<OrganizationsLayout />}>
             <Route path="/organizations" element={<OrganizationsPage />} />
             <Route path="/organizations/create" element={<CreateOrganizationPage />} />
-            <Route path="/organizations/:organizationId" element={<OrganizationWorkspaceLayout />}>
-              <Route index element={<OrganizationOverviewPage />} />
-              <Route path="team" element={<OrganizationTeamPage />} />
-              <Route path="settings" element={<OrganizationSettingsPage />} />
-            </Route>
+          </Route>
+
+          <Route path="/organizations/:organizationId" element={<OrganizationWorkspaceLayout />}>
+            <Route index element={<OrganizationOverviewPage />} />
+            <Route path="team" element={<OrganizationTeamPage />} />
+            <Route path="settings" element={<OrganizationSettingsPage />} />
           </Route>
 
           <Route path="/account" element={<AccountLayout />}>

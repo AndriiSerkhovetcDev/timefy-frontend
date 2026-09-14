@@ -6,37 +6,98 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
+import { UserMenu } from "@/features/auth/ui";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import { cn } from "@/lib/utils";
-import { Building2, ChevronLeft, LayoutDashboard, Settings, Users } from "lucide-react";
-import { useEffect } from "react";
-import { Link, NavLink, Navigate, Outlet, useNavigate, useParams } from "react-router-dom";
+import { Logo, ThemeToggle } from "@/shared/ui";
+import {
+  Building2,
+  ChevronLeft,
+  LayoutDashboard,
+  Menu,
+  PanelLeftClose,
+  PanelLeftOpen,
+  Settings,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  Link,
+  NavLink,
+  Navigate,
+  Outlet,
+  useLocation,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
-const navItems = [
-  { label: "Огляд", href: "", icon: LayoutDashboard, ownerOnly: false },
-  { label: "Команда", href: "team", icon: Users, ownerOnly: true },
-  { label: "Налаштування", href: "settings", icon: Settings, ownerOnly: true },
+type NavigationItem = {
+  label: string;
+  description: string;
+  href: string;
+  icon: LucideIcon;
+  ownerOnly: boolean;
+};
+
+const navItems: NavigationItem[] = [
+  {
+    label: "Огляд",
+    description: "Основна інформація та швидкі дії",
+    href: "",
+    icon: LayoutDashboard,
+    ownerOnly: false,
+  },
+  {
+    label: "Команда",
+    description: "Працівники та запрошення",
+    href: "team",
+    icon: Users,
+    ownerOnly: true,
+  },
+  {
+    label: "Налаштування",
+    description: "Дані, брендинг та історія",
+    href: "settings",
+    icon: Settings,
+    ownerOnly: true,
+  },
 ];
 
 export const OrganizationWorkspaceLayout = () => {
   const { organizationId = "" } = useParams();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const user = useAuthStore(selectUser);
   const { items, details, isLoading, error, load, select } = useOrganizationStore();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasRequestedOrganizations, setHasRequestedOrganizations] = useState(false);
   const preview = items.find((item) => item.id === organizationId);
   const detail = details[organizationId];
   const organization = preview ?? detail;
   const isOwner = preview?.isOwner ?? Boolean(detail);
 
   useEffect(() => {
-    if (user?.email) void load(user.email).catch(() => undefined);
+    if (user?.email) {
+      setHasRequestedOrganizations(true);
+      void load(user.email).catch(() => undefined);
+    }
   }, [load, user?.email]);
 
-  if (isLoading && !organization)
+  if ((!hasRequestedOrganizations || isLoading) && !organization)
     return (
-      <div className="mx-auto w-full max-w-6xl p-8 text-muted-foreground">
+      <div className="flex min-h-dvh items-center justify-center text-muted-foreground">
         Завантажуємо організацію…
       </div>
     );
@@ -51,105 +112,236 @@ export const OrganizationWorkspaceLayout = () => {
     ) : (
       <Navigate to="/organizations" replace />
     );
-  if (!organization) return null;
+  if (!organization || !user) return null;
 
   const availableNavItems = navItems.filter((item) => !item.ownerOnly || isOwner);
+  const currentSection =
+    availableNavItems.find(({ href }) =>
+      href ? pathname.endsWith(`/${href}`) : pathname === `/organizations/${organizationId}`,
+    ) ?? availableNavItems[0];
+  const changeOrganization = (id: string) => {
+    select(id);
+    setIsMenuOpen(false);
+    navigate(`/organizations/${id}`);
+  };
+
   return (
-    <div className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 lg:px-8">
-      <div className="mb-5 flex flex-col gap-4 rounded-2xl border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-            <OrganizationLogo logoUrl={organization.logoUrl} name={organization.displayName} />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate font-semibold">{organization.displayName}</p>
-            <p className="text-sm text-muted-foreground">
-              {isOwner ? "Власник" : (preview?.position ?? "Працівник")}
-            </p>
-          </div>
-        </div>
-        <div className="flex w-full items-center gap-2 sm:w-auto">
-          <Select
-            value={organizationId}
-            onValueChange={(id) => {
-              select(id);
-              navigate(`/organizations/${id}`);
-            }}
-          >
-            <SelectTrigger className="min-w-0 flex-1 sm:w-64">
-              <SelectValue aria-label="Вибрана організація" />
-            </SelectTrigger>
-            <SelectContent>
-              {items.map((item) => (
-                <SelectItem key={item.id} value={item.id}>
-                  {item.displayName}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button asChild size="icon" variant="outline">
-            <Link to="/organizations" aria-label="Усі організації">
-              <Building2 aria-hidden="true" />
-            </Link>
-          </Button>
-        </div>
-      </div>
-
-      <nav
-        className="mb-5 flex gap-2 overflow-x-auto pb-1 lg:hidden"
-        aria-label="Навігація організації"
+    <div className="flex min-h-dvh bg-background">
+      <aside
+        className={cn(
+          "relative z-50 hidden shrink-0 border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
+          isSidebarCollapsed ? "w-[90px]" : "w-64",
+        )}
       >
-        {availableNavItems.map(({ label, href, icon: Icon }) => (
-          <NavLink
-            key={href}
-            end={!href}
-            to={href || "."}
-            className={({ isActive }) =>
-              cn(
-                "inline-flex h-10 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium text-muted-foreground",
-                isActive && "bg-primary text-primary-foreground",
-              )
-            }
-          >
-            <Icon className="size-4" />
-            {label}
-          </NavLink>
-        ))}
-      </nav>
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label={isSidebarCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
+          title={isSidebarCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
+          onClick={() => setIsSidebarCollapsed((value) => !value)}
+          className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm"
+        >
+          {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+        </Button>
+        <Link
+          to="/"
+          aria-label="Timefy — на головну"
+          className={cn(
+            "mb-8 flex min-w-0 items-center rounded-lg",
+            isSidebarCollapsed && "translate-x-[5px]",
+          )}
+        >
+          <Logo showText={!isSidebarCollapsed} />
+        </Link>
+        <OrganizationIdentity
+          collapsed={isSidebarCollapsed}
+          name={organization.displayName}
+          logoUrl={organization.logoUrl}
+          role={isOwner ? "Власник" : (preview?.position ?? "Працівник")}
+        />
+        {!isSidebarCollapsed && (
+          <OrganizationSelect
+            organizationId={organizationId}
+            items={items}
+            onChange={changeOrganization}
+          />
+        )}
+        <OrganizationNavigation
+          organizationId={organizationId}
+          items={availableNavItems}
+          collapsed={isSidebarCollapsed}
+        />
+      </aside>
 
-      <div className="grid min-w-0 gap-8 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside className="hidden lg:block">
-          <Button asChild variant="ghost" className="mb-3 w-full justify-start">
-            <Link to="/organizations">
-              <ChevronLeft />
-              Усі організації
-            </Link>
-          </Button>
-          <nav className="space-y-1" aria-label="Навігація організації">
-            {availableNavItems.map(({ label, href, icon: Icon }) => (
-              <NavLink
-                key={href}
-                end={!href}
-                to={href || "."}
-                className={({ isActive }) =>
-                  cn(
-                    "flex h-11 items-center gap-3 rounded-lg px-3 text-sm font-medium text-muted-foreground transition hover:bg-accent hover:text-foreground",
-                    isActive && "bg-accent text-primary",
-                  )
-                }
-              >
-                <Icon className="size-4" />
-                {label}
-              </NavLink>
-            ))}
-          </nav>
-        </aside>
-        <section className="min-w-0">
-          <Outlet />
-        </section>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
+          <div className="flex min-h-20 items-center gap-3 px-4 sm:px-6 lg:px-8">
+            <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label="Відкрити меню організації"
+                  className="lg:hidden"
+                >
+                  <Menu />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="left" className="w-[min(20rem,85vw)] p-5">
+                <SheetHeader className="p-0 text-left">
+                  <SheetTitle>
+                    <Logo />
+                  </SheetTitle>
+                  <SheetDescription>Керування організацією</SheetDescription>
+                </SheetHeader>
+                <div className="mt-6">
+                  <OrganizationIdentity
+                    name={organization.displayName}
+                    logoUrl={organization.logoUrl}
+                    role={isOwner ? "Власник" : (preview?.position ?? "Працівник")}
+                  />
+                  <OrganizationSelect
+                    organizationId={organizationId}
+                    items={items}
+                    onChange={changeOrganization}
+                  />
+                </div>
+                <OrganizationNavigation
+                  organizationId={organizationId}
+                  items={availableNavItems}
+                  onNavigate={() => setIsMenuOpen(false)}
+                />
+              </SheetContent>
+            </Sheet>
+            <div className="min-w-0 flex-1">
+              <h1 className="truncate text-lg font-semibold sm:text-xl">{currentSection.label}</h1>
+              <p className="hidden truncate text-sm text-muted-foreground sm:block">
+                {currentSection.description}
+              </p>
+            </div>
+            <ThemeToggle />
+            <UserMenu />
+          </div>
+        </header>
+        <main className="flex flex-1 flex-col p-4 sm:p-6 lg:p-8">
+          <div className="mx-auto w-full max-w-6xl">
+            <Outlet />
+          </div>
+        </main>
       </div>
     </div>
   );
 };
+
+const OrganizationIdentity = ({
+  name,
+  logoUrl,
+  role,
+  collapsed = false,
+}: {
+  name: string;
+  logoUrl: string | null;
+  role: string;
+  collapsed?: boolean;
+}) => (
+  <div className={cn("mb-4 flex min-w-0 items-center gap-3", collapsed && "justify-center")}>
+    <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border bg-muted">
+      <OrganizationLogo logoUrl={logoUrl} name={name} />
+    </div>
+    {!collapsed && (
+      <div className="min-w-0">
+        <p className="truncate text-sm font-semibold">{name}</p>
+        <p className="truncate text-xs text-muted-foreground">{role}</p>
+      </div>
+    )}
+  </div>
+);
+
+const OrganizationSelect = ({
+  organizationId,
+  items,
+  onChange,
+}: {
+  organizationId: string;
+  items: ReturnType<typeof useOrganizationStore.getState>["items"];
+  onChange: (id: string) => void;
+}) => (
+  <Select value={organizationId} onValueChange={onChange}>
+    <SelectTrigger className="mb-6 w-full">
+      <SelectValue aria-label="Вибрана організація" />
+    </SelectTrigger>
+    <SelectContent>
+      {items.map((item) => (
+        <SelectItem key={item.id} value={item.id}>
+          {item.displayName}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+);
+
+const OrganizationNavigation = ({
+  organizationId,
+  items,
+  collapsed = false,
+  onNavigate,
+}: {
+  organizationId: string;
+  items: NavigationItem[];
+  collapsed?: boolean;
+  onNavigate?: () => void;
+}) => (
+  <nav aria-label="Навігація організації" className="flex min-h-0 flex-1 flex-col">
+    <ul className="space-y-1">
+      {items.map(({ label, href, icon: Icon }) => (
+        <li key={href} className="group relative">
+          <NavLink
+            end={!href}
+            to={`/organizations/${organizationId}${href ? `/${href}` : ""}`}
+            onClick={onNavigate}
+            aria-label={collapsed ? label : undefined}
+            className={({ isActive }) =>
+              cn(
+                "flex min-h-11 items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                collapsed && "justify-center px-2",
+                isActive && "bg-accent text-primary",
+              )
+            }
+          >
+            <Icon className="size-5 shrink-0" />
+            {!collapsed && <span className="min-w-0 truncate">{label}</span>}
+          </NavLink>
+          {collapsed && (
+            <span
+              role="tooltip"
+              className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 rounded-md bg-foreground px-3 py-1.5 text-xs whitespace-nowrap text-background opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+            >
+              {label}
+            </span>
+          )}
+        </li>
+      ))}
+    </ul>
+    <div className="mt-auto pt-6">
+      <Button
+        asChild
+        variant="ghost"
+        className={cn("w-full justify-start text-muted-foreground", collapsed && "justify-center")}
+      >
+        <Link
+          to="/organizations"
+          onClick={onNavigate}
+          aria-label={collapsed ? "Усі організації" : undefined}
+          title={collapsed ? "Усі організації" : undefined}
+        >
+          {collapsed ? <Building2 /> : <ChevronLeft />}
+          {!collapsed && "Усі організації"}
+        </Link>
+      </Button>
+    </div>
+  </nav>
+);
 
 export default OrganizationWorkspaceLayout;
