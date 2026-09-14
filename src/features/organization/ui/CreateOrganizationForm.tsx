@@ -333,17 +333,34 @@ export const CreateOrganizationForm = () => {
             <p className="text-xs text-destructive">{errors.organisationType.message}</p>
           )}
         </div>
-        {organisationType && (
+        {organisationType && organisationType !== "INDIVIDUAL" && (
           <>
             <Field
-              label="Юридична назва"
+              label={organisationType === "COMPANY" ? "Юридична назва" : "ПІБ підприємця"}
               id="organization-legal-name"
               error={errors.legalName?.message}
             >
-              <Input id="organization-legal-name" {...register("legalName")} />
+              <Input
+                id="organization-legal-name"
+                placeholder={
+                  organisationType === "COMPANY"
+                    ? 'Наприклад, ТОВ "Таймфай"'
+                    : "Іваненко Іван Іванович"
+                }
+                {...register("legalName")}
+              />
             </Field>
-            <Field label="Податковий номер" id="organization-tax-id" error={errors.taxId?.message}>
-              <Input id="organization-tax-id" {...register("taxId")} />
+            <Field
+              label={organisationType === "COMPANY" ? "Код ЄДРПОУ" : "РНОКПП (ІПН)"}
+              id="organization-tax-id"
+              error={errors.taxId?.message}
+            >
+              <Input
+                id="organization-tax-id"
+                inputMode="numeric"
+                autoComplete="off"
+                {...register("taxId")}
+              />
             </Field>
           </>
         )}

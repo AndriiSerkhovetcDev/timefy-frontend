@@ -86,8 +86,8 @@ describe("organizationSchema", () => {
     });
 
     expect(result).toMatchObject({
-      legalName: "Іваненко Іван",
-      taxId: "1234567890",
+      legalName: undefined,
+      taxId: undefined,
     });
   });
 });

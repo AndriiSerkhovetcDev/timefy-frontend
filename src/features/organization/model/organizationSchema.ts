@@ -32,8 +32,8 @@ export const organizationSchema = z
   })
   .transform((values) => ({
     ...values,
-    legalName: values.legalName || undefined,
-    taxId: values.taxId || undefined,
+    legalName: values.organisationType === "INDIVIDUAL" ? undefined : values.legalName || undefined,
+    taxId: values.organisationType === "INDIVIDUAL" ? undefined : values.taxId || undefined,
   }));
 
 export type OrganizationFormInput = z.input<typeof organizationSchema>;
