@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import {
   AccountLayout,
   AccountOverviewPage,
+  CreateOrganizationPage,
   ForgotPasswordPage,
   HomePage,
   LoginPage,
@@ -10,6 +11,7 @@ import {
   NotificationsPage,
   OrganizationsLayout,
   OrganizationsPage,
+  OrganizationSettingsPage,
   PersonalDataPage,
   PublicLayout,
   RegisterPage,
@@ -46,6 +48,11 @@ const LazyRoutes = () => {
         <Route element={<ProtectedRoute />}>
           <Route element={<OrganizationsLayout />}>
             <Route path="/organizations" element={<OrganizationsPage />} />
+            <Route path="/organizations/create" element={<CreateOrganizationPage />} />
+            <Route
+              path="/organizations/:organizationId/settings"
+              element={<OrganizationSettingsPage />}
+            />
           </Route>
 
           <Route path="/account" element={<AccountLayout />}>

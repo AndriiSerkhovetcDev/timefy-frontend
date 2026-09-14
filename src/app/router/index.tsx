@@ -9,6 +9,12 @@ export const ForgotPasswordPage = lazy(
 );
 export const ResetPasswordPage = lazy(() => import("@/pages/ForgotPassword/ui/ResetPasswordPage"));
 export const OrganizationsPage = lazy(() => import("@/pages/Organizations/OrganizationsPage"));
+export const CreateOrganizationPage = lazy(
+  () => import("@/pages/Organizations/CreateOrganizationPage"),
+);
+export const OrganizationSettingsPage = lazy(
+  () => import("@/pages/Organizations/OrganizationSettingsPage"),
+);
 export const PublicLayout = lazy(() => import("@/layouts/PublicLayout/PublicLayout"));
 export const OrganizationsLayout = lazy(
   () => import("@/layouts/OrganizationsLayout/OrganizationsLayout"),

@@ -10,11 +10,17 @@ import { AccountAvatar } from "@/features/account/ui/AccountAvatar";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { EmailStatus } from "@/features/account/ui/EmailStatus";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
-import { ArrowRight, CheckCircle2, CircleAlert, Pencil } from "lucide-react";
+import { useOrganizationStore } from "@/features/organization/model/organizationStore";
+import { ArrowRight, Building2, CheckCircle2, CircleAlert, Pencil, Plus } from "lucide-react";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const AccountOverviewPage = () => {
   const user = useAuthStore(selectUser);
+  const { items: organizations, isLoading: areOrganizationsLoading, load } = useOrganizationStore();
+  useEffect(() => {
+    if (user?.email) void load(user.email).catch(() => undefined);
+  }, [load, user?.email]);
   if (!user) return <AccountPageSkeleton />;
   const profile = getProfileProgress(user);
 
@@ -96,6 +102,30 @@ export const AccountOverviewPage = () => {
           </CardContent>
         </Card>
       </div>
+
+      {!areOrganizationsLoading && organizations.length === 0 && (
+        <Card className="border-primary/30 bg-accent/40">
+          <CardContent className="flex flex-col items-start gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-4">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground">
+                <Building2 className="size-5" aria-hidden="true" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-lg font-semibold">Створіть свою організацію</h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Додайте організацію, налаштуйте послуги, працівників і почніть приймати записи.
+                </p>
+              </div>
+            </div>
+            <Button asChild className="w-full shrink-0 sm:w-auto">
+              <Link to="/organizations/create">
+                <Plus aria-hidden="true" />
+                Створити організацію
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       <div>
         <h2 className="text-lg font-semibold">Швидкі переходи</h2>
