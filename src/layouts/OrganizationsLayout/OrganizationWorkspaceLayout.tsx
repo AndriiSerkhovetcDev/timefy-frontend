@@ -144,16 +144,19 @@ export const OrganizationWorkspaceLayout = () => {
         >
           {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
         </Button>
-        <Link
-          to="/"
-          aria-label="Timefy — на головну"
-          className={cn(
-            "mb-8 flex min-w-0 items-center rounded-lg",
-            isSidebarCollapsed && "translate-x-[5px]",
-          )}
-        >
-          <Logo showText={!isSidebarCollapsed} />
-        </Link>
+        <div className="mb-10 flex items-center">
+          <Link
+            to={`/organizations/${organizationId}`}
+            aria-label={`${organization.displayName} — на головну`}
+            className={cn(
+              "flex min-w-0 items-center rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              isSidebarCollapsed ? "translate-x-[5px] gap-0" : "translate-x-0 gap-2",
+              "transition-transform duration-300 ease-in-out",
+            )}
+          >
+            <Logo showText={!isSidebarCollapsed} />
+          </Link>
+        </div>
         <OrganizationIdentity
           collapsed={isSidebarCollapsed}
           name={organization.displayName}
@@ -192,7 +195,14 @@ export const OrganizationWorkspaceLayout = () => {
               <SheetContent side="left" className="w-[min(20rem,85vw)] p-5">
                 <SheetHeader className="p-0 text-left">
                   <SheetTitle>
-                    <Logo />
+                    <Link
+                      to={`/organizations/${organizationId}`}
+                      onClick={() => setIsMenuOpen(false)}
+                      aria-label={`${organization.displayName} — на головну`}
+                      className="flex items-center gap-2"
+                    >
+                      <Logo />
+                    </Link>
                   </SheetTitle>
                   <SheetDescription>Керування організацією</SheetDescription>
                 </SheetHeader>
