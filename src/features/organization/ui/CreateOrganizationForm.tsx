@@ -60,6 +60,7 @@ export const CreateOrganizationForm = () => {
     },
   });
   const logo = watch("logo");
+  const displayName = watch("displayName");
   const slug = watch("slug");
   const organisationType = watch("organisationType");
 
@@ -93,8 +94,8 @@ export const CreateOrganizationForm = () => {
           setError("slug", {
             message:
               result.reason === "SLUG_RESERVED"
-                ? "Цей slug зарезервовано"
-                : "Цей slug уже зайнятий",
+                ? "Цю адресу зарезервовано"
+                : "Ця адреса вже зайнята",
           });
         else clearErrors("slug");
       } catch {
@@ -129,7 +130,7 @@ export const CreateOrganizationForm = () => {
       navigate(`/organizations/${organization.id}/settings`, { state: { organization } });
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "ORGANISATION_SLUG_CONFLICT") {
-        setError("slug", { message: "Slug щойно зайняли. Оберіть інший варіант" });
+        setError("slug", { message: "Цю адресу щойно зайняли. Оберіть інший варіант" });
         const result = await checkOrganizationSlug({ slug: values.slug }).catch(() => null);
         setSlugState({ checking: false, available: false, suggestions: result?.suggestions ?? [] });
         return;
@@ -153,6 +154,26 @@ export const CreateOrganizationForm = () => {
         }
       }
       notify.error(error instanceof Error ? error.message : "Не вдалося створити організацію");
+    }
+  };
+
+  const generateAddress = async () => {
+    if (!displayName.trim()) {
+      setError("displayName", { message: "Спочатку введіть назву організації" });
+      return;
+    }
+    setSlugState((state) => ({ ...state, checking: true }));
+    try {
+      const result = await checkOrganizationSlug({ displayName: displayName.trim() });
+      setValue("slug", result.slug, { shouldDirty: true, shouldValidate: true });
+      setSlugState({
+        checking: false,
+        available: result.available,
+        suggestions: result.suggestions,
+      });
+    } catch (error) {
+      setSlugState({ checking: false, suggestions: [] });
+      notify.error(error instanceof Error ? error.message : "Не вдалося сформувати адресу");
     }
   };
 
@@ -216,12 +237,17 @@ export const CreateOrganizationForm = () => {
             {...register("displayName")}
           />
         </Field>
-        <Field label="Slug" id="organization-slug" error={errors.slug?.message}>
+        <Field
+          label="Коротка адреса організації"
+          id="organization-slug"
+          error={errors.slug?.message}
+        >
           <div className="relative">
             <Input
               id="organization-slug"
               autoCapitalize="none"
               spellCheck={false}
+              placeholder="napryklad-moya-organizatsiya"
               {...register("slug")}
             />
             {slugState.checking ? (
@@ -229,6 +255,22 @@ export const CreateOrganizationForm = () => {
             ) : slugState.available ? (
               <Check className="absolute right-3 top-2.5 size-4 text-emerald-600" />
             ) : null}
+          </div>
+          <div className="mt-2 flex flex-col gap-2">
+            <p className="text-sm text-muted-foreground">
+              Це унікальна частина посилання на вашу організацію. Вона пишеться малими латинськими
+              літерами, цифрами та дефісами й після створення не змінюється.
+            </p>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="w-fit"
+              disabled={slugState.checking}
+              onClick={() => void generateAddress()}
+            >
+              Сформувати з назви
+            </Button>
           </div>
           {slugState.suggestions.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">

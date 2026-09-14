@@ -23,8 +23,8 @@ export const organizationSchema = z
     slug: z
       .string()
       .trim()
-      .min(3, "Slug має містити щонайменше 3 символи")
-      .max(63, "Slug має містити не більше 63 символів")
+      .min(3, "Коротка адреса має містити щонайменше 3 символи")
+      .max(63, "Коротка адреса має містити не більше 63 символів")
       .regex(ORGANIZATION_SLUG_PATTERN, "Використовуйте малі латинські літери, цифри та дефіси"),
     organisationType: z.enum(ORGANIZATION_TYPES, { error: "Оберіть тип організації" }),
     legalName: z.string().trim().max(255).optional(),

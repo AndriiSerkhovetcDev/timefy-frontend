@@ -152,7 +152,10 @@ export const OrganizationSettingsPage = () => {
           <Link to="/organizations">← До організацій</Link>
         </Button>
         <h1 className="text-2xl font-bold sm:text-3xl">Налаштування організації</h1>
-        <p className="mt-1 text-muted-foreground">Slug /{organization.slug} не можна змінити.</p>
+        <p className="mt-1 text-muted-foreground">
+          Коротка адреса /{organization.slug} створює унікальне посилання на організацію і не може
+          бути змінена.
+        </p>
       </div>
       <Card>
         <CardHeader>
