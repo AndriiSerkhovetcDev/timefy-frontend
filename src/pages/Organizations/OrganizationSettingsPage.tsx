@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -168,7 +168,7 @@ export const OrganizationSettingsPage = () => {
           <TabsList variant="line">
             <TabsTrigger value="general">Основні дані</TabsTrigger>
             <TabsTrigger value="history">Історія</TabsTrigger>
-            <TabsTrigger value="danger">Небезпечна зона</TabsTrigger>
+            <TabsTrigger value="status">Статус організації</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="general">
@@ -310,10 +310,14 @@ export const OrganizationSettingsPage = () => {
             </CardContent>
           </Card>
         </TabsContent>
-        <TabsContent value="danger">
+        <TabsContent value="status">
           <Card className="border-destructive/40">
             <CardHeader>
-              <CardTitle className="text-destructive">Небезпечна зона</CardTitle>
+              <CardTitle>Статус організації</CardTitle>
+              <CardDescription>
+                Деактивація приховає організацію з активного списку та зупинить доступ до її
+                робочого простору.
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog>
