@@ -231,6 +231,7 @@ export const CreateOrganizationForm = () => {
           label="Назва компанії"
           id="organization-display-name"
           error={errors.displayName?.message}
+          className="sm:col-span-2"
         >
           <Input
             id="organization-display-name"
@@ -263,31 +264,33 @@ export const CreateOrganizationForm = () => {
           }
           id="organization-slug"
           error={errors.slug?.message}
+          className="sm:col-span-2"
         >
-          <div className="relative">
-            <Input
-              id="organization-slug"
-              autoCapitalize="none"
-              spellCheck={false}
-              placeholder="napryklad-moya-organizatsiya"
-              {...register("slug")}
-            />
-            {slugState.checking ? (
-              <LoaderCircle className="absolute right-3 top-2.5 size-4 animate-spin" />
-            ) : slugState.available ? (
-              <Check className="absolute right-3 top-2.5 size-4 text-emerald-600" />
-            ) : null}
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="relative min-w-0 flex-1">
+              <Input
+                id="organization-slug"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="napryklad-moya-kompaniya"
+                {...register("slug")}
+              />
+              {slugState.checking ? (
+                <LoaderCircle className="absolute right-3 top-2.5 size-4 animate-spin" />
+              ) : slugState.available ? (
+                <Check className="absolute right-3 top-2.5 size-4 text-emerald-600" />
+              ) : null}
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full shrink-0 sm:w-auto"
+              disabled={slugState.checking}
+              onClick={() => void generateAddress()}
+            >
+              Сформувати з назви
+            </Button>
           </div>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            className="mt-2 w-fit"
-            disabled={slugState.checking}
-            onClick={() => void generateAddress()}
-          >
-            Сформувати з назви
-          </Button>
           {slugState.suggestions.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {slugState.suggestions.map((suggestion) => (
@@ -363,13 +366,15 @@ const Field = ({
   id,
   error,
   children,
+  className,
 }: {
   label: ReactNode;
   id: string;
   error?: string;
   children: ReactNode;
+  className?: string;
 }) => (
-  <div className="min-w-0 space-y-2">
+  <div className={`min-w-0 space-y-2 ${className ?? ""}`}>
     <Label htmlFor={id}>{label}</Label>
     {children}
     {error && <p className="text-xs text-destructive">{error}</p>}
