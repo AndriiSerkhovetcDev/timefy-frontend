@@ -67,7 +67,7 @@ const navItems: NavigationItem[] = [
   },
   {
     label: "Налаштування",
-    description: "Дані, брендинг та історія",
+    description: "Дані, логотип та історія",
     href: "settings",
     icon: Settings,
     ownerOnly: true,

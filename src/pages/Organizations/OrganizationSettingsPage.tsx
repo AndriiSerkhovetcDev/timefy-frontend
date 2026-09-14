@@ -167,105 +167,108 @@ export const OrganizationSettingsPage = () => {
         <div className="overflow-x-auto pb-1">
           <TabsList variant="line">
             <TabsTrigger value="general">Основні дані</TabsTrigger>
-            <TabsTrigger value="branding">Брендинг</TabsTrigger>
             <TabsTrigger value="history">Історія</TabsTrigger>
             <TabsTrigger value="danger">Небезпечна зона</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="general">
-          <Card>
-            <CardHeader>
-              <CardTitle>Основні дані</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
-                <div className="space-y-2">
-                  <Label htmlFor="displayName">Назва</Label>
-                  <Input
-                    id="displayName"
-                    name="displayName"
-                    defaultValue={organization.displayName}
-                    required
-                    maxLength={200}
+          <div className="space-y-5">
+            <Card>
+              <CardHeader>
+                <CardTitle>Основні дані</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
+                  <div className="space-y-2">
+                    <Label htmlFor="displayName">Назва</Label>
+                    <Input
+                      id="displayName"
+                      name="displayName"
+                      defaultValue={organization.displayName}
+                      required
+                      maxLength={200}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="legalName">Юридична назва</Label>
+                    <Input
+                      id="legalName"
+                      name="legalName"
+                      defaultValue={
+                        "legalName" in organization ? (organization.legalName ?? "") : ""
+                      }
+                      maxLength={255}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="taxId">Податковий номер</Label>
+                    <Input
+                      id="taxId"
+                      name="taxId"
+                      defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
+                      maxLength={100}
+                    />
+                  </div>
+                  <div className="flex items-end">
+                    <Button disabled={busy}>
+                      {busy && <LoaderCircle className="animate-spin" />}Зберегти
+                    </Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Логотип</CardTitle>
+              </CardHeader>
+              <CardContent className="flex flex-wrap items-center gap-4">
+                <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
+                  <OrganizationLogo
+                    logoUrl={organization.logoUrl}
+                    name={organization.displayName}
+                    iconClassName="size-8 text-muted-foreground"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="legalName">Юридична назва</Label>
-                  <Input
-                    id="legalName"
-                    name="legalName"
-                    defaultValue={"legalName" in organization ? (organization.legalName ?? "") : ""}
-                    maxLength={255}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="taxId">Податковий номер</Label>
-                  <Input
-                    id="taxId"
-                    name="taxId"
-                    defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
-                    maxLength={100}
-                  />
-                </div>
-                <div className="flex items-end">
-                  <Button disabled={busy}>
-                    {busy && <LoaderCircle className="animate-spin" />}Зберегти
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-        <TabsContent value="branding">
-          <Card>
-            <CardHeader>
-              <CardTitle>Логотип</CardTitle>
-            </CardHeader>
-            <CardContent className="flex flex-wrap items-center gap-4">
-              <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-                <OrganizationLogo
-                  logoUrl={organization.logoUrl}
-                  name={organization.displayName}
-                  iconClassName="size-8 text-muted-foreground"
-                />
-              </div>
-              <Button asChild variant="outline">
-                <Label className="cursor-pointer">
-                  <ImageUp />
-                  {organization.logoUrl ? "Замінити" : "Завантажити"}
-                  <input
-                    type="file"
-                    className="sr-only"
-                    accept={ORGANIZATION_LOGO_TYPES.join(",")}
-                    onChange={onLogo}
-                    disabled={busy}
-                  />
-                </Label>
-              </Button>
-              {organization.logoUrl && (
-                <Button
-                  variant="outline"
-                  disabled={busy}
-                  onClick={() => {
-                    setBusy(true);
-                    void deleteOrganizationLogo(organization.id)
-                      .then((result) => updateDetails(organization.id, { logoUrl: result.logoUrl }))
-                      .then(refresh)
-                      .then(() => notify.success("Логотип видалено"))
-                      .catch((error: unknown) =>
-                        notify.error(
-                          error instanceof Error ? error.message : "Не вдалося видалити логотип",
-                        ),
-                      )
-                      .finally(() => setBusy(false));
-                  }}
-                >
-                  <Trash2 />
-                  Видалити
+                <Button asChild variant="outline">
+                  <Label className="cursor-pointer">
+                    <ImageUp />
+                    {organization.logoUrl ? "Замінити" : "Завантажити"}
+                    <input
+                      type="file"
+                      className="sr-only"
+                      accept={ORGANIZATION_LOGO_TYPES.join(",")}
+                      onChange={onLogo}
+                      disabled={busy}
+                    />
+                  </Label>
                 </Button>
-              )}
-            </CardContent>
-          </Card>
+                {organization.logoUrl && (
+                  <Button
+                    variant="outline"
+                    disabled={busy}
+                    onClick={() => {
+                      setBusy(true);
+                      void deleteOrganizationLogo(organization.id)
+                        .then((result) =>
+                          updateDetails(organization.id, { logoUrl: result.logoUrl }),
+                        )
+                        .then(refresh)
+                        .then(() => notify.success("Логотип видалено"))
+                        .catch((error: unknown) =>
+                          notify.error(
+                            error instanceof Error ? error.message : "Не вдалося видалити логотип",
+                          ),
+                        )
+                        .finally(() => setBusy(false));
+                    }}
+                  >
+                    <Trash2 />
+                    Видалити
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
         <TabsContent value="history">
           <Card>
