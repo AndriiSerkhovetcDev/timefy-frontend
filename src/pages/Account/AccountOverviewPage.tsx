@@ -116,7 +116,7 @@ export const AccountOverviewPage = () => {
             Ваші організації
           </h2>
           {organizations.length > 0 && (
-            <Button asChild size="sm" variant="outline">
+            <Button asChild size="sm">
               <Link to="/account/organizations/create">
                 <Plus aria-hidden="true" />
                 <span className="hidden sm:inline">Створити організацію</span>
