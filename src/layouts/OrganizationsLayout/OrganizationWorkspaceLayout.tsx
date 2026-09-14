@@ -279,20 +279,32 @@ const OrganizationSelect = ({
   organizationId: string;
   items: ReturnType<typeof useOrganizationStore.getState>["items"];
   onChange: (id: string) => void;
-}) => (
-  <Select value={organizationId} onValueChange={onChange}>
-    <SelectTrigger className="mb-6 w-full">
-      <SelectValue aria-label="Вибрана компанія" />
-    </SelectTrigger>
-    <SelectContent>
-      {items.map((item) => (
-        <SelectItem key={item.id} value={item.id}>
-          {item.displayName}
-        </SelectItem>
-      ))}
-    </SelectContent>
-  </Select>
-);
+}) => {
+  if (items.length < 2) return null;
+
+  return (
+    <div className="mb-6 space-y-2">
+      <p className="text-xs font-medium text-muted-foreground">Перейти до іншої компанії</p>
+      <Select value={organizationId} onValueChange={onChange}>
+        <SelectTrigger className="h-auto min-h-10 w-full" aria-label="Перейти до іншої компанії">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {items.map((item) => (
+            <SelectItem key={item.id} value={item.id} textValue={item.displayName}>
+              <div className="min-w-0 py-0.5">
+                <p className="truncate font-medium">{item.displayName}</p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {item.isOwner ? "Власник" : (item.position ?? "Працівник")}
+                </p>
+              </div>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+};
 
 const OrganizationNavigation = ({
   organizationId,
