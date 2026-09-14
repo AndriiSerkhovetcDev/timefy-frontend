@@ -114,7 +114,7 @@ export const EmployeeInvitePage = () => {
           Організацію додано до вашого списку.
         </CardDescription>
         <Button asChild className="mt-6 w-full">
-          <Link to="/organizations">Перейти до організацій</Link>
+          <Link to="/account/organizations">Перейти до організацій</Link>
         </Button>
       </InviteShell>
     );

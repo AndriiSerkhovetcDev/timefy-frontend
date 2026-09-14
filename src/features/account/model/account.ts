@@ -44,13 +44,17 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
   {
     title: "Організації",
     description: "Робочі простори, команди та онлайн-запис",
-    href: "/organizations",
+    href: "/account/organizations",
     icon: Building2,
   },
 ];
 
 export const getAccountSection = (pathname: string) =>
-  ACCOUNT_SECTIONS.find((section) => section.href === pathname) ?? ACCOUNT_SECTIONS[0];
+  ACCOUNT_SECTIONS.find(
+    (section) =>
+      section.href === pathname ||
+      (section.href !== "/account" && pathname.startsWith(`${section.href}/`)),
+  ) ?? ACCOUNT_SECTIONS[0];
 
 export type ProfileAction = {
   label: string;

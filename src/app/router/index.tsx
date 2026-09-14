@@ -23,9 +23,6 @@ export const OrganizationTeamPage = lazy(
 );
 export const EmployeeInvitePage = lazy(() => import("@/pages/EmployeeInvite/EmployeeInvitePage"));
 export const PublicLayout = lazy(() => import("@/layouts/PublicLayout/PublicLayout"));
-export const OrganizationsLayout = lazy(
-  () => import("@/layouts/OrganizationsLayout/OrganizationsLayout"),
-);
 export const OrganizationWorkspaceLayout = lazy(
   () => import("@/layouts/OrganizationsLayout/OrganizationWorkspaceLayout"),
 );

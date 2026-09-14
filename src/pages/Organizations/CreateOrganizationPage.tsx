@@ -5,9 +5,9 @@ import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export const CreateOrganizationPage = () => (
-  <div className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+  <div className="mx-auto w-full max-w-3xl">
     <Button asChild variant="ghost" className="mb-4 -ml-3">
-      <Link to="/organizations">
+      <Link to="/account/organizations">
         <ArrowLeft aria-hidden="true" />
         Назад до організацій
       </Link>

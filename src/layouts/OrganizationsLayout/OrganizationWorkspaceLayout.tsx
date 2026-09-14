@@ -106,11 +106,11 @@ export const OrganizationWorkspaceLayout = () => {
       <div className="mx-auto w-full max-w-6xl p-8">
         <p className="text-destructive">{error}</p>
         <Button className="mt-4" asChild variant="outline">
-          <Link to="/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку організацій</Link>
         </Button>
       </div>
     ) : (
-      <Navigate to="/organizations" replace />
+      <Navigate to="/account/organizations" replace />
     );
   if (!organization || !user) return null;
 
@@ -331,7 +331,7 @@ const OrganizationNavigation = ({
         className={cn("w-full justify-start text-muted-foreground", collapsed && "justify-center")}
       >
         <Link
-          to="/organizations"
+          to="/account/organizations"
           onClick={onNavigate}
           aria-label={collapsed ? "Усі організації" : undefined}
           title={collapsed ? "Усі організації" : undefined}

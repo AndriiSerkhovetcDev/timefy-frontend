@@ -117,7 +117,7 @@ export const AccountOverviewPage = () => {
           </h2>
           {organizations.length > 0 && (
             <Button asChild size="sm" variant="outline">
-              <Link to="/organizations/create">
+              <Link to="/account/organizations/create">
                 <Plus aria-hidden="true" />
                 <span className="hidden sm:inline">Створити організацію</span>
                 <span className="sm:hidden">Створити</span>
@@ -147,7 +147,7 @@ export const AccountOverviewPage = () => {
                 </div>
               </div>
               <Button asChild className="w-full shrink-0 sm:w-auto">
-                <Link to="/organizations/create">
+                <Link to="/account/organizations/create">
                   <Plus aria-hidden="true" />
                   Створити організацію
                 </Link>

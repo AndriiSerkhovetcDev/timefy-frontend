@@ -34,7 +34,8 @@ export const AccountNavigation = ({ onNavigate, isCollapsed = false }: AccountNa
                 "flex min-h-11 flex-row items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 isCollapsed && "justify-center px-2",
                 (pathname === href ||
-                  (href === "/organizations" && pathname.startsWith("/organizations/"))) &&
+                  (href !== "/account" && pathname.startsWith(`${href}/`)) ||
+                  (href === "/account/organizations" && pathname.startsWith("/organizations/"))) &&
                   "bg-accent text-primary",
               )}
             >

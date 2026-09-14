@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import {
   AccountLayout,
   AccountOverviewPage,
@@ -10,7 +10,6 @@ import {
   LoginPage,
   NotFoundPage,
   NotificationsPage,
-  OrganizationsLayout,
   OrganizationsPage,
   OrganizationOverviewPage,
   OrganizationSettingsPage,
@@ -51,10 +50,11 @@ const LazyRoutes = () => {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route element={<OrganizationsLayout />}>
-            <Route path="/organizations" element={<OrganizationsPage />} />
-            <Route path="/organizations/create" element={<CreateOrganizationPage />} />
-          </Route>
+          <Route path="/organizations" element={<Navigate to="/account/organizations" replace />} />
+          <Route
+            path="/organizations/create"
+            element={<Navigate to="/account/organizations/create" replace />}
+          />
 
           <Route path="/organizations/:organizationId" element={<OrganizationWorkspaceLayout />}>
             <Route index element={<OrganizationOverviewPage />} />
@@ -67,6 +67,8 @@ const LazyRoutes = () => {
             <Route path="personal" element={<PersonalDataPage />} />
             <Route path="security" element={<SecurityPage />} />
             <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="organizations" element={<OrganizationsPage />} />
+            <Route path="organizations/create" element={<CreateOrganizationPage />} />
           </Route>
         </Route>
       </Routes>

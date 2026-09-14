@@ -16,16 +16,10 @@ export const OrganizationsPage = () => {
   }, [load, user?.email]);
 
   return (
-    <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Організації</h1>
-          <p className="mt-2 text-muted-foreground">
-            Керуйте організаціями, командою та онлайн-записом.
-          </p>
-        </div>
+    <div className="flex w-full flex-1 flex-col">
+      <div className="mb-6 flex justify-end">
         <Button asChild>
-          <Link to="/organizations/create">
+          <Link to="/account/organizations/create">
             <Plus aria-hidden="true" />
             Створити організацію
           </Link>
@@ -98,7 +92,7 @@ const EmptyState = () => (
         Створіть першу організацію, щоб налаштувати команду та онлайн-запис.
       </CardDescription>
       <Button asChild className="mx-auto mt-3">
-        <Link to="/organizations/create">
+        <Link to="/account/organizations/create">
           <Plus aria-hidden="true" />
           Створити організацію
         </Link>

@@ -66,7 +66,7 @@ export const OrganizationSettingsPage = () => {
       <div className="mx-auto w-full max-w-4xl p-8">
         <p>Організацію не знайдено або вона недоступна.</p>
         <Button asChild variant="link">
-          <Link to="/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку організацій</Link>
         </Button>
       </div>
     );
@@ -76,7 +76,7 @@ export const OrganizationSettingsPage = () => {
       <div className="mx-auto w-full max-w-4xl p-8">
         <p>Налаштування доступні лише власнику організації.</p>
         <Button asChild variant="link">
-          <Link to="/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку організацій</Link>
         </Button>
       </div>
     );
@@ -148,7 +148,7 @@ export const OrganizationSettingsPage = () => {
       select(null);
       await refresh();
       notify.success("Організацію деактивовано");
-      navigate("/organizations");
+      navigate("/account/organizations");
     } catch (error) {
       notify.error(error instanceof Error ? error.message : "Не вдалося деактивувати організацію");
     } finally {
