@@ -8,10 +8,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ApiError } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, Check, ImageUp, LoaderCircle, Trash2 } from "lucide-react";
+import { Building2, Check, CircleHelp, ImageUp, LoaderCircle, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -238,7 +239,28 @@ export const CreateOrganizationForm = () => {
           />
         </Field>
         <Field
-          label="Коротка адреса організації"
+          label={
+            <span className="inline-flex items-center gap-1.5">
+              Коротка адреса організації
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      type="button"
+                      className="rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-label="Навіщо потрібна коротка адреса організації"
+                    >
+                      <CircleHelp className="size-4" aria-hidden="true" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent className="max-w-xs" sideOffset={6}>
+                    Це унікальна частина посилання на вашу організацію. Вона пишеться малими
+                    латинськими літерами, цифрами та дефісами й після створення не змінюється.
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            </span>
+          }
           id="organization-slug"
           error={errors.slug?.message}
         >
@@ -256,22 +278,16 @@ export const CreateOrganizationForm = () => {
               <Check className="absolute right-3 top-2.5 size-4 text-emerald-600" />
             ) : null}
           </div>
-          <div className="mt-2 flex flex-col gap-2">
-            <p className="text-sm text-muted-foreground">
-              Це унікальна частина посилання на вашу організацію. Вона пишеться малими латинськими
-              літерами, цифрами та дефісами й після створення не змінюється.
-            </p>
-            <Button
-              type="button"
-              size="sm"
-              variant="outline"
-              className="w-fit"
-              disabled={slugState.checking}
-              onClick={() => void generateAddress()}
-            >
-              Сформувати з назви
-            </Button>
-          </div>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="mt-2 w-fit"
+            disabled={slugState.checking}
+            onClick={() => void generateAddress()}
+          >
+            Сформувати з назви
+          </Button>
           {slugState.suggestions.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-2">
               {slugState.suggestions.map((suggestion) => (
@@ -348,7 +364,7 @@ const Field = ({
   error,
   children,
 }: {
-  label: string;
+  label: ReactNode;
   id: string;
   error?: string;
   children: ReactNode;
