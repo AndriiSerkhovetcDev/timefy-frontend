@@ -66,6 +66,7 @@ export const RegisterForm = () => {
     apiCall: ({ confirm_password, ...rest }) => registration(rest),
     redirectTo: "/",
     checkEmailVerified: true,
+    unverifiedRedirectTo: "/account/personal",
     successMessage: "Акаунт створено!",
   });
 
