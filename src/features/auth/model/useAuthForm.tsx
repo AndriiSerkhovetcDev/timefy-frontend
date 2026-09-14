@@ -15,6 +15,7 @@ type UseAuthFormOptions<T extends FieldValues, TResponse = AuthResponse> = {
   apiCall: (values: T) => Promise<TResponse>;
   redirectTo: string;
   checkEmailVerified?: boolean;
+  unverifiedRedirectTo?: string;
   successMessage?: string;
 };
 
@@ -23,6 +24,7 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
   apiCall,
   redirectTo,
   checkEmailVerified,
+  unverifiedRedirectTo = "/verify-email",
   successMessage,
 }: UseAuthFormOptions<T, TResponse>) => {
   const { login } = useAuthStore();
@@ -43,7 +45,7 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
         login(res.data.user, res.data.token);
 
         if (checkEmailVerified && !res.data.user.emailVerified) {
-          navigate("/verify-email");
+          navigate(unverifiedRedirectTo);
         } else {
           navigate(redirectTo);
         }

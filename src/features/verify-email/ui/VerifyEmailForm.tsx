@@ -1,5 +1,6 @@
 import { selectUserLogin, useAuthStore } from "@/features/auth/model/authStore";
 import { resendVerifyEmail, verifyEmail } from "@/shared/api/authApi";
+import { notify } from "@/shared/lib/notify";
 import { withNotify } from "@/shared/lib/withNotify";
 import { LoaderCircle, RefreshCw } from "lucide-react";
 import {
@@ -15,7 +16,11 @@ import { useNavigate } from "react-router-dom";
 const CODE_LENGTH = 6;
 const RESEND_TIMEOUT = 60;
 
-export const VerifyEmailForm = () => {
+type VerifyEmailFormProps = {
+  redirectTo?: string | null;
+};
+
+export const VerifyEmailForm = ({ redirectTo = "/" }: VerifyEmailFormProps) => {
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [timer, setTimer] = useState(RESEND_TIMEOUT);
   const [canResend, setCanResend] = useState(false);
@@ -134,20 +139,19 @@ export const VerifyEmailForm = () => {
 
         if (data.codeVerified) {
           setEmailVerified(true);
-          navigate("/");
+          notify.success("Email успішно підтверджено");
+          if (redirectTo) navigate(redirectTo);
         } else {
           setVerifyError("Невірний код");
-          resetCode();
         }
-      } catch {
-        setVerifyError("Введено невірний код");
-        resetCode();
+      } catch (error) {
+        setVerifyError(error instanceof Error ? error.message : "Введено невірний код");
       } finally {
         isVerifyingRef.current = false;
         setIsVerifying(false);
       }
     },
-    [userLogin, setEmailVerified, navigate, resetCode],
+    [userLogin, setEmailVerified, navigate, redirectTo],
   );
 
   useEffect(() => {

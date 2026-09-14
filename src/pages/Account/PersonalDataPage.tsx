@@ -23,18 +23,17 @@ import { AccountAvatar } from "@/features/account/ui/AccountAvatar";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { EmailStatus } from "@/features/account/ui/EmailStatus";
 import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
-import { resendVerifyEmail } from "@/shared/api/authApi";
+import { VerifyEmailForm } from "@/features/verify-email";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
 import { PhoneField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageUp, KeyRound, Loader2, MailCheck, MailWarning, Trash2 } from "lucide-react";
+import { ImageUp, KeyRound, Loader2, MailWarning, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
-const RESEND_COOLDOWN_SECONDS = 60;
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
 
 export const PersonalDataPage = () => {
@@ -42,12 +41,10 @@ export const PersonalDataPage = () => {
   const setUser = useAuthStore((state) => state.setUser);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
-  const [isResending, setIsResending] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [emailRequiresAuthMethod, setEmailRequiresAuthMethod] = useState(false);
-  const [cooldown, setCooldown] = useState(0);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const {
     control,
@@ -64,12 +61,6 @@ export const PersonalDataPage = () => {
       phone: user?.phone ?? "",
     },
   });
-
-  useEffect(() => {
-    if (cooldown <= 0) return;
-    const timer = window.setInterval(() => setCooldown((value) => value - 1), 1000);
-    return () => window.clearInterval(timer);
-  }, [cooldown]);
 
   useEffect(() => {
     if (!user) return;
@@ -107,24 +98,6 @@ export const PersonalDataPage = () => {
         return;
       }
       notify.error(error instanceof Error ? error.message : "Не вдалося оновити дані профілю");
-    }
-  };
-
-  const handleResend = async () => {
-    if (isResending || cooldown > 0) return;
-    setIsResending(true);
-    try {
-      await resendVerifyEmail({ login: user.login });
-      setCooldown(RESEND_COOLDOWN_SECONDS);
-      notify.success("Лист для підтвердження email надіслано повторно");
-    } catch (error) {
-      if (error instanceof ApiError && error.status === 429) {
-        notify.warning("Забагато запитів. Спробуйте повторити пізніше.");
-      } else {
-        notify.error("Не вдалося надіслати лист. Спробуйте ще раз.");
-      }
-    } finally {
-      setIsResending(false);
     }
   };
 
@@ -339,21 +312,11 @@ export const PersonalDataPage = () => {
                 <MailWarning aria-hidden="true" />
                 <AlertTitle>Підтвердіть email</AlertTitle>
                 <AlertDescription className="min-w-0">
-                  Ми надішлемо на вказану адресу лист із посиланням для підтвердження.
+                  Введіть шестизначний код, який ми надіслали на адресу{" "}
+                  <span className="break-all font-medium text-foreground">{user.email}</span>.
                 </AlertDescription>
-                <div className="col-span-full mt-3 w-full min-w-0">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleResend}
-                    disabled={isResending || cooldown > 0}
-                    className="h-auto w-full whitespace-normal sm:h-9 sm:whitespace-nowrap"
-                  >
-                    {isResending ? <Loader2 className="animate-spin" /> : <MailCheck />}
-                    {cooldown > 0
-                      ? `Повторити через ${cooldown} с`
-                      : "Надіслати лист для підтвердження"}
-                  </Button>
+                <div className="col-span-full mt-4 w-full min-w-0">
+                  <VerifyEmailForm redirectTo={null} />
                 </div>
               </Alert>
             )}

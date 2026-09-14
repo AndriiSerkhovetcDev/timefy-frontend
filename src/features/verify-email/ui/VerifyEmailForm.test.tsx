@@ -60,6 +60,23 @@ describe("VerifyEmailForm", () => {
     expect(verifyEmail).toHaveBeenCalledTimes(1);
 
     await waitFor(() => expect(screen.getByRole("alert").textContent).toContain("Невірний код"));
-    expect((screen.getByLabelText("Цифра 1 з 6") as HTMLInputElement).value).toBe("");
+    expect((screen.getByLabelText("Цифра 1 з 6") as HTMLInputElement).value).toBe("1");
+  });
+
+  it("updates the current user without navigating when embedded in the cabinet", async () => {
+    vi.mocked(verifyEmail).mockResolvedValue({ data: { codeVerified: true } });
+
+    render(
+      <MemoryRouter>
+        <VerifyEmailForm redirectTo={null} />
+      </MemoryRouter>,
+    );
+
+    fireEvent.change(screen.getByLabelText("Цифра 1 з 6"), {
+      target: { value: "123456" },
+    });
+
+    await waitFor(() => expect(useAuthStore.getState().user?.emailVerified).toBe(true));
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 });
