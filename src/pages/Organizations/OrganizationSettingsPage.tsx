@@ -42,7 +42,7 @@ export const OrganizationSettingsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore(selectUser);
-  const { items, details, load, select, updateDetails } = useOrganizationStore();
+  const { items, details, load, select, addCreated, updateDetails } = useOrganizationStore();
   const stateOrganization = (
     location.state as {
       organization?: OrganizationPreview & Partial<CreatedOrganization>;
@@ -100,7 +100,7 @@ export const OrganizationSettingsPage = () => {
         return;
       }
       const updated = await updateOrganization(changes);
-      updateDetails(organization.id, updated);
+      addCreated({ ...updated, logoUrl: organization.logoUrl });
       await refresh();
       notify.success("Дані організації оновлено");
     } catch (error) {
