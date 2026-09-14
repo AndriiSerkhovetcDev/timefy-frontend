@@ -19,10 +19,15 @@ const RESEND_TIMEOUT = 60;
 
 type VerifyEmailFormProps = {
   compact?: boolean;
+  onCodeRequested?: () => void;
   redirectTo?: string | null;
 };
 
-export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEmailFormProps) => {
+export const VerifyEmailForm = ({
+  compact = false,
+  onCodeRequested,
+  redirectTo = "/",
+}: VerifyEmailFormProps) => {
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [timer, setTimer] = useState(0);
   const [canResend, setCanResend] = useState(true);
@@ -112,6 +117,7 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
         success: hasRequestedCode ? "Новий код надіслано" : "Код надіслано",
       });
       setHasRequestedCode(true);
+      onCodeRequested?.();
       setTimer(RESEND_TIMEOUT);
       setCanResend(false);
       setVerifyError("");
@@ -244,7 +250,7 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
             className={cn(
               "inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-primary outline-none transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60",
               !hasRequestedCode &&
-                "min-h-11 bg-primary px-5 text-primary-foreground shadow-sm hover:bg-primary/90",
+                "min-h-11 w-full bg-primary px-5 text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto",
             )}
           >
             <RefreshCw

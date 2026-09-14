@@ -27,6 +27,7 @@ import { VerifyEmailForm } from "@/features/verify-email";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
+import { cn } from "@/lib/utils";
 import { PhoneField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageUp, KeyRound, Loader2, MailCheck, Trash2 } from "lucide-react";
@@ -45,6 +46,7 @@ export const PersonalDataPage = () => {
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [emailRequiresAuthMethod, setEmailRequiresAuthMethod] = useState(false);
+  const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const {
     control,
@@ -337,8 +339,13 @@ export const PersonalDataPage = () => {
       </Card>
 
       {!user.emailVerified && (
-        <Card className="min-w-0 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 shadow-sm">
-          <CardHeader className="gap-0 pb-4">
+        <Card
+          className={cn(
+            "min-w-0 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 shadow-sm",
+            !isVerificationCodeSent && "sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center",
+          )}
+        >
+          <CardHeader className={isVerificationCodeSent ? "gap-0 pb-4" : "gap-0 pb-3 sm:py-6"}>
             <div className="flex min-w-0 items-start gap-3 sm:items-center">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <MailCheck className="size-5" aria-hidden="true" />
@@ -352,8 +359,16 @@ export const PersonalDataPage = () => {
               </div>
             </div>
           </CardHeader>
-          <CardContent className="min-w-0 pt-0">
-            <VerifyEmailForm compact redirectTo={null} />
+          <CardContent
+            className={
+              isVerificationCodeSent ? "min-w-0 pt-0" : "min-w-0 pt-0 sm:py-6 sm:pl-0 sm:pr-6"
+            }
+          >
+            <VerifyEmailForm
+              compact
+              redirectTo={null}
+              onCodeRequested={() => setIsVerificationCodeSent(true)}
+            />
           </CardContent>
         </Card>
       )}
