@@ -34,8 +34,8 @@ import type {
 } from "@/features/organization/model/types";
 import { ApiError } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
-import { History, ImageUp, LoaderCircle, Trash2 } from "lucide-react";
-import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import { History, ImageUp, Loader2, LoaderCircle, Trash2 } from "lucide-react";
+import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 export const OrganizationSettingsPage = () => {
@@ -55,6 +55,8 @@ export const OrganizationSettingsPage = () => {
     items.find((item) => item.id === organizationId);
   const [history, setHistory] = useState<OrganizationHistory | null>(null);
   const [busy, setBusy] = useState(false);
+  const [isLogoBusy, setIsLogoBusy] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (user?.email && !organization) void load(user.email).catch(() => undefined);
@@ -122,7 +124,7 @@ export const OrganizationSettingsPage = () => {
       event.target.value = "";
       return;
     }
-    setBusy(true);
+    setIsLogoBusy(true);
     try {
       const updatedLogo = organization.logoUrl
         ? await changeOrganizationLogo(organization.id, file)
@@ -135,7 +137,7 @@ export const OrganizationSettingsPage = () => {
         await refresh();
       notify.error(error instanceof Error ? error.message : "Не вдалося оновити логотип");
     } finally {
-      setBusy(false);
+      setIsLogoBusy(false);
       event.target.value = "";
     }
   };
@@ -176,52 +178,82 @@ export const OrganizationSettingsPage = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Логотип</CardTitle>
+                <CardDescription>
+                  Зображення, яке представляє організацію в робочому просторі.
+                </CardDescription>
               </CardHeader>
-              <CardContent className="flex flex-wrap items-center gap-4">
-                <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
-                  <OrganizationLogo
-                    logoUrl={organization.logoUrl}
-                    name={organization.displayName}
-                    iconClassName="size-8 text-muted-foreground"
-                  />
-                </div>
-                <Button asChild variant="outline">
-                  <Label className="cursor-pointer">
-                    <ImageUp />
-                    {organization.logoUrl ? "Замінити" : "Завантажити"}
-                    <input
-                      type="file"
-                      className="sr-only"
-                      accept={ORGANIZATION_LOGO_TYPES.join(",")}
-                      onChange={onLogo}
-                      disabled={busy}
+              <CardContent className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+                <div className="relative shrink-0">
+                  <div className="flex size-20 items-center justify-center overflow-hidden rounded-xl border bg-muted">
+                    <OrganizationLogo
+                      logoUrl={organization.logoUrl}
+                      name={organization.displayName}
+                      iconClassName="size-8 text-muted-foreground"
                     />
-                  </Label>
-                </Button>
-                {organization.logoUrl && (
-                  <Button
-                    variant="outline"
-                    disabled={busy}
-                    onClick={() => {
-                      setBusy(true);
-                      void deleteOrganizationLogo(organization.id)
-                        .then((result) =>
-                          updateDetails(organization.id, { logoUrl: result.logoUrl }),
-                        )
-                        .then(refresh)
-                        .then(() => notify.success("Логотип видалено"))
-                        .catch((error: unknown) =>
-                          notify.error(
-                            error instanceof Error ? error.message : "Не вдалося видалити логотип",
-                          ),
-                        )
-                        .finally(() => setBusy(false));
-                    }}
-                  >
-                    <Trash2 />
-                    Видалити
-                  </Button>
-                )}
+                  </div>
+                  {isLogoBusy && (
+                    <div
+                      className="absolute inset-0 flex items-center justify-center rounded-xl bg-background/60"
+                      role="status"
+                      aria-label="Оновлення логотипа"
+                    >
+                      <Loader2 className="size-6 animate-spin text-primary" aria-hidden="true" />
+                    </div>
+                  )}
+                </div>
+                <div className="min-w-0 space-y-2">
+                  <input
+                    ref={logoInputRef}
+                    type="file"
+                    className="sr-only"
+                    accept={ORGANIZATION_LOGO_TYPES.join(",")}
+                    aria-label="Оберіть новий логотип"
+                    onChange={onLogo}
+                    disabled={isLogoBusy}
+                  />
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={isLogoBusy}
+                      onClick={() => logoInputRef.current?.click()}
+                    >
+                      {isLogoBusy ? <Loader2 className="animate-spin" /> : <ImageUp />}
+                      {isLogoBusy ? "Завантаження…" : "Змінити логотип"}
+                    </Button>
+                    {organization.logoUrl && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={isLogoBusy}
+                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                        onClick={() => {
+                          setIsLogoBusy(true);
+                          void deleteOrganizationLogo(organization.id)
+                            .then((result) =>
+                              updateDetails(organization.id, { logoUrl: result.logoUrl }),
+                            )
+                            .then(refresh)
+                            .then(() => notify.success("Логотип видалено"))
+                            .catch((error: unknown) =>
+                              notify.error(
+                                error instanceof Error
+                                  ? error.message
+                                  : "Не вдалося видалити логотип",
+                              ),
+                            )
+                            .finally(() => setIsLogoBusy(false));
+                        }}
+                      >
+                        <Trash2 />
+                        Видалити
+                      </Button>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Оберіть PNG, JPG або WebP. Максимальний розмір — 5 МБ.
+                  </p>
+                </div>
               </CardContent>
             </Card>
             <Card>
