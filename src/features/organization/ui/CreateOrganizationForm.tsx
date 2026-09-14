@@ -127,7 +127,7 @@ export const CreateOrganizationForm = () => {
     try {
       const organization = await createOrganization({ ...values, file: values.logo });
       useOrganizationStore.getState().addCreated(organization);
-      notify.success("Організацію створено");
+      notify.success("Компанію створено");
       navigate(`/organizations/${organization.id}`);
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "ORGANISATION_SLUG_CONFLICT") {
@@ -147,20 +147,20 @@ export const CreateOrganizationForm = () => {
           useOrganizationStore.getState().select(existing.id);
           notify.warning(
             existing.logoUrl
-              ? "Організацію створено"
-              : "Організацію створено без логотипа. Завантажте його ще раз у налаштуваннях.",
+              ? "Компанію створено"
+              : "Компанію створено без логотипа. Завантажте його ще раз у налаштуваннях.",
           );
           navigate(`/organizations/${existing.id}`);
           return;
         }
       }
-      notify.error(error instanceof Error ? error.message : "Не вдалося створити організацію");
+      notify.error(error instanceof Error ? error.message : "Не вдалося створити компанію");
     }
   };
 
   const generateAddress = async () => {
     if (!displayName.trim()) {
-      setError("displayName", { message: "Спочатку введіть назву організації" });
+      setError("displayName", { message: "Спочатку введіть назву компанії" });
       return;
     }
     setSlugState((state) => ({ ...state, checking: true }));
@@ -182,7 +182,7 @@ export const CreateOrganizationForm = () => {
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
       <section className="space-y-3" aria-labelledby="organization-logo-label">
         <div>
-          <Label id="organization-logo-label">Логотип організації</Label>
+          <Label id="organization-logo-label">Логотип компанії</Label>
           <p className="mt-1 text-sm text-muted-foreground">PNG, JPG або WebP, максимум 5 МБ.</p>
         </div>
         <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -228,7 +228,7 @@ export const CreateOrganizationForm = () => {
       </section>
       <div className="grid gap-5 sm:grid-cols-2">
         <Field
-          label="Назва організації"
+          label="Назва компанії"
           id="organization-display-name"
           error={errors.displayName?.message}
         >
@@ -241,20 +241,20 @@ export const CreateOrganizationForm = () => {
         <Field
           label={
             <span className="inline-flex items-center gap-1.5">
-              Коротка адреса організації
+              Коротка адреса компанії
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button
                       type="button"
                       className="rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                      aria-label="Навіщо потрібна коротка адреса організації"
+                      aria-label="Навіщо потрібна коротка адреса компанії"
                     >
                       <CircleHelp className="size-4" aria-hidden="true" />
                     </button>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs" sideOffset={6}>
-                    Це унікальна частина посилання на вашу організацію. Вона пишеться малими
+                    Це унікальна частина посилання на вашу компанію. Вона пишеться малими
                     латинськими літерами, цифрами та дефісами й після створення не змінюється.
                   </TooltipContent>
                 </Tooltip>
@@ -307,14 +307,14 @@ export const CreateOrganizationForm = () => {
           )}
         </Field>
         <div className="space-y-2 sm:col-span-2">
-          <Label>Тип організації</Label>
+          <Label>Тип компанії</Label>
           <Controller
             control={control}
             name="organisationType"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Оберіть тип організації" />
+                  <SelectValue placeholder="Оберіть тип компанії" />
                 </SelectTrigger>
                 <SelectContent>
                   {ORGANIZATION_TYPE_OPTIONS.map((option) => (
@@ -351,7 +351,7 @@ export const CreateOrganizationForm = () => {
           className="w-full sm:w-auto"
           disabled={isSubmitting || slugState.checking || slugState.available === false}
         >
-          {isSubmitting && <LoaderCircle className="animate-spin" />}Створити організацію
+          {isSubmitting && <LoaderCircle className="animate-spin" />}Створити компанію
         </Button>
       </div>
     </form>

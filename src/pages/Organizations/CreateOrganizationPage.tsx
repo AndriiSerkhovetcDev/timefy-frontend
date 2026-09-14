@@ -9,12 +9,12 @@ export const CreateOrganizationPage = () => (
     <Button asChild variant="ghost" className="mb-4 -ml-3">
       <Link to="/account/organizations">
         <ArrowLeft aria-hidden="true" />
-        Назад до організацій
+        Назад до компаній
       </Link>
     </Button>
 
     <div className="mb-6">
-      <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Створення організації</h1>
+      <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Створення компанії</h1>
       <p className="mt-2 text-muted-foreground">
         Заповніть основну інформацію. Решту налаштувань можна буде додати пізніше.
       </p>
@@ -22,9 +22,9 @@ export const CreateOrganizationPage = () => (
 
     <Card>
       <CardHeader>
-        <CardTitle>Дані організації</CardTitle>
+        <CardTitle>Дані компанії</CardTitle>
         <CardDescription>
-          Назва і тип організації використовуватимуться для подальших налаштувань.
+          Назва і тип компанії використовуватимуться для подальших налаштувань.
         </CardDescription>
       </CardHeader>
       <CardContent>

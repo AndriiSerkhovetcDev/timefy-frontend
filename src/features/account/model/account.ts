@@ -42,7 +42,7 @@ export const ACCOUNT_SECTIONS: AccountSection[] = [
     icon: Bell,
   },
   {
-    title: "Організації",
+    title: "Компанії",
     description: "Робочі простори, команди та онлайн-запис",
     href: "/account/organizations",
     icon: Building2,

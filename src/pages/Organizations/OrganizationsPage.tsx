@@ -21,7 +21,7 @@ export const OrganizationsPage = () => {
         <Button asChild>
           <Link to="/account/organizations/create">
             <Plus aria-hidden="true" />
-            Створити організацію
+            Створити компанію
           </Link>
         </Button>
       </div>
@@ -87,14 +87,14 @@ const EmptyState = () => (
       <div className="mx-auto mb-2 flex size-14 items-center justify-center rounded-2xl bg-accent text-primary">
         <Building2 className="size-7" aria-hidden="true" />
       </div>
-      <CardTitle>У вас ще немає організацій</CardTitle>
+      <CardTitle>У вас ще немає компаній</CardTitle>
       <CardDescription>
-        Створіть першу організацію, щоб налаштувати команду та онлайн-запис.
+        Створіть першу компанію, щоб налаштувати команду та онлайн-запис.
       </CardDescription>
       <Button asChild className="mx-auto mt-3">
         <Link to="/account/organizations/create">
           <Plus aria-hidden="true" />
-          Створити організацію
+          Створити компанію
         </Link>
       </Button>
     </CardHeader>

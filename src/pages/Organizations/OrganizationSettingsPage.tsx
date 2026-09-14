@@ -64,9 +64,9 @@ export const OrganizationSettingsPage = () => {
   if (!organization)
     return (
       <div className="mx-auto w-full max-w-4xl p-8">
-        <p>Організацію не знайдено або вона недоступна.</p>
+        <p>Компанію не знайдено або вона недоступна.</p>
         <Button asChild variant="link">
-          <Link to="/account/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку компаній</Link>
         </Button>
       </div>
     );
@@ -74,9 +74,9 @@ export const OrganizationSettingsPage = () => {
   if (preview && !preview.isOwner)
     return (
       <div className="mx-auto w-full max-w-4xl p-8">
-        <p>Налаштування доступні лише власнику організації.</p>
+        <p>Налаштування доступні лише власнику компанії.</p>
         <Button asChild variant="link">
-          <Link to="/account/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку компаній</Link>
         </Button>
       </div>
     );
@@ -105,9 +105,9 @@ export const OrganizationSettingsPage = () => {
       const updated = await updateOrganization(changes);
       addCreated({ ...updated, logoUrl: organization.logoUrl });
       await refresh();
-      notify.success("Дані організації оновлено");
+      notify.success("Дані компанії оновлено");
     } catch (error) {
-      notify.error(error instanceof Error ? error.message : "Не вдалося оновити організацію");
+      notify.error(error instanceof Error ? error.message : "Не вдалося оновити компанію");
     } finally {
       setBusy(false);
     }
@@ -147,10 +147,10 @@ export const OrganizationSettingsPage = () => {
       await deactivateOrganization(organization.id);
       select(null);
       await refresh();
-      notify.success("Організацію деактивовано");
+      notify.success("Компанію деактивовано");
       navigate("/account/organizations");
     } catch (error) {
-      notify.error(error instanceof Error ? error.message : "Не вдалося деактивувати організацію");
+      notify.error(error instanceof Error ? error.message : "Не вдалося деактивувати компанію");
     } finally {
       setBusy(false);
     }
@@ -159,10 +159,10 @@ export const OrganizationSettingsPage = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold sm:text-3xl">Налаштування організації</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">Налаштування компанії</h1>
         <p className="mt-1 text-muted-foreground">
-          Коротка адреса /{organization.slug} створює унікальне посилання на організацію і не може
-          бути змінена.
+          Коротка адреса /{organization.slug} створює унікальне посилання на компанію і не може бути
+          змінена.
         </p>
       </div>
       <Tabs defaultValue="general" className="gap-5">
@@ -170,7 +170,7 @@ export const OrganizationSettingsPage = () => {
           <TabsList variant="line">
             <TabsTrigger value="general">Основні дані</TabsTrigger>
             <TabsTrigger value="history">Історія</TabsTrigger>
-            <TabsTrigger value="status">Статус організації</TabsTrigger>
+            <TabsTrigger value="status">Статус компанії</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="general">
@@ -179,7 +179,7 @@ export const OrganizationSettingsPage = () => {
               <CardHeader>
                 <CardTitle>Логотип</CardTitle>
                 <CardDescription>
-                  Зображення, яке представляє організацію в робочому просторі.
+                  Зображення, яке представляє компанію в робочому просторі.
                 </CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -345,23 +345,23 @@ export const OrganizationSettingsPage = () => {
         <TabsContent value="status">
           <Card className="border-destructive/40">
             <CardHeader>
-              <CardTitle>Статус організації</CardTitle>
+              <CardTitle>Статус компанії</CardTitle>
               <CardDescription>
-                Деактивація приховає організацію з активного списку та зупинить доступ до її
-                робочого простору.
+                Деактивація приховає компанію з активного списку та зупинить доступ до її робочого
+                простору.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant="destructive">Деактивувати організацію</Button>
+                  <Button variant="destructive">Деактивувати компанію</Button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>Деактивувати «{organization.displayName}»?</DialogTitle>
                     <DialogDescription>
-                      Організація зникне з активного списку. Відновлення через користувацький API
-                      поки недоступне.
+                      Компанія зникне з активного списку. Відновлення через користувацький API поки
+                      недоступне.
                     </DialogDescription>
                   </DialogHeader>
                   <DialogFooter>

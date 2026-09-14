@@ -111,10 +111,10 @@ export const EmployeeInvitePage = () => {
         <CheckCircle2 className="mx-auto size-10 text-success" />
         <CardTitle className="mt-4 text-center">Запрошення прийнято</CardTitle>
         <CardDescription className="mt-2 text-center">
-          Організацію додано до вашого списку.
+          Компанію додано до вашого списку.
         </CardDescription>
         <Button asChild className="mt-6 w-full">
-          <Link to="/account/organizations">Перейти до організацій</Link>
+          <Link to="/account/organizations">Перейти до компаній</Link>
         </Button>
       </InviteShell>
     );

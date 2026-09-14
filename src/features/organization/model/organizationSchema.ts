@@ -19,14 +19,14 @@ export const organizationSchema = z
         (file) => !file || file.size <= MAX_ORGANIZATION_LOGO_SIZE_BYTES,
         "Розмір логотипа не повинен перевищувати 5 МБ",
       ),
-    displayName: z.string().trim().min(1, "Введіть назву організації").max(200),
+    displayName: z.string().trim().min(1, "Введіть назву компанії").max(200),
     slug: z
       .string()
       .trim()
       .min(3, "Коротка адреса має містити щонайменше 3 символи")
       .max(63, "Коротка адреса має містити не більше 63 символів")
       .regex(ORGANIZATION_SLUG_PATTERN, "Використовуйте малі латинські літери, цифри та дефіси"),
-    organisationType: z.enum(ORGANIZATION_TYPES, { error: "Оберіть тип організації" }),
+    organisationType: z.enum(ORGANIZATION_TYPES, { error: "Оберіть тип компанії" }),
     legalName: z.string().trim().max(255).optional(),
     taxId: z.string().trim().max(100).optional(),
   })

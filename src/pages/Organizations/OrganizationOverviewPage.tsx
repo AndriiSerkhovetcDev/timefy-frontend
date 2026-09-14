@@ -24,7 +24,7 @@ export const OrganizationOverviewPage = () => {
         <Card>
           <CardHeader>
             <CardTitle>Ваша роль</CardTitle>
-            <CardDescription>Рівень доступу в цій організації</CardDescription>
+            <CardDescription>Рівень доступу в цій компанії</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-lg font-semibold">
@@ -35,7 +35,7 @@ export const OrganizationOverviewPage = () => {
         <Card>
           <CardHeader>
             <CardTitle>Коротка адреса</CardTitle>
-            <CardDescription>Унікальна адреса організації</CardDescription>
+            <CardDescription>Унікальна адреса компанії</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">

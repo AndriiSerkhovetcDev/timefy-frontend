@@ -24,7 +24,7 @@ type UserMenuItem = {
 
 const userMenuItems: UserMenuItem[] = [
   { id: "account", text: "Особистий кабінет", link: "/account" },
-  { id: "organizations", text: "Організації", link: "/organizations" },
+  { id: "organizations", text: "Компанії", link: "/organizations" },
   {
     id: "schemas",
     text: "Налаштування Timefy",

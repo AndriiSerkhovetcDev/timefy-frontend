@@ -113,13 +113,13 @@ export const AccountOverviewPage = () => {
       <section aria-labelledby="organizations-title">
         <div className="mb-3 flex items-center justify-between gap-4">
           <h2 id="organizations-title" className="text-lg font-semibold">
-            Ваші організації
+            Ваші компанії
           </h2>
           {organizations.length > 0 && (
             <Button asChild size="sm">
               <Link to="/account/organizations/create">
                 <Plus aria-hidden="true" />
-                <span className="hidden sm:inline">Створити організацію</span>
+                <span className="hidden sm:inline">Створити компанію</span>
                 <span className="sm:hidden">Створити</span>
               </Link>
             </Button>
@@ -140,16 +140,16 @@ export const AccountOverviewPage = () => {
                   <Building2 className="size-5" aria-hidden="true" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-lg font-semibold">Створіть свою організацію</h3>
+                  <h3 className="text-lg font-semibold">Створіть свою компанію</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Додайте організацію, налаштуйте послуги, працівників і почніть приймати записи.
+                    Додайте компанію, налаштуйте послуги, працівників і почніть приймати записи.
                   </p>
                 </div>
               </div>
               <Button asChild className="w-full shrink-0 sm:w-auto">
                 <Link to="/account/organizations/create">
                   <Plus aria-hidden="true" />
-                  Створити організацію
+                  Створити компанію
                 </Link>
               </Button>
             </CardContent>

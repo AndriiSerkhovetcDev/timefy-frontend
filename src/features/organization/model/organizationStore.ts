@@ -43,7 +43,7 @@ export const useOrganizationStore = create<OrganizationState>()(
         } catch (error) {
           set({
             isLoading: false,
-            error: error instanceof Error ? error.message : "Не вдалося завантажити організації",
+            error: error instanceof Error ? error.message : "Не вдалося завантажити компанії",
           });
           throw error;
         }

@@ -98,7 +98,7 @@ export const OrganizationWorkspaceLayout = () => {
   if ((!hasRequestedOrganizations || isLoading) && !organization)
     return (
       <div className="flex min-h-dvh items-center justify-center text-muted-foreground">
-        Завантажуємо організацію…
+        Завантажуємо компанію…
       </div>
     );
   if (!organization && !isLoading)
@@ -106,7 +106,7 @@ export const OrganizationWorkspaceLayout = () => {
       <div className="mx-auto w-full max-w-6xl p-8">
         <p className="text-destructive">{error}</p>
         <Button className="mt-4" asChild variant="outline">
-          <Link to="/account/organizations">До списку організацій</Link>
+          <Link to="/account/organizations">До списку компаній</Link>
         </Button>
       </div>
     ) : (
@@ -186,7 +186,7 @@ export const OrganizationWorkspaceLayout = () => {
                   type="button"
                   variant="outline"
                   size="icon"
-                  aria-label="Відкрити меню організації"
+                  aria-label="Відкрити меню компанії"
                   className="lg:hidden"
                 >
                   <Menu />
@@ -204,7 +204,7 @@ export const OrganizationWorkspaceLayout = () => {
                       <Logo />
                     </Link>
                   </SheetTitle>
-                  <SheetDescription>Керування організацією</SheetDescription>
+                  <SheetDescription>Керування компанією</SheetDescription>
                 </SheetHeader>
                 <div className="mt-6">
                   <OrganizationIdentity
@@ -282,7 +282,7 @@ const OrganizationSelect = ({
 }) => (
   <Select value={organizationId} onValueChange={onChange}>
     <SelectTrigger className="mb-6 w-full">
-      <SelectValue aria-label="Вибрана організація" />
+      <SelectValue aria-label="Вибрана компанія" />
     </SelectTrigger>
     <SelectContent>
       {items.map((item) => (
@@ -305,7 +305,7 @@ const OrganizationNavigation = ({
   collapsed?: boolean;
   onNavigate?: () => void;
 }) => (
-  <nav aria-label="Навігація організації" className="flex min-h-0 flex-1 flex-col">
+  <nav aria-label="Навігація компанії" className="flex min-h-0 flex-1 flex-col">
     <ul className="space-y-1">
       {items.map(({ label, href, icon: Icon }) => (
         <li key={href} className="group relative">
@@ -345,11 +345,11 @@ const OrganizationNavigation = ({
         <Link
           to="/account/organizations"
           onClick={onNavigate}
-          aria-label={collapsed ? "Усі організації" : undefined}
-          title={collapsed ? "Усі організації" : undefined}
+          aria-label={collapsed ? "Усі компанії" : undefined}
+          title={collapsed ? "Усі компанії" : undefined}
         >
           {collapsed ? <Building2 /> : <ChevronLeft />}
-          {!collapsed && "Усі організації"}
+          {!collapsed && "Усі компанії"}
         </Link>
       </Button>
     </div>
