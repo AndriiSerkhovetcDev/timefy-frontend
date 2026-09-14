@@ -24,8 +24,9 @@ type VerifyEmailFormProps = {
 
 export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEmailFormProps) => {
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
-  const [timer, setTimer] = useState(RESEND_TIMEOUT);
-  const [canResend, setCanResend] = useState(false);
+  const [timer, setTimer] = useState(0);
+  const [canResend, setCanResend] = useState(true);
+  const [hasRequestedCode, setHasRequestedCode] = useState(false);
   const [verifyError, setVerifyError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -34,14 +35,6 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
   const userLogin = useAuthStore(selectUserLogin);
   const setEmailVerified = useAuthStore((state) => state.setEmailVerified);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (userLogin) {
-      void withNotify(resendVerifyEmail({ login: userLogin })).catch(() => {
-        // Keep the form available so the user can request a new code manually.
-      });
-    }
-  }, [userLogin]);
 
   const resetCode = useCallback(() => {
     setCode(Array(CODE_LENGTH).fill(""));
@@ -116,8 +109,9 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
     setIsResending(true);
     try {
       await withNotify(resendVerifyEmail({ login: userLogin }), {
-        success: "Новий код надіслано",
+        success: hasRequestedCode ? "Новий код надіслано" : "Код надіслано",
       });
+      setHasRequestedCode(true);
       setTimer(RESEND_TIMEOUT);
       setCanResend(false);
       setVerifyError("");
@@ -178,7 +172,7 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
 
   return (
     <div className={cn("flex flex-col gap-6", compact && "gap-4")}>
-      <fieldset disabled={isVerifying} className="min-w-0">
+      <fieldset disabled={isVerifying || !hasRequestedCode} className="min-w-0">
         <legend className="sr-only">Шестизначний код підтвердження</legend>
         <div
           className={cn("grid grid-cols-6 gap-2 sm:gap-3", compact && "mx-auto w-full max-w-lg")}
@@ -211,7 +205,9 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
       </fieldset>
 
       <p id="verification-code-hint" className="text-center text-xs leading-5 text-text-muted">
-        Код буде перевірено автоматично після введення останньої цифри.
+        {hasRequestedCode
+          ? "Код буде перевірено автоматично після введення останньої цифри."
+          : "Надішліть код, щоб підтвердити вашу електронну адресу."}
       </p>
 
       {isVerifying && (
@@ -246,7 +242,11 @@ export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEma
               className={`size-4 ${isResending ? "animate-spin" : ""}`}
               aria-hidden="true"
             />
-            {isResending ? "Надсилаємо..." : "Надіслати код повторно"}
+            {isResending
+              ? "Надсилаємо..."
+              : hasRequestedCode
+                ? "Надіслати код повторно"
+                : "Надіслати код"}
           </button>
         ) : (
           <span>

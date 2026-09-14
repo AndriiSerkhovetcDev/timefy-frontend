@@ -39,14 +39,32 @@ describe("VerifyEmailForm", () => {
     useAuthStore.setState({ user: null, token: null });
   });
 
-  it("sends a code on mount and verifies automatically after the sixth digit", async () => {
+  it("sends a code only after user action and verifies automatically after the sixth digit", async () => {
     render(
       <MemoryRouter>
         <VerifyEmailForm />
       </MemoryRouter>,
     );
 
+    expect(resendVerifyEmail).not.toHaveBeenCalled();
+    expect(
+      (
+        screen.getByRole("group", {
+          name: "Шестизначний код підтвердження",
+        }) as HTMLFieldSetElement
+      ).disabled,
+    ).toBe(true);
+
+    fireEvent.click(screen.getByRole("button", { name: "Надіслати код" }));
+
     await waitFor(() => expect(resendVerifyEmail).toHaveBeenCalledWith({ login: "testuser" }));
+    expect(
+      (
+        screen.getByRole("group", {
+          name: "Шестизначний код підтвердження",
+        }) as HTMLFieldSetElement
+      ).disabled,
+    ).toBe(false);
 
     for (let index = 0; index < 6; index += 1) {
       fireEvent.change(screen.getByLabelText(`Цифра ${index + 1} з 6`), {
@@ -70,6 +88,17 @@ describe("VerifyEmailForm", () => {
       <MemoryRouter>
         <VerifyEmailForm redirectTo={null} />
       </MemoryRouter>,
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Надіслати код" }));
+    await waitFor(() =>
+      expect(
+        (
+          screen.getByRole("group", {
+            name: "Шестизначний код підтвердження",
+          }) as HTMLFieldSetElement
+        ).disabled,
+      ).toBe(false),
     );
 
     fireEvent.change(screen.getByLabelText("Цифра 1 з 6"), {
