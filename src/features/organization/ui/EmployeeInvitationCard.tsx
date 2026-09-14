@@ -11,7 +11,13 @@ import { useForm } from "react-hook-form";
 
 type InvitationForm = { position: string; isBookable: boolean };
 
-export const EmployeeInvitationCard = ({ organisationId }: { organisationId: string }) => {
+export const EmployeeInvitationCard = ({
+  organisationId,
+  embedded = false,
+}: {
+  organisationId: string;
+  embedded?: boolean;
+}) => {
   const [invitation, setInvitation] = useState<CreatedInvitation | null>(null);
   const [isRevoking, setIsRevoking] = useState(false);
   const {
@@ -64,6 +70,64 @@ export const EmployeeInvitationCard = ({ organisationId }: { organisationId: str
     }
   };
 
+  const content = invitation ? (
+    <div className="space-y-4">
+      <div className="rounded-lg border bg-muted/40 p-4">
+        <div className="flex items-center gap-2 font-medium text-success">
+          <Check className="size-4" />
+          Посилання готове
+        </div>
+        <p className="mt-2 break-all text-sm text-muted-foreground">{inviteUrl}</p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Дійсне до {new Date(invitation.expiresAt).toLocaleString("uk-UA")}. Його зможе використати
+          одна людина.
+        </p>
+      </div>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Button type="button" onClick={() => void copyInvitation()}>
+          <Copy />
+          Копіювати посилання
+        </Button>
+        <Button type="button" variant="outline" onClick={() => void shareInvitation()}>
+          <Share2 />
+          Поділитися
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          disabled={isRevoking}
+          onClick={() => void revokeInvitation()}
+        >
+          <X />
+          Відкликати
+        </Button>
+      </div>
+    </div>
+  ) : (
+    <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit(createInvitation)}>
+      <div className="space-y-2 sm:col-span-2">
+        <Label htmlFor="employee-position">Посада</Label>
+        <Input
+          id="employee-position"
+          maxLength={200}
+          placeholder="Наприклад, адміністратор"
+          {...register("position")}
+        />
+      </div>
+      <label className="flex items-center gap-3 text-sm">
+        <input type="checkbox" className="size-4 accent-primary" {...register("isBookable")} />
+        Доступний для онлайн-запису
+      </label>
+      <div className="flex justify-end">
+        <Button disabled={isSubmitting}>
+          {isSubmitting ? <LoaderCircle className="animate-spin" /> : <Link2 />}Створити запрошення
+        </Button>
+      </div>
+    </form>
+  );
+
+  if (embedded) return content;
+
   return (
     <Card>
       <CardHeader>
@@ -73,68 +137,7 @@ export const EmployeeInvitationCard = ({ organisationId }: { organisationId: str
         </CardTitle>
         <CardDescription>Створіть одноразове посилання, дійсне протягом 7 днів.</CardDescription>
       </CardHeader>
-      <CardContent>
-        {invitation ? (
-          <div className="space-y-4">
-            <div className="rounded-lg border bg-muted/40 p-4">
-              <div className="flex items-center gap-2 font-medium text-success">
-                <Check className="size-4" />
-                Посилання готове
-              </div>
-              <p className="mt-2 break-all text-sm text-muted-foreground">{inviteUrl}</p>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Дійсне до {new Date(invitation.expiresAt).toLocaleString("uk-UA")}. Його зможе
-                використати одна людина.
-              </p>
-            </div>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Button type="button" onClick={() => void copyInvitation()}>
-                <Copy />
-                Копіювати посилання
-              </Button>
-              <Button type="button" variant="outline" onClick={() => void shareInvitation()}>
-                <Share2 />
-                Поділитися
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                disabled={isRevoking}
-                onClick={() => void revokeInvitation()}
-              >
-                <X />
-                Відкликати
-              </Button>
-            </div>
-          </div>
-        ) : (
-          <form className="grid gap-4 sm:grid-cols-2" onSubmit={handleSubmit(createInvitation)}>
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="employee-position">Посада</Label>
-              <Input
-                id="employee-position"
-                maxLength={200}
-                placeholder="Наприклад, адміністратор"
-                {...register("position")}
-              />
-            </div>
-            <label className="flex items-center gap-3 text-sm">
-              <input
-                type="checkbox"
-                className="size-4 accent-primary"
-                {...register("isBookable")}
-              />
-              Доступний для онлайн-запису
-            </label>
-            <div className="flex justify-end">
-              <Button disabled={isSubmitting}>
-                {isSubmitting ? <LoaderCircle className="animate-spin" /> : <Link2 />}Створити
-                запрошення
-              </Button>
-            </div>
-          </form>
-        )}
-      </CardContent>
+      <CardContent>{content}</CardContent>
     </Card>
   );
 };
