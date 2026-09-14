@@ -1,5 +1,6 @@
 import { selectUserLogin, useAuthStore } from "@/features/auth/model/authStore";
 import { resendVerifyEmail, verifyEmail } from "@/shared/api/authApi";
+import { cn } from "@/lib/utils";
 import { notify } from "@/shared/lib/notify";
 import { withNotify } from "@/shared/lib/withNotify";
 import { LoaderCircle, RefreshCw } from "lucide-react";
@@ -17,10 +18,11 @@ const CODE_LENGTH = 6;
 const RESEND_TIMEOUT = 60;
 
 type VerifyEmailFormProps = {
+  compact?: boolean;
   redirectTo?: string | null;
 };
 
-export const VerifyEmailForm = ({ redirectTo = "/" }: VerifyEmailFormProps) => {
+export const VerifyEmailForm = ({ compact = false, redirectTo = "/" }: VerifyEmailFormProps) => {
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [timer, setTimer] = useState(RESEND_TIMEOUT);
   const [canResend, setCanResend] = useState(false);
@@ -175,11 +177,11 @@ export const VerifyEmailForm = ({ redirectTo = "/" }: VerifyEmailFormProps) => {
   }, [timer]);
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className={cn("flex flex-col gap-6", compact && "gap-4")}>
       <fieldset disabled={isVerifying} className="min-w-0">
         <legend className="sr-only">Шестизначний код підтвердження</legend>
         <div
-          className="grid grid-cols-6 gap-2 sm:gap-3"
+          className={cn("grid grid-cols-6 gap-2 sm:gap-3", compact && "mx-auto w-full max-w-lg")}
           aria-describedby={verifyError ? "verification-code-error" : "verification-code-hint"}
         >
           {code.map((digit, index) => (
@@ -199,7 +201,10 @@ export const VerifyEmailForm = ({ redirectTo = "/" }: VerifyEmailFormProps) => {
               onChange={(e) => handleChange(e.target.value, index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               onPaste={handlePaste}
-              className="h-14 min-w-0 w-full rounded-xl border border-border bg-bg-surface text-center text-xl font-semibold text-text-main shadow-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:cursor-wait disabled:opacity-60 sm:h-16 sm:text-2xl"
+              className={cn(
+                "h-14 min-w-0 w-full rounded-xl border border-border bg-bg-surface text-center text-xl font-semibold text-text-main shadow-sm outline-none transition focus:border-secondary focus:ring-2 focus:ring-secondary/20 disabled:cursor-wait disabled:opacity-60 sm:h-16 sm:text-2xl",
+                compact && "h-12 rounded-lg sm:h-14 sm:text-xl",
+              )}
             />
           ))}
         </div>

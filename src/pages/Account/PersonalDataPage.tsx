@@ -29,7 +29,7 @@ import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/share
 import { notify } from "@/shared/lib/notify";
 import { PhoneField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageUp, KeyRound, Loader2, MailWarning, Trash2 } from "lucide-react";
+import { ImageUp, KeyRound, Loader2, MailCheck, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -307,19 +307,6 @@ export const PersonalDataPage = () => {
               )}
               {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
             </div>
-            {!user.emailVerified && (
-              <Alert className="sm:col-span-2">
-                <MailWarning aria-hidden="true" />
-                <AlertTitle>Підтвердіть email</AlertTitle>
-                <AlertDescription className="min-w-0">
-                  Введіть шестизначний код, який ми надіслали на адресу{" "}
-                  <span className="break-all font-medium text-foreground">{user.email}</span>.
-                </AlertDescription>
-                <div className="col-span-full mt-4 w-full min-w-0">
-                  <VerifyEmailForm redirectTo={null} />
-                </div>
-              </Alert>
-            )}
             {emailRequiresAuthMethod && (
               <Alert className="sm:col-span-2">
                 <KeyRound aria-hidden="true" />
@@ -348,6 +335,28 @@ export const PersonalDataPage = () => {
           </form>
         </CardContent>
       </Card>
+
+      {!user.emailVerified && (
+        <Card className="min-w-0 overflow-hidden border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 shadow-sm">
+          <CardHeader className="gap-0 pb-4">
+            <div className="flex min-w-0 items-start gap-3 sm:items-center">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <MailCheck className="size-5" aria-hidden="true" />
+              </div>
+              <div className="min-w-0 space-y-1">
+                <CardTitle>Підтвердження email</CardTitle>
+                <CardDescription className="leading-5">
+                  Введіть код, надісланий на{" "}
+                  <span className="break-all font-medium text-foreground">{user.email}</span>
+                </CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="min-w-0 pt-0">
+            <VerifyEmailForm compact redirectTo={null} />
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
