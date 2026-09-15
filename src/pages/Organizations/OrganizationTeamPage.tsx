@@ -55,7 +55,16 @@ export const OrganizationTeamPage = () => {
       setError(null);
 
       try {
-        const data = await getOrganizationEmployees({ organisationId: organizationId }, signal);
+        const data = await getOrganizationEmployees(
+          {
+            organisationId: organizationId,
+            page: 1,
+            limit: PAGE_SIZE,
+            search: "",
+            sort: { field: "createdAt", order: "desc" },
+          },
+          signal,
+        );
         if (!signal.aborted) setResult(data);
       } catch (requestError) {
         if (signal.aborted) return;
