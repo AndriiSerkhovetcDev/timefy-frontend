@@ -1,12 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Sheet,
   SheetContent,
   SheetDescription,
@@ -32,15 +25,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import {
-  Link,
-  NavLink,
-  Navigate,
-  Outlet,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, NavLink, Navigate, Outlet, useLocation, useParams } from "react-router-dom";
 
 type NavigationItem = {
   label: string;
@@ -76,10 +61,9 @@ const navItems: NavigationItem[] = [
 
 export const OrganizationWorkspaceLayout = () => {
   const { organizationId = "" } = useParams();
-  const navigate = useNavigate();
   const { pathname } = useLocation();
   const user = useAuthStore(selectUser);
-  const { items, details, isLoading, error, load, select } = useOrganizationStore();
+  const { items, details, isLoading, error, load } = useOrganizationStore();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasRequestedOrganizations, setHasRequestedOrganizations] = useState(false);
@@ -119,12 +103,6 @@ export const OrganizationWorkspaceLayout = () => {
     availableNavItems.find(({ href }) =>
       href ? pathname.endsWith(`/${href}`) : pathname === `/organizations/${organizationId}`,
     ) ?? availableNavItems[0];
-  const changeOrganization = (id: string) => {
-    select(id);
-    setIsMenuOpen(false);
-    navigate(`/organizations/${id}`);
-  };
-
   return (
     <div className="flex min-h-dvh bg-background">
       <aside
@@ -163,13 +141,6 @@ export const OrganizationWorkspaceLayout = () => {
           logoUrl={organization.logoUrl}
           role={isOwner ? "Власник" : (preview?.position ?? "Працівник")}
         />
-        {!isSidebarCollapsed && (
-          <OrganizationSelect
-            organizationId={organizationId}
-            items={items}
-            onChange={changeOrganization}
-          />
-        )}
         <OrganizationNavigation
           organizationId={organizationId}
           items={availableNavItems}
@@ -211,11 +182,6 @@ export const OrganizationWorkspaceLayout = () => {
                     name={organization.displayName}
                     logoUrl={organization.logoUrl}
                     role={isOwner ? "Власник" : (preview?.position ?? "Працівник")}
-                  />
-                  <OrganizationSelect
-                    organizationId={organizationId}
-                    items={items}
-                    onChange={changeOrganization}
                   />
                 </div>
                 <OrganizationNavigation
@@ -270,41 +236,6 @@ const OrganizationIdentity = ({
     )}
   </div>
 );
-
-const OrganizationSelect = ({
-  organizationId,
-  items,
-  onChange,
-}: {
-  organizationId: string;
-  items: ReturnType<typeof useOrganizationStore.getState>["items"];
-  onChange: (id: string) => void;
-}) => {
-  if (items.length < 2) return null;
-
-  return (
-    <div className="mb-6 space-y-2">
-      <p className="text-xs font-medium text-muted-foreground">Перейти до іншої компанії</p>
-      <Select value={organizationId} onValueChange={onChange}>
-        <SelectTrigger className="h-auto min-h-10 w-full" aria-label="Перейти до іншої компанії">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          {items.map((item) => (
-            <SelectItem key={item.id} value={item.id} textValue={item.displayName}>
-              <div className="w-full min-w-0 py-0.5 text-left">
-                <p className="truncate font-medium">{item.displayName}</p>
-                <p className="truncate text-xs text-muted-foreground">
-                  {item.isOwner ? "Власник" : (item.position ?? "Працівник")}
-                </p>
-              </div>
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-};
 
 const OrganizationNavigation = ({
   organizationId,
