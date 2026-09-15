@@ -58,8 +58,9 @@ export type Employee = {
   email: string;
   phone: string | null;
   position: string | null;
-  isBookable: boolean;
-  memberIsActive: boolean;
+  isBookable?: boolean;
+  memberIsActive?: boolean;
+  isActive?: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -68,9 +69,8 @@ export type EmployeeListFilters = {
   login: string;
   email: string;
   phone: string;
-  position: string;
-  isBookable: boolean;
-  memberIsActive: boolean;
+  isActive: boolean;
+  isEmployee: boolean;
 };
 
 export type EmployeeListRequest = {

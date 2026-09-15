@@ -84,7 +84,7 @@ export const getOrganizationEmployees = async (
   signal?: AbortSignal,
 ) =>
   (
-    await httpClient.post<ApiSuccess<EmployeeList>>(`${BASE}/employees/list`, payload, {
+    await httpClient.post<ApiSuccess<EmployeeList>>(`${BASE}/members/list`, payload, {
       signal,
     })
   ).data;
