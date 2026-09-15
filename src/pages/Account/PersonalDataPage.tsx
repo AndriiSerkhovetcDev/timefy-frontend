@@ -65,6 +65,8 @@ export const PersonalDataPage = () => {
     formState: { errors, isDirty, isSubmitting },
   } = useForm<ProfileFormValues, unknown, ProfileValues>({
     resolver: zodResolver(profileSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       firstName: user?.firstName ?? "",
       lastName: user?.lastName ?? "",
