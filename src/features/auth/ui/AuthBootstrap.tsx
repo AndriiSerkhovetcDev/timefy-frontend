@@ -22,16 +22,11 @@ const isProtectedPath = (pathname: string) =>
 
 export const AuthBootstrap = ({ children }: AuthBootstrapProps) => {
   const { pathname } = useLocation();
-  const [status, setStatus] = useState<BootstrapStatus>(() =>
-    useAuthStore.getState().token ? "ready" : "checking",
-  );
+  const [status, setStatus] = useState<BootstrapStatus>("checking");
 
   const restoreSession = useCallback(async () => {
-    if (
-      isOAuthCallbackPath(pathname) ||
-      isSessionRestoreSuppressed() ||
-      useAuthStore.getState().token
-    ) {
+    const token = useAuthStore.getState().token;
+    if (isOAuthCallbackPath(pathname) || isSessionRestoreSuppressed() || !token) {
       setStatus("ready");
       return;
     }

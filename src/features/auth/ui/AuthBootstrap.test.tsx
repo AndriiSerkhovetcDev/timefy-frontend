@@ -35,7 +35,8 @@ describe("AuthBootstrap", () => {
     cleanup();
   });
 
-  it("restores a cookie-backed session before rendering a protected route", async () => {
+  it("refreshes a persisted session before rendering a protected route", async () => {
+    useAuthStore.setState({ user: null, token: "persisted-token" });
     refreshSession.mockResolvedValue({
       data: {
         token: "new-token",
@@ -55,6 +56,13 @@ describe("AuthBootstrap", () => {
     expect(refreshSession).toHaveBeenCalledOnce();
   });
 
+  it("does not request a refresh when the local session has no token", async () => {
+    renderBootstrap();
+
+    expect(await screen.findByText("Застосунок готовий")).toBeTruthy();
+    expect(refreshSession).not.toHaveBeenCalled();
+  });
+
   it("does not refresh the session before processing an OAuth callback", async () => {
     renderBootstrap("/auth/callback");
 
@@ -72,6 +80,7 @@ describe("AuthBootstrap", () => {
   });
 
   it("renders an anonymous public route after invalid refresh cookies", async () => {
+    useAuthStore.setState({ user: null, token: "expired-token" });
     refreshSession.mockRejectedValue(
       new ApiError("Сесію не відновлено", 401, { errorCode: "AUTH_REFRESH_INVALID" }),
     );
@@ -82,6 +91,7 @@ describe("AuthBootstrap", () => {
   });
 
   it("shows retry UI for a temporary refresh failure on a protected route", async () => {
+    useAuthStore.setState({ user: null, token: "expired-token" });
     refreshSession.mockRejectedValue(new TypeError("Network request failed"));
 
     renderBootstrap();
