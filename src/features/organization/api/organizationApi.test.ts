@@ -119,8 +119,9 @@ describe("organizationApi", () => {
         login: "",
         email: "",
         phone: "",
-        isActive: true,
-        isEmployee: true,
+        position: "Адміністратор",
+        isBookable: true,
+        memberIsActive: true,
       },
       sort: { field: "createdAt" as const, order: "desc" as const },
     };
@@ -128,7 +129,7 @@ describe("organizationApi", () => {
 
     await getOrganizationEmployees(payload, controller.signal);
 
-    expect(httpClient.post).toHaveBeenCalledWith("/organisations/members/list", payload, {
+    expect(httpClient.post).toHaveBeenCalledWith("/organisations/employees/list", payload, {
       signal: controller.signal,
     });
   });

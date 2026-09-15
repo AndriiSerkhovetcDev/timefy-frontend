@@ -45,7 +45,9 @@ export const OrganizationTeamPage = () => {
   const isOwner = preview?.isOwner ?? Boolean(details[organizationId]);
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [position, setPosition] = useState("");
   const [active, setActive] = useState<BooleanFilter>("true");
+  const [bookable, setBookable] = useState<BooleanFilter>("true");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<EmployeeList>(emptyResult);
@@ -69,8 +71,9 @@ export const OrganizationTeamPage = () => {
         login: "",
         email: "",
         phone: "",
-        isActive: active === "true",
-        isEmployee: true,
+        position: position.trim(),
+        isBookable: bookable === "true",
+        memberIsActive: active === "true",
       };
 
       try {
@@ -89,12 +92,7 @@ export const OrganizationTeamPage = () => {
       } catch (requestError) {
         if (signal.aborted) return;
         if (requestError instanceof ApiError) {
-          if (requestError.status === 400 && !debouncedSearch && active === "true") {
-            setResult(emptyResult);
-          } else if (
-            requestError.status === 404 &&
-            requestError.errorCode === "ORGANISATION_NOT_FOUND"
-          ) {
+          if (requestError.status === 404 && requestError.errorCode === "ORGANISATION_NOT_FOUND") {
             setError(
               "Компанію не знайдено. Можливо, її було видалено або у вас більше немає доступу.",
             );
@@ -113,7 +111,7 @@ export const OrganizationTeamPage = () => {
         if (!signal.aborted) setIsLoading(false);
       }
     },
-    [active, debouncedSearch, organizationId, page, sortOrder],
+    [active, bookable, debouncedSearch, organizationId, page, position, sortOrder],
   );
 
   useEffect(() => {
@@ -124,7 +122,9 @@ export const OrganizationTeamPage = () => {
 
   if (!isOwner) return <Navigate to={`/organizations/${organizationId}`} replace />;
 
-  const hasFilters = Boolean(debouncedSearch || active !== "true");
+  const hasFilters = Boolean(
+    debouncedSearch || position.trim() || active !== "true" || bookable !== "true",
+  );
   const pages = Math.max(1, result.pagination.pages);
   const changeFilter = (setter: (value: BooleanFilter) => void, value: BooleanFilter) => {
     setPage(1);
@@ -167,7 +167,7 @@ export const OrganizationTeamPage = () => {
               {isLoading ? "Оновлюємо список…" : `Усього: ${result.pagination.total}`}
             </CardDescription>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1fr)_auto_auto]">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1fr)_minmax(10rem,0.6fr)_auto_auto_auto]">
             <label className="relative min-w-0">
               <span className="sr-only">Пошук працівників</span>
               <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -176,6 +176,18 @@ export const OrganizationTeamPage = () => {
                 onChange={(event) => setSearch(event.target.value)}
                 className="min-h-10 pl-9"
                 placeholder="Пошук за ім’ям або контактами"
+              />
+            </label>
+            <label className="min-w-0">
+              <span className="sr-only">Фільтр за посадою</span>
+              <Input
+                value={position}
+                onChange={(event) => {
+                  setPage(1);
+                  setPosition(event.target.value);
+                }}
+                className="min-h-10"
+                placeholder="Посада"
               />
             </label>
             <Select
@@ -188,6 +200,18 @@ export const OrganizationTeamPage = () => {
               <SelectContent>
                 <SelectItem value="true">Активні</SelectItem>
                 <SelectItem value="false">Неактивні</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={bookable}
+              onValueChange={(value) => changeFilter(setBookable, value as BooleanFilter)}
+            >
+              <SelectTrigger className="min-h-10 w-full" aria-label="Доступність для бронювання">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="true">Доступні</SelectItem>
+                <SelectItem value="false">Недоступні</SelectItem>
               </SelectContent>
             </Select>
             <Select
@@ -271,7 +295,7 @@ const EmployeeTable = ({ employees }: { employees: Employee[] }) => (
               <BookableBadge value={employee.isBookable} />
             </td>
             <td className="px-5 py-4">
-              <ActiveBadge value={employee.memberIsActive ?? employee.isActive ?? false} />
+              <ActiveBadge value={employee.memberIsActive} />
             </td>
             <td className="px-5 py-4 text-muted-foreground">{formatDate(employee.createdAt)}</td>
           </tr>
@@ -295,7 +319,7 @@ const EmployeeCards = ({ employees }: { employees: Employee[] }) => (
               {employee.position || "Посаду не вказано"}
             </p>
           </div>
-          <ActiveBadge value={employee.memberIsActive ?? employee.isActive ?? false} />
+          <ActiveBadge value={employee.memberIsActive} />
         </div>
         <dl className="mt-4 grid min-w-0 gap-3 text-sm sm:grid-cols-2">
           <Contact label="Email" value={employee.email || "—"} breakAll />
@@ -338,12 +362,12 @@ const ActiveBadge = ({ value }: { value: boolean }) => (
     {value ? "Активний" : "Неактивний"}
   </Badge>
 );
-const BookableBadge = ({ value }: { value?: boolean }) => (
+const BookableBadge = ({ value }: { value: boolean }) => (
   <Badge
     variant={value ? "secondary" : "outline"}
     className="max-w-full whitespace-normal text-center"
   >
-    {value === undefined ? "Не налаштовано" : value ? "Доступний для бронювання" : "Недоступний"}
+    {value ? "Доступний для бронювання" : "Недоступний"}
   </Badge>
 );
 
