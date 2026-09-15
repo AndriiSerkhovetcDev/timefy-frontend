@@ -108,9 +108,15 @@ describe("organizationApi", () => {
     });
   });
 
-  it("requests the employee list with the organization identifier", async () => {
+  it("requests the employee list with pagination, search and sorting but without filters", async () => {
     vi.mocked(httpClient.post).mockResolvedValue({ data: { items: [], pagination: {} } });
-    const payload = { organisationId: "9007199254740993" };
+    const payload = {
+      organisationId: "9007199254740993",
+      page: 1,
+      limit: 25,
+      search: null,
+      sort: { field: "createdAt" as const, order: "desc" as const },
+    };
     const controller = new AbortController();
 
     await getOrganizationEmployees(payload, controller.signal);
