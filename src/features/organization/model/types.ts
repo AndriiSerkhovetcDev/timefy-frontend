@@ -75,11 +75,11 @@ export type EmployeeListFilters = {
 
 export type EmployeeListRequest = {
   organisationId: string;
-  page: number;
-  limit: number;
-  search: string;
-  filters: EmployeeListFilters;
-  sort: {
+  page?: number;
+  limit?: number;
+  search?: string;
+  filters?: EmployeeListFilters;
+  sort?: {
     field: "createdAt";
     order: "asc" | "desc";
   };

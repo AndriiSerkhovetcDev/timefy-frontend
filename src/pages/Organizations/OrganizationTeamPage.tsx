@@ -9,30 +9,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrganizationEmployees } from "@/features/organization/api/organizationApi";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
-import type {
-  Employee,
-  EmployeeList,
-  EmployeeListRequest,
-} from "@/features/organization/model/types";
+import type { Employee, EmployeeList } from "@/features/organization/model/types";
 import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import { ApiError } from "@/shared/api/httpClient";
-import { ChevronLeft, ChevronRight, Search, UserPlus, Users } from "lucide-react";
+import { UserPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 const PAGE_SIZE = 25;
-type BooleanFilter = "true" | "false";
 const emptyResult: EmployeeList = {
   items: [],
   pagination: { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 },
@@ -43,51 +30,18 @@ export const OrganizationTeamPage = () => {
   const { items: organizations, details } = useOrganizationStore();
   const preview = organizations.find((item) => item.id === organizationId);
   const isOwner = preview?.isOwner ?? Boolean(details[organizationId]);
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
-  const [position, setPosition] = useState("");
-  const [active, setActive] = useState<BooleanFilter>("true");
-  const [bookable, setBookable] = useState<BooleanFilter>("true");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [page, setPage] = useState(1);
   const [result, setResult] = useState<EmployeeList>(emptyResult);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setPage(1);
-      setDebouncedSearch(search.trim());
-    }, 400);
-    return () => window.clearTimeout(timer);
-  }, [search]);
-
   const loadEmployees = useCallback(
     async (signal: AbortSignal) => {
       setIsLoading(true);
       setError(null);
-      const filters: EmployeeListRequest["filters"] = {
-        login: "",
-        email: "",
-        phone: "",
-        position: position.trim(),
-        isBookable: bookable === "true",
-        memberIsActive: active === "true",
-      };
 
       try {
-        const data = await getOrganizationEmployees(
-          {
-            organisationId: organizationId,
-            page,
-            limit: PAGE_SIZE,
-            search: debouncedSearch,
-            filters,
-            sort: { field: "createdAt", order: sortOrder },
-          },
-          signal,
-        );
+        const data = await getOrganizationEmployees({ organisationId: organizationId }, signal);
         if (!signal.aborted) setResult(data);
       } catch (requestError) {
         if (signal.aborted) return;
@@ -111,7 +65,7 @@ export const OrganizationTeamPage = () => {
         if (!signal.aborted) setIsLoading(false);
       }
     },
-    [active, bookable, debouncedSearch, organizationId, page, position, sortOrder],
+    [organizationId],
   );
 
   useEffect(() => {
@@ -121,15 +75,6 @@ export const OrganizationTeamPage = () => {
   }, [loadEmployees, reloadKey]);
 
   if (!isOwner) return <Navigate to={`/organizations/${organizationId}`} replace />;
-
-  const hasFilters = Boolean(
-    debouncedSearch || position.trim() || active !== "true" || bookable !== "true",
-  );
-  const pages = Math.max(1, result.pagination.pages);
-  const changeFilter = (setter: (value: BooleanFilter) => void, value: BooleanFilter) => {
-    setPage(1);
-    setter(value);
-  };
 
   return (
     <div className="space-y-6">
@@ -160,75 +105,12 @@ export const OrganizationTeamPage = () => {
       </div>
 
       <Card className="gap-4 overflow-hidden py-0">
-        <CardHeader className="gap-4 border-b py-5">
+        <CardHeader className="border-b py-5">
           <div>
             <CardTitle>Працівники</CardTitle>
             <CardDescription className="mt-1">
               {isLoading ? "Оновлюємо список…" : `Усього: ${result.pagination.total}`}
             </CardDescription>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1fr)_minmax(10rem,0.6fr)_auto_auto_auto]">
-            <label className="relative min-w-0">
-              <span className="sr-only">Пошук працівників</span>
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                className="min-h-10 pl-9"
-                placeholder="Пошук за ім’ям або контактами"
-              />
-            </label>
-            <label className="min-w-0">
-              <span className="sr-only">Фільтр за посадою</span>
-              <Input
-                value={position}
-                onChange={(event) => {
-                  setPage(1);
-                  setPosition(event.target.value);
-                }}
-                className="min-h-10"
-                placeholder="Посада"
-              />
-            </label>
-            <Select
-              value={active}
-              onValueChange={(value) => changeFilter(setActive, value as BooleanFilter)}
-            >
-              <SelectTrigger className="min-h-10 w-full" aria-label="Статус працівника">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">Активні</SelectItem>
-                <SelectItem value="false">Неактивні</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={bookable}
-              onValueChange={(value) => changeFilter(setBookable, value as BooleanFilter)}
-            >
-              <SelectTrigger className="min-h-10 w-full" aria-label="Доступність для бронювання">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="true">Доступні</SelectItem>
-                <SelectItem value="false">Недоступні</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={sortOrder}
-              onValueChange={(value) => {
-                setPage(1);
-                setSortOrder(value as "asc" | "desc");
-              }}
-            >
-              <SelectTrigger className="min-h-10 w-full" aria-label="Сортування за датою додавання">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Спочатку нові</SelectItem>
-                <SelectItem value="asc">Спочатку старі</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </CardHeader>
 
@@ -237,17 +119,11 @@ export const OrganizationTeamPage = () => {
         ) : error ? (
           <ErrorState message={error} onRetry={() => setReloadKey((value) => value + 1)} />
         ) : result.items.length === 0 ? (
-          <EmptyState filtered={hasFilters} />
+          <EmptyState />
         ) : (
           <>
             <EmployeeTable employees={result.items} />
             <EmployeeCards employees={result.items} />
-            <Pagination
-              page={result.pagination.page}
-              pages={pages}
-              total={result.pagination.total}
-              onChange={setPage}
-            />
           </>
         )}
       </Card>
@@ -371,47 +247,6 @@ const BookableBadge = ({ value }: { value: boolean }) => (
   </Badge>
 );
 
-const Pagination = ({
-  page,
-  pages,
-  total,
-  onChange,
-}: {
-  page: number;
-  pages: number;
-  total: number;
-  onChange: (page: number) => void;
-}) => (
-  <nav
-    className="flex flex-col items-center justify-between gap-3 border-t px-4 py-4 sm:flex-row"
-    aria-label="Пагінація працівників"
-  >
-    <p className="text-sm text-muted-foreground">
-      Сторінка {page} з {pages} · {total} працівників
-    </p>
-    <div className="flex gap-2">
-      <Button
-        variant="outline"
-        className="min-h-10"
-        disabled={page <= 1}
-        onClick={() => onChange(page - 1)}
-      >
-        <ChevronLeft aria-hidden="true" />
-        Попередня
-      </Button>
-      <Button
-        variant="outline"
-        className="min-h-10"
-        disabled={page >= pages}
-        onClick={() => onChange(page + 1)}
-      >
-        Наступна
-        <ChevronRight aria-hidden="true" />
-      </Button>
-    </div>
-  </nav>
-);
-
 const EmployeeListSkeleton = () => (
   <div className="space-y-3 p-4" aria-label="Завантаження працівників" aria-busy="true">
     {[1, 2, 3].map((item) => (
@@ -427,18 +262,14 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Button>
   </CardContent>
 );
-const EmptyState = ({ filtered }: { filtered: boolean }) => (
+const EmptyState = () => (
   <CardContent className="py-12 text-center">
     <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-accent text-primary">
       <Users className="size-5" aria-hidden="true" />
     </div>
-    <h2 className="mt-4 font-semibold">
-      {filtered ? "Нічого не знайдено" : "У компанії ще немає працівників"}
-    </h2>
+    <h2 className="mt-4 font-semibold">У компанії ще немає працівників</h2>
     <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-      {filtered
-        ? "Змініть пошуковий запит або фільтри й спробуйте ще раз."
-        : "Додайте першого працівника за допомогою одноразового запрошення."}
+      Додайте першого працівника за допомогою одноразового запрошення.
     </p>
   </CardContent>
 );
