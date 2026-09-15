@@ -24,9 +24,12 @@ import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { EmailStatus } from "@/features/account/ui/EmailStatus";
 import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
 import { VerifyEmailForm } from "@/features/verify-email";
+import { checkIsExists } from "@/shared/api/authApi";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
+import { normalizeEmail } from "@/shared/model/email";
+import { normalizePhone } from "@/shared/model/phone";
 import { cn } from "@/lib/utils";
 import { PhoneField } from "@/shared/ui";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +39,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
+const CONTACT_CHECK_DELAY_MS = 500;
 
 export const PersonalDataPage = () => {
   const user = useAuthStore(selectUser);
@@ -53,9 +57,16 @@ export const PersonalDataPage = () => {
     register,
     handleSubmit,
     reset,
+    getValues,
+    watch,
+    trigger,
+    setError,
+    clearErrors,
     formState: { errors, isDirty, isSubmitting },
   } = useForm<ProfileFormValues, unknown, ProfileValues>({
     resolver: zodResolver(profileSchema),
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       firstName: user?.firstName ?? "",
       lastName: user?.lastName ?? "",
@@ -75,11 +86,87 @@ export const PersonalDataPage = () => {
     });
   }, [user, reset]);
 
+  const email = watch("email");
+  const phone = watch("phone");
+
+  useEffect(() => {
+    if (!user) return;
+    const value = normalizeEmail(email);
+    if (value === normalizeEmail(user.email)) return;
+
+    clearErrors("email");
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      if (!(await trigger("email")) || !active) return;
+      try {
+        const response = await checkIsExists("email", value);
+        if (!active || normalizeEmail(getValues("email")) !== value) return;
+        if (!response.data.checkEmail) {
+          setError("email", { type: "validate", message: "Цей email вже використовується" });
+        }
+      } catch (error) {
+        if (active)
+          notify.error(error instanceof Error ? error.message : "Не вдалося перевірити email");
+      }
+    }, CONTACT_CHECK_DELAY_MS);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [clearErrors, email, getValues, setError, trigger, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const value = normalizePhone(phone);
+    if (value === normalizePhone(user.phone ?? "")) return;
+
+    clearErrors("phone");
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      if (!(await trigger("phone")) || !active) return;
+      try {
+        const response = await checkIsExists("phone", value);
+        if (!active || normalizePhone(getValues("phone")) !== value) return;
+        if (!response.data.checkPhone) {
+          setError("phone", { type: "validate", message: "Цей номер уже використовується" });
+        }
+      } catch (error) {
+        if (active)
+          notify.error(error instanceof Error ? error.message : "Не вдалося перевірити телефон");
+      }
+    }, CONTACT_CHECK_DELAY_MS);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [clearErrors, getValues, phone, setError, trigger, user]);
+
   if (!user) return <AccountPageSkeleton />;
   const isAvatarPending = isUploadingAvatar || isDeletingAvatar;
 
   const handleProfileSubmit = async (values: ProfileValues) => {
     try {
+      clearErrors(["email", "phone"]);
+      const emailChanged = didEmailChange(user.email, values.email);
+      const phoneChanged = normalizePhone(user.phone ?? "") !== values.phone;
+      const [emailCheck, phoneCheck] = await Promise.all([
+        emailChanged ? checkIsExists("email", values.email) : null,
+        phoneChanged ? checkIsExists("phone", values.phone) : null,
+      ]);
+
+      let hasConflict = false;
+      if (emailCheck && !emailCheck.data.checkEmail) {
+        setError("email", { type: "validate", message: "Цей email вже використовується" });
+        hasConflict = true;
+      }
+      if (phoneCheck && !phoneCheck.data.checkPhone) {
+        setError("phone", { type: "validate", message: "Цей номер уже використовується" });
+        hasConflict = true;
+      }
+      if (hasConflict) return;
+
       const response = await updateProfile(values);
       const updatedUser = response.data.user;
 

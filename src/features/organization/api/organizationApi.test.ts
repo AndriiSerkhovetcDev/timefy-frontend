@@ -6,6 +6,7 @@ import {
   createEmployeeInvitation,
   createOrganization,
   getMyOrganizations,
+  getOrganizationEmployees,
   previewEmployeeInvitation,
   revokeEmployeeInvitation,
   updateOrganization,
@@ -104,6 +105,18 @@ describe("organizationApi", () => {
       memberId: "9007199254740995",
       position: null,
       isBookable: true,
+    });
+  });
+
+  it("requests the employee list with the organization identifier", async () => {
+    vi.mocked(httpClient.post).mockResolvedValue({ data: { items: [], pagination: {} } });
+    const payload = { organisationId: "9007199254740993" };
+    const controller = new AbortController();
+
+    await getOrganizationEmployees(payload, controller.signal);
+
+    expect(httpClient.post).toHaveBeenCalledWith("/organisations/employees/list", payload, {
+      signal: controller.signal,
     });
   });
 });

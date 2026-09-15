@@ -158,8 +158,17 @@ export const EmployeeInvitePage = () => {
         </Button>
       ) : (
         <div className="mt-6 space-y-3">
-          <Button className="w-full" onClick={startGoogle}>
-            Прийняти та продовжити через Google
+          <Button
+            className="w-full"
+            aria-label="Прийняти запрошення та продовжити через Google"
+            onClick={startGoogle}
+          >
+            <span className="sm:hidden" aria-hidden="true">
+              Прийняти через Google
+            </span>
+            <span className="hidden sm:inline" aria-hidden="true">
+              Прийняти та продовжити через Google
+            </span>
           </Button>
           <Button
             asChild

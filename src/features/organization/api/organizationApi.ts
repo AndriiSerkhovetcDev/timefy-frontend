@@ -4,6 +4,8 @@ import type {
   CreatedOrganization,
   CreatedInvitation,
   Employee,
+  EmployeeList,
+  EmployeeListRequest,
   InvitationPreview,
   Organization,
   OrganizationHistory,
@@ -76,6 +78,16 @@ export const addOrganizationMemberAsEmployee = async (payload: {
   position?: string | null;
   isBookable?: boolean;
 }) => (await httpClient.post<ApiSuccess<Employee>>(`${BASE}/employees/add-member`, payload)).data;
+
+export const getOrganizationEmployees = async (
+  payload: EmployeeListRequest,
+  signal?: AbortSignal,
+) =>
+  (
+    await httpClient.post<ApiSuccess<EmployeeList>>(`${BASE}/employees/list`, payload, {
+      signal,
+    })
+  ).data;
 
 export const createEmployeeInvitation = async (payload: {
   organisationId: string;
