@@ -9,17 +9,26 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrganizationEmployees } from "@/features/organization/api/organizationApi";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import type { Employee, EmployeeList } from "@/features/organization/model/types";
 import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import { ApiError } from "@/shared/api/httpClient";
-import { Check, UserPlus, Users } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { Check, Search, UserPlus, Users } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 const PAGE_SIZE = 25;
+type BooleanFilter = "all" | "true" | "false";
 const emptyResult: EmployeeList = {
   items: [],
   pagination: { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 },
@@ -30,6 +39,11 @@ export const OrganizationTeamPage = () => {
   const { items: organizations, details } = useOrganizationStore();
   const preview = organizations.find((item) => item.id === organizationId);
   const isOwner = preview?.isOwner ?? Boolean(details[organizationId]);
+  const [search, setSearch] = useState("");
+  const [position, setPosition] = useState("");
+  const [active, setActive] = useState<BooleanFilter>("all");
+  const [bookable, setBookable] = useState<BooleanFilter>("all");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [result, setResult] = useState<EmployeeList>(emptyResult);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +88,36 @@ export const OrganizationTeamPage = () => {
     return () => controller.abort();
   }, [loadEmployees, reloadKey]);
 
+  const filteredEmployees = useMemo(() => {
+    const normalizedSearch = search.trim().toLocaleLowerCase("uk-UA");
+    const normalizedPosition = position.trim().toLocaleLowerCase("uk-UA");
+
+    return result.items
+      .filter((employee) => {
+        const matchesSearch =
+          !normalizedSearch ||
+          [employee.login, employee.email, employee.phone ?? ""].some((value) =>
+            value.toLocaleLowerCase("uk-UA").includes(normalizedSearch),
+          );
+        const matchesPosition =
+          !normalizedPosition ||
+          (employee.position ?? "").toLocaleLowerCase("uk-UA").includes(normalizedPosition);
+        const matchesActive = active === "all" || employee.memberIsActive === (active === "true");
+        const matchesBookable = bookable === "all" || employee.isBookable === (bookable === "true");
+        return matchesSearch && matchesPosition && matchesActive && matchesBookable;
+      })
+      .sort((first, second) => {
+        const difference =
+          new Date(first.createdAt).getTime() - new Date(second.createdAt).getTime();
+        return sortOrder === "asc" ? difference : -difference;
+      });
+  }, [active, bookable, position, result.items, search, sortOrder]);
+
   if (!isOwner) return <Navigate to={`/organizations/${organizationId}`} replace />;
+
+  const hasFilters = Boolean(
+    search.trim() || position.trim() || active !== "all" || bookable !== "all",
+  );
 
   return (
     <div className="space-y-6">
@@ -105,12 +148,69 @@ export const OrganizationTeamPage = () => {
       </div>
 
       <Card className="gap-4 overflow-hidden py-0">
-        <CardHeader className="border-b py-5">
+        <CardHeader className="gap-4 border-b py-5">
           <div>
             <CardTitle>Працівники</CardTitle>
             <CardDescription className="mt-1">
-              {isLoading ? "Оновлюємо список…" : `Усього: ${result.pagination.total}`}
+              {isLoading
+                ? "Оновлюємо список…"
+                : hasFilters
+                  ? `Показано: ${filteredEmployees.length} із ${result.items.length}`
+                  : `Усього: ${result.pagination.total}`}
             </CardDescription>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1fr)_minmax(10rem,0.6fr)_auto_auto_auto]">
+            <label className="relative min-w-0">
+              <span className="sr-only">Пошук працівників</span>
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                className="min-h-10 pl-9"
+                placeholder="Пошук за ім’ям або контактами"
+              />
+            </label>
+            <label className="min-w-0">
+              <span className="sr-only">Фільтр за посадою</span>
+              <Input
+                value={position}
+                onChange={(event) => setPosition(event.target.value)}
+                className="min-h-10"
+                placeholder="Посада"
+              />
+            </label>
+            <Select value={active} onValueChange={(value) => setActive(value as BooleanFilter)}>
+              <SelectTrigger className="min-h-10 w-full" aria-label="Статус працівника">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Усі статуси</SelectItem>
+                <SelectItem value="true">Активні</SelectItem>
+                <SelectItem value="false">Неактивні</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={bookable} onValueChange={(value) => setBookable(value as BooleanFilter)}>
+              <SelectTrigger className="min-h-10 w-full" aria-label="Доступність для бронювання">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Будь-яке бронювання</SelectItem>
+                <SelectItem value="true">Доступні</SelectItem>
+                <SelectItem value="false">Недоступні</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select
+              value={sortOrder}
+              onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
+            >
+              <SelectTrigger className="min-h-10 w-full" aria-label="Сортування за датою додавання">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="desc">Спочатку нові</SelectItem>
+                <SelectItem value="asc">Спочатку старі</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </CardHeader>
 
@@ -119,11 +219,13 @@ export const OrganizationTeamPage = () => {
         ) : error ? (
           <ErrorState message={error} onRetry={() => setReloadKey((value) => value + 1)} />
         ) : result.items.length === 0 ? (
-          <EmptyState />
+          <EmptyState filtered={false} />
+        ) : filteredEmployees.length === 0 ? (
+          <EmptyState filtered />
         ) : (
           <>
-            <EmployeeTable employees={result.items} />
-            <EmployeeCards employees={result.items} />
+            <EmployeeTable employees={filteredEmployees} />
+            <EmployeeCards employees={filteredEmployees} />
           </>
         )}
       </Card>
@@ -267,14 +369,18 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Button>
   </CardContent>
 );
-const EmptyState = () => (
+const EmptyState = ({ filtered }: { filtered: boolean }) => (
   <CardContent className="py-12 text-center">
     <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-accent text-primary">
       <Users className="size-5" aria-hidden="true" />
     </div>
-    <h2 className="mt-4 font-semibold">У компанії ще немає працівників</h2>
+    <h2 className="mt-4 font-semibold">
+      {filtered ? "За вибраними параметрами нічого не знайдено" : "У компанії ще немає працівників"}
+    </h2>
     <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-      Додайте першого працівника за допомогою одноразового запрошення.
+      {filtered
+        ? "Змініть пошуковий запит або скиньте один із фільтрів."
+        : "Додайте першого працівника за допомогою одноразового запрошення."}
     </p>
   </CardContent>
 );
