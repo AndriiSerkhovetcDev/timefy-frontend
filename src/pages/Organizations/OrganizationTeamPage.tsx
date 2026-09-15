@@ -15,7 +15,7 @@ import { useOrganizationStore } from "@/features/organization/model/organization
 import type { Employee, EmployeeList } from "@/features/organization/model/types";
 import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import { ApiError } from "@/shared/api/httpClient";
-import { UserPlus, Users } from "lucide-react";
+import { Check, UserPlus, Users } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
@@ -239,13 +239,17 @@ const ActiveBadge = ({ value }: { value: boolean }) => (
   </Badge>
 );
 const BookableCheckbox = ({ value }: { value: boolean }) => (
-  <input
-    type="checkbox"
-    checked={value}
-    disabled
+  <span
+    role="checkbox"
+    aria-checked={value}
+    aria-readonly="true"
     aria-label={value ? "Доступний для бронювання" : "Недоступний для бронювання"}
-    className="size-5 rounded border-input accent-primary disabled:opacity-100"
-  />
+    className={`inline-flex size-5 items-center justify-center rounded border ${
+      value ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background"
+    }`}
+  >
+    {value && <Check className="size-3.5 stroke-[3]" aria-hidden="true" />}
+  </span>
 );
 
 const EmployeeListSkeleton = () => (
