@@ -81,6 +81,22 @@ describe("httpClient session refresh", () => {
     expect(refreshCalls).toBe(1);
   });
 
+  it.each([
+    ["without an error code", {}],
+    ["with an expired-token error code", { errorCode: "ACCESS_TOKEN_EXPIRED" }],
+  ])("refreshes after a protected request returns 401 %s", async (_caseName, errorBody) => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(response(401, errorBody))
+      .mockResolvedValueOnce(response(200, { data: { token: "new-token", user } }))
+      .mockResolvedValueOnce(response(200, { data: { ok: true } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(httpClient.get("/protected")).resolves.toEqual({ data: { ok: true } });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(useAuthStore.getState().token).toBe("new-token");
+  });
+
   it("clears the session only when refresh credentials are invalid", async () => {
     vi.stubGlobal(
       "fetch",

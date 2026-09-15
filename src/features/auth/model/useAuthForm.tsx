@@ -59,7 +59,9 @@ export const useAuthForm = <T extends FieldValues, TResponse = AuthResponse>({
       } else {
         navigate(redirectTo);
       }
-    } catch {}
+    } catch {
+      // withNotify already presents request errors to the user.
+    }
   };
 
   return {
