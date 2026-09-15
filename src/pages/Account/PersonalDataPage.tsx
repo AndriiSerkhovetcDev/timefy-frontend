@@ -39,7 +39,12 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
-const CONTACT_CHECK_DELAY_MS = 500;
+const CONTACT_CHECK_DELAY_MS = 800;
+
+type ContactAvailability = {
+  value: string;
+  available: boolean;
+};
 
 export const PersonalDataPage = () => {
   const user = useAuthStore(selectUser);
@@ -50,6 +55,8 @@ export const PersonalDataPage = () => {
   const [emailRequiresAuthMethod, setEmailRequiresAuthMethod] = useState(false);
   const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const emailAvailabilityRef = useRef<ContactAvailability | null>(null);
+  const phoneAvailabilityRef = useRef<ContactAvailability | null>(null);
   const {
     control,
     register,
@@ -93,13 +100,23 @@ export const PersonalDataPage = () => {
     if (value === normalizeEmail(user.email)) return;
 
     clearErrors("email");
+    const cachedAvailability = emailAvailabilityRef.current;
+    if (cachedAvailability?.value === value) {
+      if (!cachedAvailability.available) {
+        setError("email", { type: "validate", message: "Цей email вже використовується" });
+      }
+      return;
+    }
+
     let active = true;
     const timer = window.setTimeout(async () => {
       if (!(await trigger("email")) || !active) return;
       try {
         const response = await checkIsExists("email", value);
         if (!active || normalizeEmail(getValues("email")) !== value) return;
-        if (!response.data.checkEmail) {
+        const available = response.data.checkEmail;
+        emailAvailabilityRef.current = { value, available };
+        if (!available) {
           setError("email", { type: "validate", message: "Цей email вже використовується" });
         }
       } catch (error) {
@@ -120,13 +137,23 @@ export const PersonalDataPage = () => {
     if (value === normalizePhone(user.phone ?? "")) return;
 
     clearErrors("phone");
+    const cachedAvailability = phoneAvailabilityRef.current;
+    if (cachedAvailability?.value === value) {
+      if (!cachedAvailability.available) {
+        setError("phone", { type: "validate", message: "Цей номер уже використовується" });
+      }
+      return;
+    }
+
     let active = true;
     const timer = window.setTimeout(async () => {
       if (!(await trigger("phone")) || !active) return;
       try {
         const response = await checkIsExists("phone", value);
         if (!active || normalizePhone(getValues("phone")) !== value) return;
-        if (!response.data.checkPhone) {
+        const available = response.data.checkPhone;
+        phoneAvailabilityRef.current = { value, available };
+        if (!available) {
           setError("phone", { type: "validate", message: "Цей номер уже використовується" });
         }
       } catch (error) {
@@ -149,17 +176,29 @@ export const PersonalDataPage = () => {
       clearErrors(["email", "phone"]);
       const emailChanged = didEmailChange(user.email, values.email);
       const phoneChanged = normalizePhone(user.phone ?? "") !== values.phone;
-      const [emailCheck, phoneCheck] = await Promise.all([
-        emailChanged ? checkIsExists("email", values.email) : null,
-        phoneChanged ? checkIsExists("phone", values.phone) : null,
+      const normalizedEmail = normalizeEmail(values.email);
+      const normalizedPhone = normalizePhone(values.phone);
+      const cachedEmailAvailability = emailAvailabilityRef.current;
+      const cachedPhoneAvailability = phoneAvailabilityRef.current;
+      const [emailAvailable, phoneAvailable] = await Promise.all([
+        emailChanged
+          ? cachedEmailAvailability?.value === normalizedEmail
+            ? cachedEmailAvailability.available
+            : checkIsExists("email", normalizedEmail).then((response) => response.data.checkEmail)
+          : true,
+        phoneChanged
+          ? cachedPhoneAvailability?.value === normalizedPhone
+            ? cachedPhoneAvailability.available
+            : checkIsExists("phone", normalizedPhone).then((response) => response.data.checkPhone)
+          : true,
       ]);
 
       let hasConflict = false;
-      if (emailCheck && !emailCheck.data.checkEmail) {
+      if (!emailAvailable) {
         setError("email", { type: "validate", message: "Цей email вже використовується" });
         hasConflict = true;
       }
-      if (phoneCheck && !phoneCheck.data.checkPhone) {
+      if (!phoneAvailable) {
         setError("phone", { type: "validate", message: "Цей номер уже використовується" });
         hasConflict = true;
       }
