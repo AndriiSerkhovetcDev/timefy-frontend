@@ -92,7 +92,12 @@ export const OrganizationTeamPage = () => {
       } catch (requestError) {
         if (signal.aborted) return;
         if (requestError instanceof ApiError) {
-          if (requestError.status === 404 && requestError.errorCode === "ORGANISATION_NOT_FOUND") {
+          if (requestError.status === 400 && requestError.message === "Невірні дані") {
+            setResult(emptyResult);
+          } else if (
+            requestError.status === 404 &&
+            requestError.errorCode === "ORGANISATION_NOT_FOUND"
+          ) {
             setError(
               "Компанію не знайдено. Можливо, її було видалено або у вас більше немає доступу.",
             );
