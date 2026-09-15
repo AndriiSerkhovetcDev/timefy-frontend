@@ -32,7 +32,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 const PAGE_SIZE = 25;
-type BooleanFilter = "all" | "true" | "false";
+type BooleanFilter = "true" | "false";
 const emptyResult: EmployeeList = {
   items: [],
   pagination: { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 },
@@ -46,8 +46,8 @@ export const OrganizationTeamPage = () => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [position, setPosition] = useState("");
-  const [active, setActive] = useState<BooleanFilter>("all");
-  const [bookable, setBookable] = useState<BooleanFilter>("all");
+  const [active, setActive] = useState<BooleanFilter>("true");
+  const [bookable, setBookable] = useState<BooleanFilter>("true");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [page, setPage] = useState(1);
   const [result, setResult] = useState<EmployeeList>(emptyResult);
@@ -72,8 +72,8 @@ export const OrganizationTeamPage = () => {
         email: "",
         phone: "",
         position: position.trim(),
-        ...(bookable !== "all" && { isBookable: bookable === "true" }),
-        ...(active !== "all" && { memberIsActive: active === "true" }),
+        isBookable: bookable === "true",
+        memberIsActive: active === "true",
       };
 
       try {
@@ -123,7 +123,7 @@ export const OrganizationTeamPage = () => {
   if (!isOwner) return <Navigate to={`/organizations/${organizationId}`} replace />;
 
   const hasFilters = Boolean(
-    debouncedSearch || position.trim() || active !== "all" || bookable !== "all",
+    debouncedSearch || position.trim() || active !== "true" || bookable !== "true",
   );
   const pages = Math.max(1, result.pagination.pages);
   const changeFilter = (setter: (value: BooleanFilter) => void, value: BooleanFilter) => {
@@ -198,7 +198,6 @@ export const OrganizationTeamPage = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Усі статуси</SelectItem>
                 <SelectItem value="true">Активні</SelectItem>
                 <SelectItem value="false">Неактивні</SelectItem>
               </SelectContent>
@@ -211,7 +210,6 @@ export const OrganizationTeamPage = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Будь-яке бронювання</SelectItem>
                 <SelectItem value="true">Доступні</SelectItem>
                 <SelectItem value="false">Недоступні</SelectItem>
               </SelectContent>

@@ -69,8 +69,8 @@ export type EmployeeListFilters = {
   email: string;
   phone: string;
   position: string;
-  isBookable?: boolean;
-  memberIsActive?: boolean;
+  isBookable: boolean;
+  memberIsActive: boolean;
 };
 
 export type EmployeeListRequest = {
