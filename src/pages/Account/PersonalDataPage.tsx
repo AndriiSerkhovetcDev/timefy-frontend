@@ -36,7 +36,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ImageUp, KeyRound, Loader2, MailCheck, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
 const CONTACT_CHECK_DELAY_MS = 500;
@@ -44,8 +44,6 @@ const CONTACT_CHECK_DELAY_MS = 500;
 export const PersonalDataPage = () => {
   const user = useAuthStore(selectUser);
   const setUser = useAuthStore((state) => state.setUser);
-  const logout = useAuthStore((state) => state.logout);
-  const navigate = useNavigate();
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDeletingAvatar, setIsDeletingAvatar] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -170,16 +168,17 @@ export const PersonalDataPage = () => {
       const response = await updateProfile(values);
       const updatedUser = response.data.user;
 
-      if (didEmailChange(user.email, updatedUser.email)) {
-        logout();
-        navigate("/login", { replace: true, state: { reason: "EMAIL_CHANGED" } });
-        notify.success("Email змінено. Увійдіть повторно та підтвердьте нову адресу.");
-        return;
-      }
-
       setEmailRequiresAuthMethod(false);
-      setUser(updatedUser);
-      notify.success(response.message || "Дані профілю оновлено");
+      setIsVerificationCodeSent(false);
+      setUser({
+        ...updatedUser,
+        emailVerified: emailChanged ? false : updatedUser.emailVerified,
+      });
+      notify.success(
+        emailChanged
+          ? "Email змінено. Підтвердьте нову адресу — сесія залишається активною."
+          : response.message || "Дані профілю оновлено",
+      );
     } catch (error) {
       if (error instanceof ApiError && error.errorCode === "EMAIL_CHANGE_REQUIRES_AUTH_METHOD") {
         setEmailRequiresAuthMethod(true);

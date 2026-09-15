@@ -13,7 +13,7 @@ type AccountSidebarProps = {
 export const AccountSidebar = ({ isCollapsed, onCollapsedChange }: AccountSidebarProps) => (
   <aside
     className={cn(
-      "relative z-50 hidden shrink-0 border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
+      "sticky top-0 z-50 hidden h-dvh shrink-0 self-start overflow-visible border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
       isCollapsed ? "w-[90px]" : "w-64",
     )}
   >
@@ -24,7 +24,7 @@ export const AccountSidebar = ({ isCollapsed, onCollapsedChange }: AccountSideba
       aria-label={isCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
       title={isCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
       onClick={() => onCollapsedChange(!isCollapsed)}
-      className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm"
+      className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm dark:bg-card dark:hover:bg-accent"
     >
       {isCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
     </Button>

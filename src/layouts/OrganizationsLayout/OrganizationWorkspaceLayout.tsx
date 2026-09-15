@@ -107,7 +107,7 @@ export const OrganizationWorkspaceLayout = () => {
     <div className="flex min-h-dvh bg-background">
       <aside
         className={cn(
-          "relative z-50 hidden shrink-0 border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
+          "sticky top-0 z-50 hidden h-dvh shrink-0 self-start overflow-visible border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
           isSidebarCollapsed ? "w-[90px]" : "w-64",
         )}
       >
@@ -118,7 +118,7 @@ export const OrganizationWorkspaceLayout = () => {
           aria-label={isSidebarCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
           title={isSidebarCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
           onClick={() => setIsSidebarCollapsed((value) => !value)}
-          className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm"
+          className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm dark:bg-card dark:hover:bg-accent"
         >
           {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
         </Button>

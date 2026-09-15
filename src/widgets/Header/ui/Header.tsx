@@ -1,6 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
 import { desktopNavBtns, navItems } from "../model/constans";
-import MobileNav from "./MobileNav";
 import { NavItem } from "./NavItem";
 import { selectIsAuthenticated, useAuthStore } from "@/features/auth/model/authStore";
 import { UserMenu } from "@/features/auth/ui";
@@ -51,7 +50,6 @@ export const Header = () => {
             )}
 
             {isAuthenticated && <UserMenu />}
-            <MobileNav />
           </div>
         </div>
       </div>
