@@ -63,7 +63,7 @@ export const RegisterForm = () => {
     watch,
   } = useAuthForm({
     schema: registerSchema,
-    apiCall: ({ confirm_password, ...rest }) => registration(rest),
+    apiCall: ({ confirm_password: _confirmPassword, ...rest }) => registration(rest),
     redirectTo: "/",
     checkEmailVerified: true,
     unverifiedRedirectTo: "/account/personal",
@@ -85,7 +85,9 @@ export const RegisterForm = () => {
       if (!data[fieldKeyMap[field]]) {
         setError(field, { message: `Це значення вже зайняте` });
       }
-    } catch {}
+    } catch {
+      // The shared HTTP interceptor displays availability-check errors.
+    }
   };
 
   return (
