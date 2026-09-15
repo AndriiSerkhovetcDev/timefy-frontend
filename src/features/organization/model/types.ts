@@ -77,7 +77,7 @@ export type EmployeeListRequest = {
   organisationId: string;
   page?: number;
   limit?: number;
-  search?: string;
+  search?: string | null;
   filters?: EmployeeListFilters;
   sort?: {
     field: "createdAt";
