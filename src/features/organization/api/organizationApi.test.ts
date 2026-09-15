@@ -114,7 +114,7 @@ describe("organizationApi", () => {
       organisationId: "9007199254740993",
       page: 1,
       limit: 25,
-      search: "",
+      search: null,
       sort: { field: "createdAt" as const, order: "desc" as const },
     };
     const controller = new AbortController();

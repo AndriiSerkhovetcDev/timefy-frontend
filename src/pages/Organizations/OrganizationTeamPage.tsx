@@ -60,7 +60,7 @@ export const OrganizationTeamPage = () => {
             organisationId: organizationId,
             page: 1,
             limit: PAGE_SIZE,
-            search: "",
+            search: null,
             sort: { field: "createdAt", order: "desc" },
           },
           signal,
