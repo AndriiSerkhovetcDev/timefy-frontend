@@ -24,7 +24,7 @@ export const AccountSidebar = ({ isCollapsed, onCollapsedChange }: AccountSideba
       aria-label={isCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
       title={isCollapsed ? "Розгорнути бокову панель" : "Згорнути бокову панель"}
       onClick={() => onCollapsedChange(!isCollapsed)}
-      className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm"
+      className="absolute right-0 top-[22px] z-10 size-9 translate-x-1/2 rounded-full bg-card shadow-sm dark:bg-card dark:hover:bg-accent"
     >
       {isCollapsed ? <PanelLeftOpen aria-hidden="true" /> : <PanelLeftClose aria-hidden="true" />}
     </Button>
