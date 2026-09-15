@@ -13,7 +13,7 @@ type AccountSidebarProps = {
 export const AccountSidebar = ({ isCollapsed, onCollapsedChange }: AccountSidebarProps) => (
   <aside
     className={cn(
-      "sticky top-0 z-50 hidden h-dvh shrink-0 self-start overflow-hidden border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
+      "sticky top-0 z-50 hidden h-dvh shrink-0 self-start overflow-visible border-r border-border bg-card p-5 transition-[width] duration-300 ease-in-out lg:flex lg:flex-col",
       isCollapsed ? "w-[90px]" : "w-64",
     )}
   >
