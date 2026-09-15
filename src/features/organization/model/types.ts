@@ -54,10 +54,40 @@ export type OrganizationHistory = {
 export type Employee = {
   organisationId: string;
   memberId: string;
+  login: string;
+  email: string;
+  phone: string | null;
   position: string | null;
   isBookable: boolean;
+  memberIsActive: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+export type EmployeeListFilters = {
+  login: string;
+  email: string;
+  phone: string;
+  position: string;
+  isBookable?: boolean;
+  memberIsActive?: boolean;
+};
+
+export type EmployeeListRequest = {
+  organisationId: string;
+  page: number;
+  limit: number;
+  search: string;
+  filters: EmployeeListFilters;
+  sort: {
+    field: "createdAt";
+    order: "asc" | "desc";
+  };
+};
+
+export type EmployeeList = {
+  items: Employee[];
+  pagination: { page: number; limit: number; total: number; pages: number };
 };
 
 export type InvitationPreview = {
