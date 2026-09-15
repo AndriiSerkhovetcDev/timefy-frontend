@@ -28,6 +28,7 @@ import { checkIsExists } from "@/shared/api/authApi";
 import { ApiError, versionApiAssetUrl } from "@/shared/api/httpClient";
 import { changeAvatar, deleteAvatar, updateProfile, uploadAvatar } from "@/shared/api/userApi";
 import { notify } from "@/shared/lib/notify";
+import { normalizeEmail } from "@/shared/model/email";
 import { normalizePhone } from "@/shared/model/phone";
 import { cn } from "@/lib/utils";
 import { PhoneField } from "@/shared/ui";
@@ -55,6 +56,8 @@ export const PersonalDataPage = () => {
     register,
     handleSubmit,
     reset,
+    getValues,
+    trigger,
     setError,
     clearErrors,
     formState: { errors, isDirty, isSubmitting },
@@ -81,6 +84,41 @@ export const PersonalDataPage = () => {
 
   if (!user) return <AccountPageSkeleton />;
   const isAvatarPending = isUploadingAvatar || isDeletingAvatar;
+  const emailRegistration = register("email");
+
+  const handleContactAvailabilityCheck = async (field: "email" | "phone") => {
+    const rawValue = getValues(field);
+    const value = field === "email" ? normalizeEmail(rawValue) : normalizePhone(rawValue);
+    const currentValue =
+      field === "email" ? normalizeEmail(user.email) : normalizePhone(user.phone ?? "");
+
+    if (value === currentValue) {
+      clearErrors(field);
+      return;
+    }
+    if (!(await trigger(field))) return;
+
+    try {
+      const response = await checkIsExists(field, value);
+      const latestRawValue = getValues(field);
+      const latestValue =
+        field === "email" ? normalizeEmail(latestRawValue) : normalizePhone(latestRawValue);
+      if (latestValue !== value) return;
+
+      const isAvailable = field === "email" ? response.data.checkEmail : response.data.checkPhone;
+      if (isAvailable) {
+        clearErrors(field);
+      } else {
+        setError(field, {
+          type: "validate",
+          message:
+            field === "email" ? "Цей email вже використовується" : "Цей номер уже використовується",
+        });
+      }
+    } catch (error) {
+      notify.error(error instanceof Error ? error.message : "Не вдалося перевірити контактні дані");
+    }
+  };
 
   const handleProfileSubmit = async (values: ProfileValues) => {
     try {
@@ -305,6 +343,7 @@ export const PersonalDataPage = () => {
               label="Номер телефону"
               required
               error={errors.phone?.message}
+              onBlur={() => void handleContactAvailabilityCheck("phone")}
             />
             <div className="min-w-0 space-y-2">
               <div className="flex min-h-6 items-center justify-between gap-2">
@@ -319,7 +358,11 @@ export const PersonalDataPage = () => {
                 className={user.authData?.isGoogle ? "cursor-not-allowed bg-muted/50" : undefined}
                 aria-describedby={user.authData?.isGoogle ? "google-email-help" : undefined}
                 aria-invalid={Boolean(errors.email)}
-                {...register("email")}
+                {...emailRegistration}
+                onBlur={(event) => {
+                  emailRegistration.onBlur(event);
+                  void handleContactAvailabilityCheck("email");
+                }}
               />
               {user.authData?.isGoogle && (
                 <p id="google-email-help" className="text-xs text-muted-foreground">
