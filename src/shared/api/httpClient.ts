@@ -110,12 +110,7 @@ const canRefreshRequest = (
   token: string | null,
   retryUnauthorized: boolean,
   hasRetriedAfterRefresh: boolean,
-) =>
-  retryUnauthorized &&
-  !hasRetriedAfterRefresh &&
-  Boolean(token) &&
-  error.status === 401 &&
-  error.errorCode === "UNAUTHORIZED";
+) => retryUnauthorized && !hasRetriedAfterRefresh && Boolean(token) && error.status === 401;
 
 const request = async <T>(
   endpoint: string,
