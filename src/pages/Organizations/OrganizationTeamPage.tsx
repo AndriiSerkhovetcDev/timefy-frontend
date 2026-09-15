@@ -168,7 +168,7 @@ const EmployeeTable = ({ employees }: { employees: Employee[] }) => (
             <td className="break-words px-5 py-4 text-muted-foreground">{employee.phone || "—"}</td>
             <td className="break-words px-5 py-4">{employee.position || "Не вказано"}</td>
             <td className="px-5 py-4">
-              <BookableBadge value={employee.isBookable} />
+              <BookableCheckbox value={employee.isBookable} />
             </td>
             <td className="px-5 py-4">
               <ActiveBadge value={employee.memberIsActive} />
@@ -203,7 +203,7 @@ const EmployeeCards = ({ employees }: { employees: Employee[] }) => (
           <div className="min-w-0 sm:col-span-2">
             <dt className="mb-1 text-xs text-muted-foreground">Онлайн-запис</dt>
             <dd>
-              <BookableBadge value={employee.isBookable} />
+              <BookableCheckbox value={employee.isBookable} />
             </dd>
           </div>
         </dl>
@@ -238,13 +238,14 @@ const ActiveBadge = ({ value }: { value: boolean }) => (
     {value ? "Активний" : "Неактивний"}
   </Badge>
 );
-const BookableBadge = ({ value }: { value: boolean }) => (
-  <Badge
-    variant={value ? "secondary" : "outline"}
-    className="max-w-full whitespace-normal text-center"
-  >
-    {value ? "Доступний для бронювання" : "Недоступний"}
-  </Badge>
+const BookableCheckbox = ({ value }: { value: boolean }) => (
+  <input
+    type="checkbox"
+    checked={value}
+    disabled
+    aria-label={value ? "Доступний для бронювання" : "Недоступний для бронювання"}
+    className="size-5 rounded border-input accent-primary disabled:opacity-100"
+  />
 );
 
 const EmployeeListSkeleton = () => (
