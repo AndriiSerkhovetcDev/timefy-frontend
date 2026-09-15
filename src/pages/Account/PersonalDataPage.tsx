@@ -39,6 +39,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
 const MAX_AVATAR_SIZE_BYTES = 5 * 1024 * 1024;
+const CONTACT_CHECK_DELAY_MS = 500;
 
 export const PersonalDataPage = () => {
   const user = useAuthStore(selectUser);
@@ -57,6 +58,7 @@ export const PersonalDataPage = () => {
     handleSubmit,
     reset,
     getValues,
+    watch,
     trigger,
     setError,
     clearErrors,
@@ -82,43 +84,65 @@ export const PersonalDataPage = () => {
     });
   }, [user, reset]);
 
+  const email = watch("email");
+  const phone = watch("phone");
+
+  useEffect(() => {
+    if (!user) return;
+    const value = normalizeEmail(email);
+    if (value === normalizeEmail(user.email)) return;
+
+    clearErrors("email");
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      if (!(await trigger("email")) || !active) return;
+      try {
+        const response = await checkIsExists("email", value);
+        if (!active || normalizeEmail(getValues("email")) !== value) return;
+        if (!response.data.checkEmail) {
+          setError("email", { type: "validate", message: "Цей email вже використовується" });
+        }
+      } catch (error) {
+        if (active)
+          notify.error(error instanceof Error ? error.message : "Не вдалося перевірити email");
+      }
+    }, CONTACT_CHECK_DELAY_MS);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [clearErrors, email, getValues, setError, trigger, user]);
+
+  useEffect(() => {
+    if (!user) return;
+    const value = normalizePhone(phone);
+    if (value === normalizePhone(user.phone ?? "")) return;
+
+    clearErrors("phone");
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      if (!(await trigger("phone")) || !active) return;
+      try {
+        const response = await checkIsExists("phone", value);
+        if (!active || normalizePhone(getValues("phone")) !== value) return;
+        if (!response.data.checkPhone) {
+          setError("phone", { type: "validate", message: "Цей номер уже використовується" });
+        }
+      } catch (error) {
+        if (active)
+          notify.error(error instanceof Error ? error.message : "Не вдалося перевірити телефон");
+      }
+    }, CONTACT_CHECK_DELAY_MS);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [clearErrors, getValues, phone, setError, trigger, user]);
+
   if (!user) return <AccountPageSkeleton />;
   const isAvatarPending = isUploadingAvatar || isDeletingAvatar;
-  const emailRegistration = register("email");
-
-  const handleContactAvailabilityCheck = async (field: "email" | "phone") => {
-    const rawValue = getValues(field);
-    const value = field === "email" ? normalizeEmail(rawValue) : normalizePhone(rawValue);
-    const currentValue =
-      field === "email" ? normalizeEmail(user.email) : normalizePhone(user.phone ?? "");
-
-    if (value === currentValue) {
-      clearErrors(field);
-      return;
-    }
-    if (!(await trigger(field))) return;
-
-    try {
-      const response = await checkIsExists(field, value);
-      const latestRawValue = getValues(field);
-      const latestValue =
-        field === "email" ? normalizeEmail(latestRawValue) : normalizePhone(latestRawValue);
-      if (latestValue !== value) return;
-
-      const isAvailable = field === "email" ? response.data.checkEmail : response.data.checkPhone;
-      if (isAvailable) {
-        clearErrors(field);
-      } else {
-        setError(field, {
-          type: "validate",
-          message:
-            field === "email" ? "Цей email вже використовується" : "Цей номер уже використовується",
-        });
-      }
-    } catch (error) {
-      notify.error(error instanceof Error ? error.message : "Не вдалося перевірити контактні дані");
-    }
-  };
 
   const handleProfileSubmit = async (values: ProfileValues) => {
     try {
@@ -343,7 +367,6 @@ export const PersonalDataPage = () => {
               label="Номер телефону"
               required
               error={errors.phone?.message}
-              onBlur={() => void handleContactAvailabilityCheck("phone")}
             />
             <div className="min-w-0 space-y-2">
               <div className="flex min-h-6 items-center justify-between gap-2">
@@ -358,11 +381,7 @@ export const PersonalDataPage = () => {
                 className={user.authData?.isGoogle ? "cursor-not-allowed bg-muted/50" : undefined}
                 aria-describedby={user.authData?.isGoogle ? "google-email-help" : undefined}
                 aria-invalid={Boolean(errors.email)}
-                {...emailRegistration}
-                onBlur={(event) => {
-                  emailRegistration.onBlur(event);
-                  void handleContactAvailabilityCheck("email");
-                }}
+                {...register("email")}
               />
               {user.authData?.isGoogle && (
                 <p id="google-email-help" className="text-xs text-muted-foreground">
