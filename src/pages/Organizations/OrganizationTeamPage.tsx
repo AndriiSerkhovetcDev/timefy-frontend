@@ -35,7 +35,7 @@ const PAGE_SIZE = 25;
 type BooleanFilter = "true" | "false";
 const emptyResult: EmployeeList = {
   items: [],
-  pagination: { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 },
+  pagination: { page: 0, limit: PAGE_SIZE, total: 0, pages: 0 },
 };
 
 export const OrganizationTeamPage = () => {
@@ -49,7 +49,7 @@ export const OrganizationTeamPage = () => {
   const [active, setActive] = useState<BooleanFilter>("true");
   const [bookable, setBookable] = useState<BooleanFilter>("true");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [result, setResult] = useState<EmployeeList>(emptyResult);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -57,7 +57,7 @@ export const OrganizationTeamPage = () => {
 
   useEffect(() => {
     const timer = window.setTimeout(() => {
-      setPage(1);
+      setPage(0);
       setDebouncedSearch(search.trim());
     }, 400);
     return () => window.clearTimeout(timer);
@@ -138,7 +138,7 @@ export const OrganizationTeamPage = () => {
   );
   const pages = Math.max(1, result.pagination.pages);
   const changeFilter = (setter: (value: BooleanFilter) => void, value: BooleanFilter) => {
-    setPage(1);
+    setPage(0);
     setter(value);
   };
 
@@ -194,7 +194,7 @@ export const OrganizationTeamPage = () => {
               <Input
                 value={position}
                 onChange={(event) => {
-                  setPage(1);
+                  setPage(0);
                   setPosition(event.target.value);
                 }}
                 className="min-h-10"
@@ -228,7 +228,7 @@ export const OrganizationTeamPage = () => {
             <Select
               value={sortOrder}
               onValueChange={(value) => {
-                setPage(1);
+                setPage(0);
                 setSortOrder(value as "asc" | "desc");
               }}
             >
@@ -398,13 +398,13 @@ const Pagination = ({
     aria-label="Пагінація працівників"
   >
     <p className="text-sm text-muted-foreground">
-      Сторінка {page} з {pages} · {total} працівників
+      Сторінка {page + 1} з {pages} · {total} працівників
     </p>
     <div className="flex gap-2">
       <Button
         variant="outline"
         className="min-h-10"
-        disabled={page <= 1}
+        disabled={page <= 0}
         onClick={() => onChange(page - 1)}
       >
         <ChevronLeft aria-hidden="true" />
@@ -413,7 +413,7 @@ const Pagination = ({
       <Button
         variant="outline"
         className="min-h-10"
-        disabled={page >= pages}
+        disabled={page >= pages - 1}
         onClick={() => onChange(page + 1)}
       >
         Наступна
