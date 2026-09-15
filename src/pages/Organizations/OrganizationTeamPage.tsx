@@ -92,7 +92,13 @@ export const OrganizationTeamPage = () => {
       } catch (requestError) {
         if (signal.aborted) return;
         if (requestError instanceof ApiError) {
-          if (requestError.status === 400 && requestError.message === "Невірні дані") {
+          if (
+            requestError.status === 400 &&
+            !debouncedSearch &&
+            !position.trim() &&
+            active === "true" &&
+            bookable === "true"
+          ) {
             setResult(emptyResult);
           } else if (
             requestError.status === 404 &&
