@@ -168,59 +168,70 @@ export const OrganizationTeamPage = () => {
                   : `Усього: ${result.pagination.total}`}
             </CardDescription>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(14rem,1fr)_minmax(10rem,0.6fr)_auto_auto_auto]">
-            <label className="relative min-w-0">
-              <span className="sr-only">Пошук працівників</span>
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                className="min-h-10 pl-9"
-                placeholder="Пошук за ім’ям або контактами"
-              />
-            </label>
-            <label className="min-w-0">
-              <span className="sr-only">Фільтр за посадою</span>
-              <Input
-                value={position}
-                onChange={(event) => setPosition(event.target.value)}
-                className="min-h-10"
-                placeholder="Посада"
-              />
-            </label>
-            <Select value={active} onValueChange={(value) => setActive(value as BooleanFilter)}>
-              <SelectTrigger className="min-h-10 w-full" aria-label="Статус працівника">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Усі статуси</SelectItem>
-                <SelectItem value="true">Активні</SelectItem>
-                <SelectItem value="false">Неактивні</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={bookable} onValueChange={(value) => setBookable(value as BooleanFilter)}>
-              <SelectTrigger className="min-h-10 w-full" aria-label="Доступність для бронювання">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Будь-яке бронювання</SelectItem>
-                <SelectItem value="true">Доступні</SelectItem>
-                <SelectItem value="false">Недоступні</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={sortOrder}
-              onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
-            >
-              <SelectTrigger className="min-h-10 w-full" aria-label="Сортування за датою додавання">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="desc">Спочатку нові</SelectItem>
-                <SelectItem value="asc">Спочатку старі</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {result.items.length > 0 && (
+            <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(12rem,1.4fr)_minmax(8rem,1fr)_minmax(9rem,0.8fr)_minmax(12rem,1fr)_minmax(9rem,0.8fr)]">
+              <label className="relative min-w-0">
+                <span className="sr-only">Пошук працівників</span>
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  className="min-h-10 min-w-0 pl-9"
+                  placeholder="Пошук за ім’ям або контактами"
+                />
+              </label>
+              <label className="min-w-0">
+                <span className="sr-only">Фільтр за посадою</span>
+                <Input
+                  value={position}
+                  onChange={(event) => setPosition(event.target.value)}
+                  className="min-h-10 min-w-0"
+                  placeholder="Посада"
+                />
+              </label>
+              <Select value={active} onValueChange={(value) => setActive(value as BooleanFilter)}>
+                <SelectTrigger className="min-h-10 min-w-0 w-full" aria-label="Статус працівника">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Усі статуси</SelectItem>
+                  <SelectItem value="true">Активні</SelectItem>
+                  <SelectItem value="false">Неактивні</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={bookable}
+                onValueChange={(value) => setBookable(value as BooleanFilter)}
+              >
+                <SelectTrigger
+                  className="min-h-10 min-w-0 w-full"
+                  aria-label="Доступність для бронювання"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Будь-яке бронювання</SelectItem>
+                  <SelectItem value="true">Доступні</SelectItem>
+                  <SelectItem value="false">Недоступні</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select
+                value={sortOrder}
+                onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
+              >
+                <SelectTrigger
+                  className="min-h-10 min-w-0 w-full"
+                  aria-label="Сортування за датою додавання"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="desc">Спочатку нові</SelectItem>
+                  <SelectItem value="asc">Спочатку старі</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </CardHeader>
 
         {isLoading ? (
