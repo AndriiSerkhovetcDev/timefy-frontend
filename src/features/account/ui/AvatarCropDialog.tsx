@@ -269,7 +269,13 @@ export const AvatarCropDialog = ({
             className="pointer-events-none absolute inset-0 z-0 size-full"
             aria-hidden="true"
           />
-          <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,transparent_49.25%,rgba(0,0,0,0.5)_50%)]" />
+          <div
+            className="pointer-events-none absolute inset-0 z-10"
+            style={{
+              background:
+                "radial-gradient(circle closest-side at center, transparent calc(100% - 2px), rgba(0, 0, 0, 0.5) 100%)",
+            }}
+          />
           <div className="pointer-events-none absolute inset-0 z-20 rounded-full border-2 border-white/90" />
           {!isImageReady && (
             <div className="absolute inset-0 z-30 flex items-center justify-center text-sm text-muted-foreground">
