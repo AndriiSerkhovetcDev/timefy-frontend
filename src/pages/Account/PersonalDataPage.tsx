@@ -218,7 +218,7 @@ export const PersonalDataPage = () => {
       });
       notify.success(
         emailChanged
-          ? "Email змінено. Підтвердьте нову адресу."
+          ? "Електронну адресу змінено — підтвердьте її"
           : response.message || "Дані профілю оновлено",
       );
     } catch (error) {
