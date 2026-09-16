@@ -228,7 +228,7 @@ export const AvatarCropDialog = ({
                 notify.error("Не вдалося відкрити зображення. Оберіть інший файл.");
                 onCancel();
               }}
-              className="pointer-events-none absolute left-1/2 top-1/2 max-w-none"
+              className="pointer-events-none absolute left-1/2 top-1/2 z-0 max-w-none"
               style={{
                 width: imageSize.width * displayScale,
                 height: imageSize.height * displayScale,
@@ -236,9 +236,10 @@ export const AvatarCropDialog = ({
               }}
             />
           )}
-          <div className="pointer-events-none absolute inset-0 rounded-full border-2 border-white/90 shadow-[0_0_0_999px_rgba(0,0,0,0.48)]" />
+          <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,transparent_49.25%,rgba(0,0,0,0.5)_50%)]" />
+          <div className="pointer-events-none absolute inset-0 z-20 rounded-full border-2 border-white/90" />
           {!isImageReady && (
-            <div className="absolute inset-0 flex items-center justify-center text-sm text-muted-foreground">
+            <div className="absolute inset-0 z-30 flex items-center justify-center text-sm text-muted-foreground">
               Завантажуємо фото…
             </div>
           )}
