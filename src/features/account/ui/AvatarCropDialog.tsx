@@ -12,6 +12,7 @@ import { avatarCropConfig, clampCropOffset } from "@/features/account/model/avat
 import { notify } from "@/shared/lib/notify";
 import { Loader2, RotateCcw } from "lucide-react";
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -99,6 +100,7 @@ export const AvatarCropDialog = ({
   const viewportRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
   const dragRef = useRef<{ pointerId: number; start: Point; offset: Point } | null>(null);
   const isBusy = isProcessing || isSaving;
 
@@ -117,16 +119,18 @@ export const AvatarCropDialog = ({
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  useEffect(() => {
-    const viewport = viewportRef.current;
+  const setViewportNode = useCallback((viewport: HTMLDivElement | null) => {
+    resizeObserverRef.current?.disconnect();
+    resizeObserverRef.current = null;
+    viewportRef.current = viewport;
     if (!viewport) return;
 
     const updateSize = () => setViewportSize(viewport.clientWidth);
     updateSize();
     const observer = new ResizeObserver(updateSize);
     observer.observe(viewport);
-    return () => observer.disconnect();
-  }, [file]);
+    resizeObserverRef.current = observer;
+  }, []);
 
   useEffect(() => {
     setOffset((current) => clampCropOffset(current, imageSize, viewportSize, zoom));
@@ -232,7 +236,7 @@ export const AvatarCropDialog = ({
         </DialogHeader>
 
         <div
-          ref={viewportRef}
+          ref={setViewportNode}
           className="relative mx-auto aspect-square w-full max-w-[360px] touch-none cursor-move overflow-hidden rounded-xl bg-muted select-none active:cursor-grabbing"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
