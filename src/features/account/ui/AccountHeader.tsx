@@ -10,6 +10,7 @@ import {
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { UserMenu } from "@/features/auth/ui";
 import { Logo, ThemeToggle } from "@/shared/ui";
+import { useSwipeLeft } from "@/shared/hooks/useSwipeLeft";
 import { Menu } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
@@ -20,6 +21,7 @@ export const AccountHeader = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const user = useAuthStore(selectUser);
   const section = getAccountSection(useLocation().pathname);
+  const swipeToCloseMenu = useSwipeLeft(() => setIsMenuOpen(false));
 
   if (!user) {
     return null;
@@ -40,7 +42,7 @@ export const AccountHeader = () => {
               <Menu aria-hidden="true" />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[min(20rem,85vw)] p-5">
+          <SheetContent side="left" className="w-[min(20rem,85vw)] p-5" {...swipeToCloseMenu}>
             <SheetHeader className="p-0 text-left">
               <SheetTitle>
                 <Link
