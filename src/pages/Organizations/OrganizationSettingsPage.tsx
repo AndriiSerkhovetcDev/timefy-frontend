@@ -342,8 +342,8 @@ export const OrganizationSettingsPage = () => {
                       </div>
                     </>
                   )}
-                  <div className="flex items-end">
-                    <Button disabled={busy}>
+                  <div className="flex items-end justify-end sm:col-span-2">
+                    <Button className="w-full sm:w-auto" disabled={busy}>
                       {busy && <LoaderCircle className="animate-spin" />}Зберегти
                     </Button>
                   </div>
