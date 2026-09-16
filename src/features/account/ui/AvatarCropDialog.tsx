@@ -98,6 +98,7 @@ export const AvatarCropDialog = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const viewportRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const dragRef = useRef<{ pointerId: number; start: Point; offset: Point } | null>(null);
   const isBusy = isProcessing || isSaving;
 
@@ -184,6 +185,34 @@ export const AvatarCropDialog = ({
     ? Math.max(viewportSize / imageSize.width, viewportSize / imageSize.height) * zoom
     : 1;
 
+  useEffect(() => {
+    const canvas = previewCanvasRef.current;
+    const image = imageRef.current;
+    if (!canvas || !image || !isImageReady || !viewportSize) return;
+
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(viewportSize * pixelRatio);
+    canvas.height = Math.round(viewportSize * pixelRatio);
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+    context.clearRect(0, 0, viewportSize, viewportSize);
+    context.imageSmoothingEnabled = true;
+    context.imageSmoothingQuality = "high";
+
+    const width = imageSize.width * displayScale;
+    const height = imageSize.height * displayScale;
+    context.drawImage(
+      image,
+      (viewportSize - width) / 2 + offset.x,
+      (viewportSize - height) / 2 + offset.y,
+      width,
+      height,
+    );
+  }, [displayScale, imageSize, isImageReady, offset, viewportSize]);
+
   return (
     <Dialog open={Boolean(file)} onOpenChange={(open) => !open && !isBusy && onCancel()}>
       <DialogContent
@@ -228,14 +257,14 @@ export const AvatarCropDialog = ({
                 notify.error("Не вдалося відкрити зображення. Оберіть інший файл.");
                 onCancel();
               }}
-              className="pointer-events-none absolute left-1/2 top-1/2 z-0 max-w-none"
-              style={{
-                width: imageSize.width * displayScale,
-                height: imageSize.height * displayScale,
-                transform: `translate(-50%, -50%) translate(${offset.x}px, ${offset.y}px)`,
-              }}
+              className="hidden"
             />
           )}
+          <canvas
+            ref={previewCanvasRef}
+            className="pointer-events-none absolute inset-0 z-0 size-full"
+            aria-hidden="true"
+          />
           <div className="pointer-events-none absolute inset-0 z-10 bg-[radial-gradient(circle_at_center,transparent_0%,transparent_49.25%,rgba(0,0,0,0.5)_50%)]" />
           <div className="pointer-events-none absolute inset-0 z-20 rounded-full border-2 border-white/90" />
           {!isImageReady && (
