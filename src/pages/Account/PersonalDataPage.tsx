@@ -215,7 +215,7 @@ export const PersonalDataPage = () => {
       });
       notify.success(
         emailChanged
-          ? "Email змінено. Підтвердьте нову адресу — сесія залишається активною."
+          ? "Email змінено. Підтвердьте нову адресу."
           : response.message || "Дані профілю оновлено",
       );
     } catch (error) {

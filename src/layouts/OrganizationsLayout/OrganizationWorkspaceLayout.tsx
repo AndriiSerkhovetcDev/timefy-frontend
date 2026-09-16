@@ -13,6 +13,7 @@ import { useOrganizationStore } from "@/features/organization/model/organization
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import { cn } from "@/lib/utils";
 import { Logo, ThemeToggle } from "@/shared/ui";
+import { useSwipeLeft } from "@/shared/hooks/useSwipeLeft";
 import {
   Building2,
   ChevronLeft,
@@ -67,6 +68,7 @@ export const OrganizationWorkspaceLayout = () => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [hasRequestedOrganizations, setHasRequestedOrganizations] = useState(false);
+  const swipeToCloseMenu = useSwipeLeft(() => setIsMenuOpen(false));
   const preview = items.find((item) => item.id === organizationId);
   const detail = details[organizationId];
   const organization = preview ?? detail;
@@ -163,7 +165,7 @@ export const OrganizationWorkspaceLayout = () => {
                   <Menu />
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-[min(20rem,85vw)] p-5">
+              <SheetContent side="left" className="w-[min(20rem,85vw)] p-5" {...swipeToCloseMenu}>
                 <SheetHeader className="p-0 text-left">
                   <SheetTitle>
                     <Link
