@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import {
@@ -31,7 +38,9 @@ import type {
   CreatedOrganization,
   OrganizationHistory,
   OrganizationPreview,
+  OrganizationType,
 } from "@/features/organization/model/types";
+import { ORGANIZATION_TYPE_OPTIONS } from "@/features/organization/model/types";
 import { ApiError } from "@/shared/api/httpClient";
 import { notify } from "@/shared/lib/notify";
 import { History, ImageUp, Loader2, LoaderCircle, Trash2 } from "lucide-react";
@@ -56,7 +65,14 @@ export const OrganizationSettingsPage = () => {
   const [history, setHistory] = useState<OrganizationHistory | null>(null);
   const [busy, setBusy] = useState(false);
   const [isLogoBusy, setIsLogoBusy] = useState(false);
+  const [organisationType, setOrganisationType] = useState<OrganizationType | null>(
+    organization?.organisationType ?? null,
+  );
   const logoInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (organization) setOrganisationType(organization.organisationType);
+  }, [organization]);
 
   useEffect(() => {
     if (user?.email && !organization) void load(user.email).catch(() => undefined);
@@ -95,8 +111,18 @@ export const OrganizationSettingsPage = () => {
       const changes = {
         organisationId: organization.id,
         ...(displayName !== organization.displayName && { displayName }),
-        ...(legalName && { legalName }),
-        ...(taxId && { taxId }),
+        ...(organisationType &&
+          organisationType !== organization.organisationType && {
+            organisationType,
+          }),
+        ...(organisationType !== "INDIVIDUAL" &&
+          legalName !== (organization.legalName ?? "") && {
+            legalName: legalName || null,
+          }),
+        ...(organisationType !== "INDIVIDUAL" &&
+          taxId !== (organization.taxId ?? "") && {
+            taxId: taxId || null,
+          }),
       };
       if (Object.keys(changes).length === 1) {
         notify.info("Немає змін для збереження");
@@ -262,7 +288,7 @@ export const OrganizationSettingsPage = () => {
               </CardHeader>
               <CardContent>
                 <form className="grid gap-4 sm:grid-cols-2" onSubmit={onUpdate}>
-                  <div className="space-y-2">
+                  <div className="space-y-2 sm:col-span-2">
                     <Label htmlFor="displayName">Назва</Label>
                     <Input
                       id="displayName"
@@ -272,26 +298,50 @@ export const OrganizationSettingsPage = () => {
                       maxLength={200}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="legalName">Юридична назва</Label>
-                    <Input
-                      id="legalName"
-                      name="legalName"
-                      defaultValue={
-                        "legalName" in organization ? (organization.legalName ?? "") : ""
-                      }
-                      maxLength={255}
-                    />
+                  <div className="space-y-2 sm:col-span-2">
+                    <Label htmlFor="organisationType">Тип компанії</Label>
+                    <Select
+                      value={organisationType ?? undefined}
+                      onValueChange={(value) => setOrganisationType(value as OrganizationType)}
+                    >
+                      <SelectTrigger id="organisationType" className="w-full">
+                        <SelectValue placeholder="Оберіть тип компанії" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {ORGANIZATION_TYPE_OPTIONS.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="taxId">Податковий номер</Label>
-                    <Input
-                      id="taxId"
-                      name="taxId"
-                      defaultValue={"taxId" in organization ? (organization.taxId ?? "") : ""}
-                      maxLength={100}
-                    />
-                  </div>
+                  {organisationType && organisationType !== "INDIVIDUAL" && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="legalName">
+                          {organisationType === "COMPANY" ? "Юридична назва" : "ПІБ підприємця"}
+                        </Label>
+                        <Input
+                          id="legalName"
+                          name="legalName"
+                          defaultValue={organization.legalName ?? ""}
+                          maxLength={255}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="taxId">
+                          {organisationType === "COMPANY" ? "Код ЄДРПОУ" : "РНОКПП (ІПН)"}
+                        </Label>
+                        <Input
+                          id="taxId"
+                          name="taxId"
+                          defaultValue={organization.taxId ?? ""}
+                          maxLength={100}
+                        />
+                      </div>
+                    </>
+                  )}
                   <div className="flex items-end">
                     <Button disabled={busy}>
                       {busy && <LoaderCircle className="animate-spin" />}Зберегти
