@@ -26,7 +26,9 @@ export type OrganizationPreview = {
   id: string;
   slug: string;
   displayName: string;
+  legalName: string | null;
   organisationType: OrganizationType;
+  taxId: string | null;
   logoUrl: string | null;
   position: string | null;
   isOwner: boolean;

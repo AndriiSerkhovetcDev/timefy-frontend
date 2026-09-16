@@ -20,6 +20,7 @@ import {
 } from "@/features/account/model/profileSchema";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { AccountAvatar } from "@/features/account/ui/AccountAvatar";
+import { AvatarCropDialog } from "@/features/account/ui/AvatarCropDialog";
 import { AccountPageSkeleton } from "@/features/account/ui/AccountPageSkeleton";
 import { EmailStatus } from "@/features/account/ui/EmailStatus";
 import { CreatePasswordDialog } from "@/features/account/ui/CreatePasswordDialog";
@@ -54,7 +55,9 @@ export const PersonalDataPage = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [emailRequiresAuthMethod, setEmailRequiresAuthMethod] = useState(false);
   const [isVerificationCodeSent, setIsVerificationCodeSent] = useState(false);
+  const [avatarFileToCrop, setAvatarFileToCrop] = useState<File | null>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+  const avatarButtonRef = useRef<HTMLButtonElement>(null);
   const emailAvailabilityRef = useRef<ContactAvailability | null>(null);
   const phoneAvailabilityRef = useRef<ContactAvailability | null>(null);
   const {
@@ -215,7 +218,7 @@ export const PersonalDataPage = () => {
       });
       notify.success(
         emailChanged
-          ? "Email змінено. Підтвердьте нову адресу."
+          ? "Електронну адресу змінено — підтвердьте її"
           : response.message || "Дані профілю оновлено",
       );
     } catch (error) {
@@ -228,7 +231,7 @@ export const PersonalDataPage = () => {
     }
   };
 
-  const handleAvatarChange = async (event: ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || isAvatarPending) return;
 
@@ -238,6 +241,17 @@ export const PersonalDataPage = () => {
       return;
     }
 
+    if (!file.type.startsWith("image/")) {
+      notify.warning("Оберіть файл зображення");
+      event.target.value = "";
+      return;
+    }
+
+    setAvatarFileToCrop(file);
+    event.target.value = "";
+  };
+
+  const handleCroppedAvatarSave = async (file: File) => {
     setIsUploadingAvatar(true);
     try {
       const response = user.avatar ? await changeAvatar(file) : await uploadAvatar(file);
@@ -249,11 +263,12 @@ export const PersonalDataPage = () => {
         avatar: avatar ? versionApiAssetUrl(avatar) : null,
       });
       notify.success(response.message || "Аватар оновлено");
+      setAvatarFileToCrop(null);
     } catch (error) {
       notify.error(error instanceof Error ? error.message : "Не вдалося оновити аватар");
+      throw error;
     } finally {
       setIsUploadingAvatar(false);
-      if (avatarInputRef.current) avatarInputRef.current.value = "";
     }
   };
 
@@ -308,6 +323,7 @@ export const PersonalDataPage = () => {
             />
             <div className="flex flex-wrap gap-2">
               <Button
+                ref={avatarButtonRef}
                 type="button"
                 variant="outline"
                 disabled={isAvatarPending}
@@ -339,6 +355,14 @@ export const PersonalDataPage = () => {
           </div>
         </CardContent>
       </Card>
+
+      <AvatarCropDialog
+        file={avatarFileToCrop}
+        isSaving={isUploadingAvatar}
+        returnFocusRef={avatarButtonRef}
+        onCancel={() => setAvatarFileToCrop(null)}
+        onSave={handleCroppedAvatarSave}
+      />
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>

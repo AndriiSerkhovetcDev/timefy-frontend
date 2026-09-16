@@ -18,8 +18,15 @@ export const OrganizationsPage = () => {
   return (
     <div className="flex w-full flex-1 flex-col">
       {items.length > 0 && (
-        <div className="mb-6 flex justify-end">
-          <Button asChild>
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0">
+            <h2 className="text-xl font-semibold tracking-tight">Ваші компанії</h2>
+            <p className="mt-1 max-w-2xl text-sm leading-6 text-muted-foreground">
+              {formatOrganizationCount(items.length)}. Оберіть компанію, щоб керувати основними
+              даними, командою та доступами.
+            </p>
+          </div>
+          <Button asChild className="w-full shrink-0 sm:w-auto">
             <Link to="/account/organizations/create">
               <Plus aria-hidden="true" />
               Створити компанію
@@ -102,4 +109,20 @@ const EmptyState = () => (
     </CardHeader>
   </Card>
 );
+
+const formatOrganizationCount = (count: number) => {
+  const lastTwoDigits = count % 100;
+  const lastDigit = count % 10;
+  const label =
+    lastTwoDigits >= 11 && lastTwoDigits <= 14
+      ? "компаній"
+      : lastDigit === 1
+        ? "компанія"
+        : lastDigit >= 2 && lastDigit <= 4
+          ? "компанії"
+          : "компаній";
+
+  return `Доступно ${count} ${label}`;
+};
+
 export default OrganizationsPage;
