@@ -250,7 +250,7 @@ export const VerifyEmailForm = ({
             className={cn(
               "inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-primary outline-none transition hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-60",
               !hasRequestedCode &&
-                "min-h-11 w-full bg-primary px-5 text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto",
+                "h-9 w-full bg-primary px-4 text-primary-foreground shadow-sm hover:bg-primary/90 sm:w-auto",
             )}
           >
             <RefreshCw
