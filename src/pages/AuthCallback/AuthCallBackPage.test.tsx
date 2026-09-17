@@ -90,14 +90,17 @@ describe("AuthCallbackPage", () => {
     expect(consoleError).not.toHaveBeenCalled();
   });
 
-  it("keeps the deprecated token and user callback compatible", async () => {
+  it("rejects deprecated token and user callback credentials", async () => {
     const serializedUser = encodeURIComponent(JSON.stringify(user));
     window.history.replaceState({}, "", `/auth/callback?token=legacy-token&user=${serializedUser}`);
 
     renderCallback();
 
-    await waitFor(() => expect(useAuthStore.getState().token).toBe("legacy-token"));
-    expect(useAuthStore.getState().user).toEqual(user);
+    expect(
+      await screen.findByRole("heading", { name: "Не вдалося завершити авторизацію" }),
+    ).toBeTruthy();
+    expect(useAuthStore.getState().token).toBeNull();
+    expect(useAuthStore.getState().user).toBeNull();
     expect(exchangeExternalAuthCode).not.toHaveBeenCalled();
     expect(window.location.search).toBe("");
   });

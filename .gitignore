@@ -16,6 +16,21 @@ dist-ssr
 .env.local
 .env.development
 .env.production
+!.env.example
+
+# Credentials and private key material
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+credentials*.json
+service-account*.json
+
+# Local agent instructions and working notes
+AGENTS.md
+TOKEN_REFRESH_CLARIFICATIONS.md
 
 # Editor directories and files
 .vscode/*
@@ -27,4 +42,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
