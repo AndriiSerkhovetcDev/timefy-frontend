@@ -55,11 +55,13 @@ jobs:
           test -n "$DEPLOY_PATH" || (echo "Repository variable DEPLOY_PATH is required" && exit 1)
           test -n "$DOCKER_IMAGE" || (echo "Repository variable DOCKER_IMAGE is required" && exit 1)
           test -n "$VITE_API_URL" || (echo "Repository variable VITE_API_URL is required" && exit 1)
+          test -n "$VITE_ADMIN_APP_URL" || (echo "Repository variable VITE_ADMIN_APP_URL is required" && exit 1)
 
       - name: Build Docker image
         env:
           DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
           VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_ADMIN_APP_URL: ${{ vars.VITE_ADMIN_APP_URL }}
         run: |
           docker build \
             --build-arg VITE_API_URL="$VITE_API_URL" \
