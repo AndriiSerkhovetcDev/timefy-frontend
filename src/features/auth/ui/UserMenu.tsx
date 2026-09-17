@@ -22,15 +22,21 @@ type UserMenuItem = {
   allowedRoles?: User["role"][];
 };
 
+const adminAppUrl = import.meta.env.VITE_ADMIN_APP_URL?.trim();
+
 const userMenuItems: UserMenuItem[] = [
   { id: "account", text: "Особистий кабінет", link: "/account" },
   { id: "organizations", text: "Компанії", link: "/organizations" },
-  {
-    id: "schemas",
-    text: "Налаштування Timefy",
-    link: "https://dev.timefy.online",
-    allowedRoles: ["ADMIN", "SUPPORT"],
-  },
+  ...(adminAppUrl
+    ? [
+        {
+          id: "schemas",
+          text: "Налаштування Timefy",
+          link: adminAppUrl,
+          allowedRoles: ["ADMIN", "SUPPORT"] as User["role"][],
+        },
+      ]
+    : []),
 ];
 
 export const UserMenu = () => {

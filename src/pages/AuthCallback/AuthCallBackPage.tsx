@@ -7,11 +7,7 @@ import {
   isExternalAuthProvider,
   startExternalAuthorization,
 } from "@/features/auth/model/externalAuth";
-import {
-  clearOAuthCallback,
-  consumeOAuthCallback,
-  parseLegacyOAuthCallback,
-} from "@/features/auth/model/oauthCallback";
+import { clearOAuthCallback, consumeOAuthCallback } from "@/features/auth/model/oauthCallback";
 import { exchangeExternalAuthCode, type ExternalAuthExchangeResponse } from "@/shared/api/authApi";
 import { PageLoader } from "@/shared/ui";
 import { consumePostAuthReturnPath } from "@/shared/lib/employeeInvitationSession";
@@ -81,16 +77,7 @@ export const AuthCallbackPage = () => {
         return;
       }
 
-      const legacyAuth = parseLegacyOAuthCallback(callback.legacyToken, callback.legacyUser);
-
-      if (!legacyAuth) {
-        failSafely();
-        return;
-      }
-
-      clearOAuthCallback();
-      login(legacyAuth.user, legacyAuth.token);
-      navigate(consumePostAuthReturnPath() ?? "/", { replace: true });
+      failSafely();
     };
 
     void authenticate();

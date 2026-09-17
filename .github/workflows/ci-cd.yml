@@ -19,10 +19,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
         with:
           node-version: 20
           cache: npm
@@ -43,13 +43,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Validate deployment configuration
         env:
           DEPLOY_PATH: ${{ vars.DEPLOY_PATH }}
           DOCKER_IMAGE: ${{ vars.DOCKER_IMAGE }}
           VITE_API_URL: ${{ vars.VITE_API_URL }}
+          VITE_ADMIN_APP_URL: ${{ vars.VITE_ADMIN_APP_URL }}
         run: |
           test -n "$DEPLOY_PATH" || (echo "Repository variable DEPLOY_PATH is required" && exit 1)
           test -n "$DOCKER_IMAGE" || (echo "Repository variable DOCKER_IMAGE is required" && exit 1)
@@ -62,6 +63,7 @@ jobs:
         run: |
           docker build \
             --build-arg VITE_API_URL="$VITE_API_URL" \
+            --build-arg VITE_ADMIN_APP_URL="$VITE_ADMIN_APP_URL" \
             --tag "$DOCKER_IMAGE:latest" \
             .
 
@@ -71,7 +73,7 @@ jobs:
         run: docker save "$DOCKER_IMAGE:latest" | gzip > app.tar.gz
 
       - name: Copy image to server
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@917f8b81dfc1ccd331fef9e2d61bdc6c8be94634 # v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
@@ -80,7 +82,7 @@ jobs:
           target: ${{ vars.DEPLOY_PATH }}
 
       - name: Deploy frontend with Docker Compose
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@029f5b4aeeeb58fdfe1410a5d17f967dacf36262 # v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
