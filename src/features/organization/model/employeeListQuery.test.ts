@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { createDefaultEmployeeListQuery, createEmployeeListRequest } from "./employeeListQuery";
+import {
+  createDefaultEmployeeListQuery,
+  createEmployeeListRequest,
+  resetEmployeeListFilters,
+} from "./employeeListQuery";
 
 describe("createEmployeeListRequest", () => {
   it("creates the initial request without an unused filters object", () => {
@@ -37,6 +41,28 @@ describe("createEmployeeListRequest", () => {
         isBookable: true,
       },
       sort: { field: "createdAt", order: "asc" },
+    });
+  });
+});
+
+describe("resetEmployeeListFilters", () => {
+  it("clears every filter, returns to the first page and preserves sorting", () => {
+    expect(
+      resetEmployeeListFilters({
+        page: 4,
+        search: "andrii",
+        position: "Адміністратор",
+        active: "false",
+        bookable: "true",
+        sortOrder: "asc",
+      }),
+    ).toEqual({
+      page: 1,
+      search: null,
+      position: "",
+      active: "all",
+      bookable: "all",
+      sortOrder: "asc",
     });
   });
 });

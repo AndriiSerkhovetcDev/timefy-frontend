@@ -20,6 +20,15 @@ export const createDefaultEmployeeListQuery = (): EmployeeListQuery => ({
   sortOrder: "desc",
 });
 
+export const resetEmployeeListFilters = (query: EmployeeListQuery): EmployeeListQuery => ({
+  ...query,
+  page: 1,
+  search: null,
+  position: "",
+  active: "all",
+  bookable: "all",
+});
+
 export const createEmployeeListRequest = (
   organisationId: string,
   query: EmployeeListQuery,
