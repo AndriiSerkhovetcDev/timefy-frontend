@@ -22,6 +22,7 @@ import { getOrganizationEmployees } from "@/features/organization/api/organizati
 import {
   createDefaultEmployeeListQuery,
   createEmployeeListRequest,
+  resetEmployeeListFilters,
   type EmployeeBooleanFilter,
 } from "@/features/organization/model/employeeListQuery";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
@@ -121,14 +122,7 @@ export const OrganizationTeamPage = () => {
   const resetFilters = () => {
     setSearchInput("");
     setPositionInput("");
-    setQuery((current) => ({
-      ...current,
-      page: 1,
-      search: null,
-      position: "",
-      active: "all",
-      bookable: "all",
-    }));
+    setQuery(resetEmployeeListFilters);
   };
 
   return (

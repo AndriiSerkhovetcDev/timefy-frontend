@@ -107,4 +107,47 @@ describe("OrganizationTeamPage", () => {
       { timeout: 1200 },
     );
   });
+
+  it("resets filters from the filtered empty state", async () => {
+    vi.mocked(getOrganizationEmployees).mockImplementation(async (payload) =>
+      payload.search
+        ? {
+            items: [],
+            pagination: { page: payload.page ?? 1, limit: 25, total: 0, pages: 0 },
+          }
+        : {
+            items: [employee],
+            pagination: { page: payload.page ?? 1, limit: 25, total: 1, pages: 1 },
+          },
+    );
+    renderPage();
+
+    await screen.findAllByText("andrii");
+    const search = screen.getByPlaceholderText("Пошук за ім’ям або контактами");
+    fireEvent.change(search, { target: { value: "відсутній" } });
+
+    const resetButton = await screen.findByRole(
+      "button",
+      { name: "Скинути фільтри" },
+      { timeout: 1200 },
+    );
+    const requestCountBeforeReset = vi.mocked(getOrganizationEmployees).mock.calls.length;
+    fireEvent.click(resetButton);
+
+    await waitFor(() =>
+      expect(
+        (screen.getByPlaceholderText("Пошук за ім’ям або контактами") as HTMLInputElement).value,
+      ).toBe(""),
+    );
+    await waitFor(() =>
+      expect(vi.mocked(getOrganizationEmployees).mock.calls.length).toBeGreaterThan(
+        requestCountBeforeReset,
+      ),
+    );
+    expect(vi.mocked(getOrganizationEmployees).mock.lastCall?.[0]).toMatchObject({
+      page: 1,
+      search: null,
+    });
+    expect(vi.mocked(getOrganizationEmployees).mock.lastCall?.[0]).not.toHaveProperty("filters");
+  });
 });
