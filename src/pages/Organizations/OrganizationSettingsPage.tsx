@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -76,6 +77,7 @@ export const OrganizationSettingsPage = () => {
   const [history, setHistory] = useState<OrganizationHistory | null>(null);
   const [busy, setBusy] = useState(false);
   const [isLogoBusy, setIsLogoBusy] = useState(false);
+  const [isDeleteLogoDialogOpen, setIsDeleteLogoDialogOpen] = useState(false);
   const [organisationType, setOrganisationType] = useState<OrganizationType | null>(
     organization?.organisationType ?? null,
   );
@@ -198,6 +200,22 @@ export const OrganizationSettingsPage = () => {
       event.target.value = "";
     }
   };
+  const deleteLogo = async () => {
+    if (isLogoBusy) return;
+
+    setIsLogoBusy(true);
+    try {
+      const result = await deleteOrganizationLogo(organization.id);
+      updateDetails(organization.id, { logoUrl: result.logoUrl });
+      await refresh();
+      setIsDeleteLogoDialogOpen(false);
+      notify.success("Логотип видалено");
+    } catch (error) {
+      notify.error(error instanceof Error ? error.message : "Не вдалося видалити логотип");
+    } finally {
+      setIsLogoBusy(false);
+    }
+  };
   const deactivate = async () => {
     setBusy(true);
     try {
@@ -279,32 +297,51 @@ export const OrganizationSettingsPage = () => {
                       {isLogoBusy ? "Завантаження…" : "Змінити логотип"}
                     </Button>
                     {organization.logoUrl && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        disabled={isLogoBusy}
-                        className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                        onClick={() => {
-                          setIsLogoBusy(true);
-                          void deleteOrganizationLogo(organization.id)
-                            .then((result) =>
-                              updateDetails(organization.id, { logoUrl: result.logoUrl }),
-                            )
-                            .then(refresh)
-                            .then(() => notify.success("Логотип видалено"))
-                            .catch((error: unknown) =>
-                              notify.error(
-                                error instanceof Error
-                                  ? error.message
-                                  : "Не вдалося видалити логотип",
-                              ),
-                            )
-                            .finally(() => setIsLogoBusy(false));
-                        }}
+                      <Dialog
+                        open={isDeleteLogoDialogOpen}
+                        onOpenChange={(open) => !isLogoBusy && setIsDeleteLogoDialogOpen(open)}
                       >
-                        <Trash2 />
-                        Видалити
-                      </Button>
+                        <DialogTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            disabled={isLogoBusy}
+                            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+                          >
+                            <Trash2 aria-hidden="true" />
+                            Видалити
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Видалити логотип?</DialogTitle>
+                            <DialogDescription>
+                              Поточний логотип компанії буде видалено. Замість нього
+                              відображатиметься стандартна іконка.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <DialogFooter>
+                            <DialogClose asChild>
+                              <Button type="button" variant="outline" disabled={isLogoBusy}>
+                                Скасувати
+                              </Button>
+                            </DialogClose>
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              disabled={isLogoBusy}
+                              onClick={() => void deleteLogo()}
+                            >
+                              {isLogoBusy ? (
+                                <Loader2 className="animate-spin" aria-hidden="true" />
+                              ) : (
+                                <Trash2 aria-hidden="true" />
+                              )}
+                              {isLogoBusy ? "Видалення…" : "Видалити логотип"}
+                            </Button>
+                          </DialogFooter>
+                        </DialogContent>
+                      </Dialog>
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground">
