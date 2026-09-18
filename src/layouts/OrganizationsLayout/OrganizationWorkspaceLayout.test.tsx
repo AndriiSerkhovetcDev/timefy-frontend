@@ -1,4 +1,4 @@
-import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getMyOrganizations } from "@/features/organization/api/organizationApi";
@@ -103,5 +103,21 @@ describe("OrganizationWorkspaceLayout", () => {
     expect(screen.getAllByText("Тестова компанія").length).toBeGreaterThan(0);
     expect(screen.queryByRole("link", { name: "Команда" })).toBeNull();
     expect(screen.queryByRole("link", { name: "Налаштування" })).toBeNull();
+  });
+
+  it("shows collapsed navigation tooltips when links receive keyboard focus", async () => {
+    vi.mocked(getMyOrganizations).mockResolvedValue([{ ...memberOrganization, isOwner: true }]);
+
+    renderLayout();
+
+    await waitFor(() => expect(screen.getByText("Вміст компанії")).toBeTruthy());
+    fireEvent.click(screen.getByRole("button", { name: "Згорнути бокову панель" }));
+
+    const homeLink = screen.getByRole("link", { name: "Головна" });
+    fireEvent.focus(homeLink);
+
+    const tooltip = screen.getByRole("tooltip");
+    expect(tooltip.textContent).toContain("Головна");
+    expect(homeLink.getAttribute("aria-describedby")).toBe(tooltip.id);
   });
 });

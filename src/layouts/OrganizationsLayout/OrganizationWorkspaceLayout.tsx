@@ -7,6 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { UserMenu } from "@/features/auth/ui";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
@@ -270,55 +271,69 @@ const OrganizationNavigation = ({
   collapsed?: boolean;
   onNavigate?: () => void;
 }) => (
-  <nav aria-label="Навігація компанії" className="flex min-h-0 flex-1 flex-col">
-    <ul className="space-y-1">
-      {items.map(({ label, href, icon: Icon }) => (
-        <li key={href} className="group relative">
-          <NavLink
-            end={!href}
-            to={`/organizations/${organizationId}${href ? `/${href}` : ""}`}
-            onClick={onNavigate}
-            aria-label={collapsed ? label : undefined}
-            className={({ isActive }) =>
-              cn(
-                "flex min-h-11 items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                collapsed && "justify-center px-2",
-                isActive && "bg-accent text-primary",
-              )
-            }
-          >
-            <Icon className="size-5 shrink-0" />
-            {!collapsed && <span className="min-w-0 truncate">{label}</span>}
-          </NavLink>
-          {collapsed && (
-            <span
-              role="tooltip"
-              className="pointer-events-none absolute left-full top-1/2 z-50 ml-2 -translate-y-1/2 rounded-md bg-foreground px-3 py-1.5 text-xs whitespace-nowrap text-background opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
+  <TooltipProvider>
+    <nav aria-label="Навігація компанії" className="flex min-h-0 flex-1 flex-col">
+      <ul className="space-y-1">
+        {items.map(({ label, href, icon: Icon }) => (
+          <li key={href}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <NavLink
+                  end={!href}
+                  to={`/organizations/${organizationId}${href ? `/${href}` : ""}`}
+                  onClick={onNavigate}
+                  aria-label={collapsed ? label : undefined}
+                  className={({ isActive }) =>
+                    cn(
+                      "flex min-h-11 items-center gap-3 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                      collapsed && "justify-center px-2",
+                      isActive && "bg-accent text-primary",
+                    )
+                  }
+                >
+                  <Icon className="size-5 shrink-0" aria-hidden="true" />
+                  {!collapsed && <span className="min-w-0 truncate">{label}</span>}
+                </NavLink>
+              </TooltipTrigger>
+              {collapsed && (
+                <TooltipContent side="right" sideOffset={8}>
+                  {label}
+                </TooltipContent>
+              )}
+            </Tooltip>
+          </li>
+        ))}
+      </ul>
+      <div className="mt-auto pt-6">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              asChild
+              variant="ghost"
+              className={cn(
+                "w-full justify-start text-muted-foreground",
+                collapsed && "justify-center",
+              )}
             >
-              {label}
-            </span>
+              <Link
+                to="/account/organizations"
+                onClick={onNavigate}
+                aria-label={collapsed ? "Усі компанії" : undefined}
+              >
+                {collapsed ? <Building2 aria-hidden="true" /> : <ChevronLeft aria-hidden="true" />}
+                {!collapsed && "Усі компанії"}
+              </Link>
+            </Button>
+          </TooltipTrigger>
+          {collapsed && (
+            <TooltipContent side="right" sideOffset={8}>
+              Усі компанії
+            </TooltipContent>
           )}
-        </li>
-      ))}
-    </ul>
-    <div className="mt-auto pt-6">
-      <Button
-        asChild
-        variant="ghost"
-        className={cn("w-full justify-start text-muted-foreground", collapsed && "justify-center")}
-      >
-        <Link
-          to="/account/organizations"
-          onClick={onNavigate}
-          aria-label={collapsed ? "Усі компанії" : undefined}
-          title={collapsed ? "Усі компанії" : undefined}
-        >
-          {collapsed ? <Building2 /> : <ChevronLeft />}
-          {!collapsed && "Усі компанії"}
-        </Link>
-      </Button>
-    </div>
-  </nav>
+        </Tooltip>
+      </div>
+    </nav>
+  </TooltipProvider>
 );
 
 export default OrganizationWorkspaceLayout;
