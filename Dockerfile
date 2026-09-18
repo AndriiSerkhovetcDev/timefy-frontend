@@ -6,12 +6,16 @@ COPY . .
 
 ARG VITE_API_URL
 ARG VITE_ADMIN_APP_URL
+ARG VITE_APP_VERSION=development
 ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_ADMIN_APP_URL=$VITE_ADMIN_APP_URL
+ENV VITE_APP_VERSION=$VITE_APP_VERSION
 RUN npm run build
 
 FROM nginx:alpine
 COPY --from=builder /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
+HEALTHCHECK --interval=10s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget -q -O /dev/null http://127.0.0.1/ || exit 1
 CMD ["nginx", "-g", "daemon off;"]

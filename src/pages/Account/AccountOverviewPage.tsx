@@ -14,7 +14,6 @@ import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import { ArrowRight, Building2, CheckCircle2, CircleAlert, Pencil, Plus } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const AccountOverviewPage = () => {
@@ -22,12 +21,8 @@ export const AccountOverviewPage = () => {
   const {
     items: organizations,
     isLoading: areOrganizationsLoading,
-    load,
     select,
   } = useOrganizationStore();
-  useEffect(() => {
-    if (user?.email) void load(user.email).catch(() => undefined);
-  }, [load, user?.email]);
   if (!user) return <AccountPageSkeleton />;
   const profile = getProfileProgress(user);
 

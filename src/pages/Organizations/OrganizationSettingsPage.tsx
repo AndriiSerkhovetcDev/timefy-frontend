@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -52,7 +53,17 @@ export const OrganizationSettingsPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const user = useAuthStore(selectUser);
-  const { items, details, load, select, addCreated, updateDetails } = useOrganizationStore();
+  const {
+    items,
+    details,
+    loadedUserId,
+    isLoading,
+    error,
+    load,
+    select,
+    addCreated,
+    updateDetails,
+  } = useOrganizationStore();
   const stateOrganization = (
     location.state as {
       organization?: OrganizationPreview & Partial<CreatedOrganization>;
@@ -74,9 +85,29 @@ export const OrganizationSettingsPage = () => {
     if (organization) setOrganisationType(organization.organisationType);
   }, [organization]);
 
-  useEffect(() => {
-    if (user?.email && !organization) void load(user.email).catch(() => undefined);
-  }, [load, organization, user?.email]);
+  const isWaitingForOrganizations =
+    !organization && !error && (isLoading || loadedUserId !== user?.email);
+
+  if (isWaitingForOrganizations) return <OrganizationSettingsSkeleton />;
+  if (!organization && error)
+    return (
+      <Card className="mx-auto w-full max-w-4xl">
+        <CardHeader>
+          <CardTitle>Не вдалося завантажити компанію</CardTitle>
+          <CardDescription>{error}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isLoading || !user?.email}
+            onClick={() => user?.email && void load(user.email).catch(() => undefined)}
+          >
+            Спробувати ще раз
+          </Button>
+        </CardContent>
+      </Card>
+    );
   if (!organization)
     return (
       <div className="mx-auto w-full max-w-4xl p-8">
@@ -87,7 +118,7 @@ export const OrganizationSettingsPage = () => {
       </div>
     );
   const preview = items.find((item) => item.id === organizationId);
-  if (preview && !preview.isOwner)
+  if (!preview?.isOwner)
     return (
       <div className="mx-auto w-full max-w-4xl p-8">
         <p>Налаштування доступні лише власнику компанії.</p>
@@ -428,4 +459,26 @@ export const OrganizationSettingsPage = () => {
     </div>
   );
 };
+
+const OrganizationSettingsSkeleton = () => (
+  <div className="space-y-6" aria-label="Завантаження налаштувань компанії" aria-busy="true">
+    <div className="space-y-2">
+      <Skeleton className="h-9 w-64 max-w-full" />
+      <Skeleton className="h-5 w-96 max-w-full" />
+    </div>
+    <Card>
+      <CardHeader className="space-y-2">
+        <Skeleton className="h-6 w-44" />
+        <Skeleton className="h-4 w-72 max-w-full" />
+      </CardHeader>
+      <CardContent className="grid gap-5 sm:grid-cols-2">
+        <Skeleton className="h-10 w-full sm:col-span-2" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-full" />
+        <Skeleton className="h-10 w-40 sm:col-span-2" />
+      </CardContent>
+    </Card>
+  </div>
+);
+
 export default OrganizationSettingsPage;
