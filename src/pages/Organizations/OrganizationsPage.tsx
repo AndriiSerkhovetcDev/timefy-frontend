@@ -5,15 +5,11 @@ import { selectUser, useAuthStore } from "@/features/auth/model/authStore";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import { OrganizationLogo } from "@/features/organization/ui/OrganizationLogo";
 import { ArrowRight, Building2, Plus } from "lucide-react";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export const OrganizationsPage = () => {
   const user = useAuthStore(selectUser);
   const { items, isLoading, error, load, select } = useOrganizationStore();
-  useEffect(() => {
-    if (user?.email) void load(user.email).catch(() => undefined);
-  }, [load, user?.email]);
 
   return (
     <div className="flex w-full flex-1 flex-col">

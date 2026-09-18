@@ -19,16 +19,21 @@ import {
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getOrganizationEmployees } from "@/features/organization/api/organizationApi";
+import {
+  createDefaultEmployeeListQuery,
+  createEmployeeListRequest,
+  type EmployeeBooleanFilter,
+} from "@/features/organization/model/employeeListQuery";
 import { useOrganizationStore } from "@/features/organization/model/organizationStore";
 import type { Employee, EmployeeList } from "@/features/organization/model/types";
 import { EmployeeInvitationCard } from "@/features/organization/ui/EmployeeInvitationCard";
 import { ApiError } from "@/shared/api/httpClient";
-import { Check, Search, UserPlus, Users } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Check, ChevronLeft, ChevronRight, Search, UserPlus, Users } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 const PAGE_SIZE = 25;
-type BooleanFilter = "all" | "true" | "false";
+const SEARCH_DEBOUNCE_MS = 400;
 const emptyResult: EmployeeList = {
   items: [],
   pagination: { page: 1, limit: PAGE_SIZE, total: 0, pages: 0 },
@@ -36,14 +41,12 @@ const emptyResult: EmployeeList = {
 
 export const OrganizationTeamPage = () => {
   const { organizationId = "" } = useParams();
-  const { items: organizations, details } = useOrganizationStore();
+  const { items: organizations } = useOrganizationStore();
   const preview = organizations.find((item) => item.id === organizationId);
-  const isOwner = preview?.isOwner ?? Boolean(details[organizationId]);
-  const [search, setSearch] = useState("");
-  const [position, setPosition] = useState("");
-  const [active, setActive] = useState<BooleanFilter>("all");
-  const [bookable, setBookable] = useState<BooleanFilter>("all");
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const isOwner = preview?.isOwner === true;
+  const [searchInput, setSearchInput] = useState("");
+  const [positionInput, setPositionInput] = useState("");
+  const [query, setQuery] = useState(createDefaultEmployeeListQuery);
   const [result, setResult] = useState<EmployeeList>(emptyResult);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,13 +59,7 @@ export const OrganizationTeamPage = () => {
 
       try {
         const data = await getOrganizationEmployees(
-          {
-            organisationId: organizationId,
-            page: 1,
-            limit: PAGE_SIZE,
-            search: null,
-            sort: { field: "createdAt", order: "desc" },
-          },
+          createEmployeeListRequest(organizationId, query, PAGE_SIZE),
           signal,
         );
         if (!signal.aborted) setResult(data);
@@ -88,8 +85,23 @@ export const OrganizationTeamPage = () => {
         if (!signal.aborted) setIsLoading(false);
       }
     },
-    [organizationId],
+    [organizationId, query],
   );
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const search = searchInput.trim() || null;
+      const position = positionInput.trim();
+
+      setQuery((current) =>
+        current.search === search && current.position === position
+          ? current
+          : { ...current, page: 1, search, position },
+      );
+    }, SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [positionInput, searchInput]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -97,36 +109,27 @@ export const OrganizationTeamPage = () => {
     return () => controller.abort();
   }, [loadEmployees, reloadKey]);
 
-  const filteredEmployees = useMemo(() => {
-    const normalizedSearch = search.trim().toLocaleLowerCase("uk-UA");
-    const normalizedPosition = position.trim().toLocaleLowerCase("uk-UA");
-
-    return result.items
-      .filter((employee) => {
-        const matchesSearch =
-          !normalizedSearch ||
-          [employee.login, employee.email, employee.phone ?? ""].some((value) =>
-            value.toLocaleLowerCase("uk-UA").includes(normalizedSearch),
-          );
-        const matchesPosition =
-          !normalizedPosition ||
-          (employee.position ?? "").toLocaleLowerCase("uk-UA").includes(normalizedPosition);
-        const matchesActive = active === "all" || employee.memberIsActive === (active === "true");
-        const matchesBookable = bookable === "all" || employee.isBookable === (bookable === "true");
-        return matchesSearch && matchesPosition && matchesActive && matchesBookable;
-      })
-      .sort((first, second) => {
-        const difference =
-          new Date(first.createdAt).getTime() - new Date(second.createdAt).getTime();
-        return sortOrder === "asc" ? difference : -difference;
-      });
-  }, [active, bookable, position, result.items, search, sortOrder]);
-
   if (!isOwner) return <Navigate to={`/organizations/${organizationId}`} replace />;
 
   const hasFilters = Boolean(
-    search.trim() || position.trim() || active !== "all" || bookable !== "all",
+    searchInput.trim() ||
+    positionInput.trim() ||
+    query.active !== "all" ||
+    query.bookable !== "all",
   );
+  const showFilters = hasFilters || result.pagination.total > 0;
+  const resetFilters = () => {
+    setSearchInput("");
+    setPositionInput("");
+    setQuery((current) => ({
+      ...current,
+      page: 1,
+      search: null,
+      position: "",
+      active: "all",
+      bookable: "all",
+    }));
+  };
 
   return (
     <div className="space-y-6">
@@ -164,18 +167,18 @@ export const OrganizationTeamPage = () => {
               {isLoading
                 ? "Оновлюємо список…"
                 : hasFilters
-                  ? `Показано: ${filteredEmployees.length} із ${result.items.length}`
+                  ? `Знайдено: ${result.pagination.total}`
                   : `Усього: ${result.pagination.total}`}
             </CardDescription>
           </div>
-          {result.items.length > 0 && (
+          {showFilters && (
             <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-[minmax(12rem,1.4fr)_minmax(8rem,1fr)_minmax(9rem,0.8fr)_minmax(12rem,1fr)_minmax(9rem,0.8fr)]">
               <label className="relative min-w-0">
                 <span className="sr-only">Пошук працівників</span>
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  value={search}
-                  onChange={(event) => setSearch(event.target.value)}
+                  value={searchInput}
+                  onChange={(event) => setSearchInput(event.target.value)}
                   className="min-h-10 min-w-0 pl-9"
                   placeholder="Пошук за ім’ям або контактами"
                 />
@@ -183,13 +186,22 @@ export const OrganizationTeamPage = () => {
               <label className="min-w-0">
                 <span className="sr-only">Фільтр за посадою</span>
                 <Input
-                  value={position}
-                  onChange={(event) => setPosition(event.target.value)}
+                  value={positionInput}
+                  onChange={(event) => setPositionInput(event.target.value)}
                   className="min-h-10 min-w-0"
                   placeholder="Посада"
                 />
               </label>
-              <Select value={active} onValueChange={(value) => setActive(value as BooleanFilter)}>
+              <Select
+                value={query.active}
+                onValueChange={(value) =>
+                  setQuery((current) => ({
+                    ...current,
+                    page: 1,
+                    active: value as EmployeeBooleanFilter,
+                  }))
+                }
+              >
                 <SelectTrigger className="min-h-10 min-w-0 w-full" aria-label="Статус працівника">
                   <SelectValue />
                 </SelectTrigger>
@@ -200,8 +212,14 @@ export const OrganizationTeamPage = () => {
                 </SelectContent>
               </Select>
               <Select
-                value={bookable}
-                onValueChange={(value) => setBookable(value as BooleanFilter)}
+                value={query.bookable}
+                onValueChange={(value) =>
+                  setQuery((current) => ({
+                    ...current,
+                    page: 1,
+                    bookable: value as EmployeeBooleanFilter,
+                  }))
+                }
               >
                 <SelectTrigger
                   className="min-h-10 min-w-0 w-full"
@@ -216,8 +234,14 @@ export const OrganizationTeamPage = () => {
                 </SelectContent>
               </Select>
               <Select
-                value={sortOrder}
-                onValueChange={(value) => setSortOrder(value as "asc" | "desc")}
+                value={query.sortOrder}
+                onValueChange={(value) =>
+                  setQuery((current) => ({
+                    ...current,
+                    page: 1,
+                    sortOrder: value as "asc" | "desc",
+                  }))
+                }
               >
                 <SelectTrigger
                   className="min-h-10 min-w-0 w-full"
@@ -239,13 +263,16 @@ export const OrganizationTeamPage = () => {
         ) : error ? (
           <ErrorState message={error} onRetry={() => setReloadKey((value) => value + 1)} />
         ) : result.items.length === 0 ? (
-          <EmptyState filtered={false} />
-        ) : filteredEmployees.length === 0 ? (
-          <EmptyState filtered />
+          <EmptyState filtered={hasFilters} onReset={hasFilters ? resetFilters : undefined} />
         ) : (
           <>
-            <EmployeeTable employees={filteredEmployees} />
-            <EmployeeCards employees={filteredEmployees} />
+            <EmployeeTable employees={result.items} />
+            <EmployeeCards employees={result.items} />
+            <EmployeePagination
+              pagination={result.pagination}
+              disabled={isLoading}
+              onPageChange={(page) => setQuery((current) => ({ ...current, page }))}
+            />
           </>
         )}
       </Card>
@@ -389,7 +416,7 @@ const ErrorState = ({ message, onRetry }: { message: string; onRetry: () => void
     </Button>
   </CardContent>
 );
-const EmptyState = ({ filtered }: { filtered: boolean }) => (
+const EmptyState = ({ filtered, onReset }: { filtered: boolean; onReset?: () => void }) => (
   <CardContent className="py-12 text-center">
     <div className="mx-auto flex size-12 items-center justify-center rounded-xl bg-accent text-primary">
       <Users className="size-5" aria-hidden="true" />
@@ -402,8 +429,61 @@ const EmptyState = ({ filtered }: { filtered: boolean }) => (
         ? "Змініть пошуковий запит або скиньте один із фільтрів."
         : "Додайте першого працівника за допомогою одноразового запрошення."}
     </p>
+    {onReset && (
+      <Button type="button" variant="outline" className="mt-4 min-h-10" onClick={onReset}>
+        Скинути фільтри
+      </Button>
+    )}
   </CardContent>
 );
+const EmployeePagination = ({
+  pagination,
+  disabled,
+  onPageChange,
+}: {
+  pagination: EmployeeList["pagination"];
+  disabled: boolean;
+  onPageChange: (page: number) => void;
+}) => {
+  if (pagination.pages <= 1) return null;
+
+  const firstItem = (pagination.page - 1) * pagination.limit + 1;
+  const lastItem = Math.min(pagination.page * pagination.limit, pagination.total);
+
+  return (
+    <nav
+      aria-label="Пагінація працівників"
+      className="flex flex-col gap-3 border-t p-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p className="text-center text-sm text-muted-foreground sm:text-left" aria-live="polite">
+        Показано {firstItem}–{lastItem} із {pagination.total}. Сторінка {pagination.page} із{" "}
+        {pagination.pages}.
+      </p>
+      <div className="grid grid-cols-2 gap-2 sm:flex">
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-10"
+          disabled={disabled || pagination.page <= 1}
+          onClick={() => onPageChange(pagination.page - 1)}
+        >
+          <ChevronLeft aria-hidden="true" />
+          Попередня
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          className="min-h-10"
+          disabled={disabled || pagination.page >= pagination.pages}
+          onClick={() => onPageChange(pagination.page + 1)}
+        >
+          Наступна
+          <ChevronRight aria-hidden="true" />
+        </Button>
+      </div>
+    </nav>
+  );
+};
 const formatDate = (value: string) => {
   const date = new Date(value);
   return Number.isNaN(date.getTime())

@@ -10,7 +10,7 @@ export const OrganizationOverviewPage = () => {
   const preview = items.find((item) => item.id === organizationId);
   const organization = preview ?? details[organizationId];
   if (!organization) return null;
-  const isOwner = preview?.isOwner ?? true;
+  const isOwner = preview?.isOwner === true;
 
   return (
     <div className="space-y-6">

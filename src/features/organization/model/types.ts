@@ -67,12 +67,12 @@ export type Employee = {
 };
 
 export type EmployeeListFilters = {
-  login: string;
-  email: string;
-  phone: string;
-  position: string;
-  isBookable: boolean;
-  memberIsActive: boolean;
+  login?: string;
+  email?: string;
+  phone?: string;
+  position?: string;
+  isBookable?: boolean;
+  memberIsActive?: boolean;
 };
 
 export type EmployeeListRequest = {

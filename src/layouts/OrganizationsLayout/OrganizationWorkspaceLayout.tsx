@@ -64,30 +64,50 @@ export const OrganizationWorkspaceLayout = () => {
   const { organizationId = "" } = useParams();
   const { pathname } = useLocation();
   const user = useAuthStore(selectUser);
-  const { items, details, isLoading, error, load } = useOrganizationStore();
+  const { items, details, error, load } = useOrganizationStore();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [hasRequestedOrganizations, setHasRequestedOrganizations] = useState(false);
+  const [accessStatus, setAccessStatus] = useState<"loading" | "ready" | "error">("loading");
   const swipeToCloseMenu = useSwipeLeft(() => setIsMenuOpen(false));
   const preview = items.find((item) => item.id === organizationId);
   const detail = details[organizationId];
-  const organization = preview ?? detail;
-  const isOwner = preview?.isOwner ?? Boolean(detail);
+  const organization = preview ? { ...detail, ...preview } : null;
+  const isOwner = preview?.isOwner === true;
 
   useEffect(() => {
-    if (user?.email) {
-      setHasRequestedOrganizations(true);
-      void load(user.email).catch(() => undefined);
-    }
+    if (!user?.email) return;
+
+    let isCurrentRequest = true;
+    setAccessStatus("loading");
+    void load(user.email)
+      .then(() => {
+        if (isCurrentRequest) setAccessStatus("ready");
+      })
+      .catch(() => {
+        if (isCurrentRequest) setAccessStatus("error");
+      });
+
+    return () => {
+      isCurrentRequest = false;
+    };
   }, [load, user?.email]);
 
-  if ((!hasRequestedOrganizations || isLoading) && !organization)
+  if (accessStatus === "loading")
     return (
       <div className="flex min-h-dvh items-center justify-center text-muted-foreground">
         Завантажуємо компанію…
       </div>
     );
-  if (!organization && !isLoading)
+  if (accessStatus === "error")
+    return (
+      <div className="mx-auto w-full max-w-6xl p-8">
+        <p className="text-destructive">{error ?? "Не вдалося перевірити доступ до компанії"}</p>
+        <Button className="mt-4" asChild variant="outline">
+          <Link to="/account/organizations">До списку компаній</Link>
+        </Button>
+      </div>
+    );
+  if (!organization)
     return error ? (
       <div className="mx-auto w-full max-w-6xl p-8">
         <p className="text-destructive">{error}</p>
